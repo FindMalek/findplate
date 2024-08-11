@@ -103,6 +103,7 @@ const Card = (card: { icon: JSX.Element; bg: JSX.Element }) => {
   )
 }
 
+// TODO: Add whitelist e-mails
 export function MarketingCallToAction() {
   const t = useTranslations("app.components.app.marketing-call-to-action")
   const [randomTiles1, setRandomTiles1] = useState<typeof tiles>([])

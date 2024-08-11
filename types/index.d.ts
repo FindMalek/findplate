@@ -32,8 +32,9 @@ export type SiteConfig = {
   description: string
   url: string
   links: {
-    twitter: string
-    github: string
+    twitter?: string
+    github?: string
+    discord?: string
   }
   images: {
     default: string
@@ -44,6 +45,7 @@ export type SiteConfig = {
     name: string
     url: string
     email: string
+    github?: string
   }
   keywords: string[]
 }

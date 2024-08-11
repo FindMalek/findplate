@@ -156,6 +156,9 @@
           "are-you-lost": "Are you lost?",
           "reach-out": "Reach out to",
           "for-help": "for help."
+        },
+        "site-footer": {
+          "follow": "Brought to you by"
         }
       }
     }

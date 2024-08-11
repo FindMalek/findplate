@@ -18,40 +18,64 @@ export function SiteHeader() {
         <MobileNav />
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <nav className="flex items-center">
-            <Link
-              href={siteConfig.links.github}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div
-                className={cn(
-                  buttonVariants({
-                    variant: "ghost",
-                  }),
-                  "size-8 px-0"
-                )}
+            {siteConfig.links.twitter && (
+              <Link
+                href={siteConfig.links.twitter}
+                target="_blank"
+                rel="noreferrer"
               >
-                <Icons.github className="size-4" />
-                <span className="sr-only">GitHub</span>
-              </div>
-            </Link>
-            <Link
-              href={siteConfig.links.twitter}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <div
-                className={cn(
-                  buttonVariants({
-                    variant: "ghost",
-                  }),
-                  "size-8 px-0"
-                )}
+                <div
+                  className={cn(
+                    buttonVariants({
+                      variant: "ghost",
+                    }),
+                    "size-8 px-0"
+                  )}
+                >
+                  <Icons.twitter className="size-3 fill-current" />
+                  <span className="sr-only">Twitter</span>
+                </div>
+              </Link>
+            )}
+            {siteConfig.links.discord && (
+              <Link
+                href={siteConfig.links.discord}
+                target="_blank"
+                rel="noreferrer"
               >
-                <Icons.twitter className="size-3 fill-current" />
-                <span className="sr-only">Twitter</span>
-              </div>
-            </Link>
+                <div
+                  className={cn(
+                    buttonVariants({
+                      variant: "ghost",
+                    }),
+                    "size-8 px-0"
+                  )}
+                >
+                  <Icons.discord className="size-4" />
+                  <span className="sr-only">Discord</span>
+                </div>
+              </Link>
+            )}
+            {siteConfig.links.github && (
+              <Link
+                href={siteConfig.links.github}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <div
+                  className={cn(
+                    buttonVariants({
+                      variant: "ghost",
+                    }),
+                    "size-8 px-0"
+                  )}
+                >
+                  <Icons.github className="size-4" />
+                  <span className="sr-only">GitHub</span>
+                </div>
+              </Link>
+            )}
+
             <ModeToggle />
           </nav>
         </div>

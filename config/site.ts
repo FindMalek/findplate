@@ -12,11 +12,13 @@ export const siteConfig: SiteConfig = {
   links: {
     twitter: "https://twitter.com/foundmalek",
     github: "https://github.com/findmalek/findplate",
+    discord: "https://discord.gg/uF4bynbKnH",
   },
   author: {
     name: "findmalek",
     url: "https://www.findmalek.com",
     email: "hi@findmalek.com",
+    github: "https://github.com/FindMalek",
   },
   keywords: [
     "Next.js",
