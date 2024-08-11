@@ -4,8 +4,7 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL_ACCELRATE")
-  directUrl = env("DATABASE_URL")
+  url       = env("DATABASE_URL")
 }
 
 model Waitlist {
