@@ -3,8 +3,8 @@ import { join } from "node:path"
 
 function findRoot(): string {
   let dir = process.cwd()
-  while (!existsSync(/* turbopackIgnore: true */ join(dir, "template/findplate.json"))) {
-    const parent = join(dir, "..")
+  while (!existsSync(join(/* turbopackIgnore: true */ dir, "template/findplate.json"))) {
+    const parent = join(/* turbopackIgnore: true */ dir, "..")
     if (parent === dir) throw new Error("template/findplate.json not found above the docs folder")
     dir = parent
   }
