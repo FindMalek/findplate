@@ -13,11 +13,15 @@ export function OgCard({
   name,
   title,
   description,
+  command,
+  stats,
   colors,
 }: {
   name: string
   title: string
   description?: string
+  command?: string
+  stats?: string[]
   colors: OgColors
 }) {
   return (
@@ -50,7 +54,31 @@ export function OgCard({
           {description ? (
             <div style={{ fontSize: 32, lineHeight: 1.35, color: colors.muted, maxWidth: 900 }}>{description}</div>
           ) : null}
+          {command ? (
+            <div
+              style={{
+                display: "flex",
+                alignSelf: "flex-start",
+                padding: "14px 24px",
+                border: `2px solid ${colors.border}`,
+                fontSize: 30,
+                fontFamily: "monospace",
+              }}
+            >
+              <span style={{ color: colors.muted, marginRight: 14 }}>$</span>
+              {command}
+            </div>
+          ) : null}
         </div>
+        {stats ? (
+          <div style={{ display: "flex", gap: 40, fontSize: 24, fontFamily: "monospace", color: colors.muted }}>
+            {stats.map((stat) => (
+              <div key={stat} style={{ display: "flex" }}>
+                {stat}
+              </div>
+            ))}
+          </div>
+        ) : null}
       </div>
     </div>
   )
