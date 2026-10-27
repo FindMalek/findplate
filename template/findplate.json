@@ -29,10 +29,18 @@
       "packages": ["@acme/whatsapp", "@kapso/whatsapp-cloud-api"],
       "keys": [{ "env": "KAPSO_API_KEY", "label": "Kapso API key", "url": "https://app.kapso.ai" }]
     },
+    "webhooks": {
+      "label": "Webhooks",
+      "hint": "signature checks for inbound webhooks (hmac, svix, secret header)",
+      "default": false,
+      "paths": ["packages/webhooks"],
+      "packages": ["@acme/webhooks"]
+    },
     "telegram": {
       "label": "Telegram bot",
       "hint": "notify() to a chat, webhook route and setup command",
       "default": false,
+      "requires": ["webhooks"],
       "paths": ["packages/telegram", "packages/orpc/src/routers/telegram.ts"],
       "packages": ["@acme/telegram"],
       "keys": [
@@ -165,6 +173,13 @@
       "keys": [
         { "env": "NEXT_PUBLIC_DATABUDDY_CLIENT_ID", "label": "Databuddy client id", "url": "https://app.databuddy.cc" }
       ]
+    },
+    "rate-limit": {
+      "label": "Rate limiting",
+      "hint": "per route and ip limits on the api, in memory or on Upstash Redis",
+      "default": true,
+      "paths": ["apps/api/src/rate-limit.ts", "packages/orpc/src/lib/rate-limit.ts", "packages/orpc/src/lib/rate-limit.test.ts"],
+      "packages": []
     }
   }
 }

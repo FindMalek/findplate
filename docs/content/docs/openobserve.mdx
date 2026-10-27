@@ -1,0 +1,41 @@
+---
+title: OpenObserve
+description: Otel traces from the api.
+---
+
+The `openobserve` module sends OpenTelemetry traces from `apps/api` to your [OpenObserve](https://openobserve.ai) instance. It is off by default.
+
+```bash
+findplate create my-app --modules openobserve
+```
+
+## What it adds
+
+Files and folders:
+
+- `apps/api/src/openobserve.ts`
+
+Packages:
+
+- `@opentelemetry/api`
+- `@opentelemetry/sdk-node`
+- `@opentelemetry/exporter-trace-otlp-http`
+
+## Env keys
+
+```bash
+OPENOBSERVE_URL=
+OPENOBSERVE_ORG=default
+OPENOBSERVE_USER=
+OPENOBSERVE_PASSWORD=
+```
+
+`apps/api/src/openobserve.ts` starts the node sdk with an OTLP http exporter. Without `OPENOBSERVE_URL` it does nothing. A compose file is in [self-hosted tools](/docs/self-hosted#openobserve).
+
+## Remove
+
+Generate without it: leave `openobserve` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
+
+## Swap
+
+The exporter is plain OTLP over http, so any OTLP backend works. Change the exporter url and the `Authorization` header in `apps/api/src/openobserve.ts` to use Grafana Tempo, Honeycomb or similar.

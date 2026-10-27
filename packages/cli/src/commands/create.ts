@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync, rmSync } from "node:fs"
 import { join, resolve } from "node:path"
 import * as p from "@clack/prompts"
+import pkg from "../../package.json"
 import { applyAgents } from "../agents"
 import { CliError, EXIT } from "../errors"
 import { generate } from "../generate"
@@ -8,6 +9,7 @@ import { isValidSlug, toNames } from "../generate/rename"
 import { initRepo } from "../git"
 import { loadManifest } from "../manifest"
 import { templateDir } from "../paths"
+import { detectPackageManager, installCommand, pnpmHint, scriptCommand } from "../pm"
 import { listPresets } from "../presets"
 import { freePort, has, run } from "../run"
 import { installSkills, SKILLS_PACKAGE, skillPacks } from "../skills"
@@ -157,10 +159,13 @@ export async function create(flags: CreateFlags) {
   }
 
   const postgresPort = previous?.answers.postgresPort ?? (await freePort(5432))
-  const canInstall = flags.install && (await has("pnpm"))
+  const hasPnpm = await has("pnpm")
+  const canInstall = flags.install && hasPnpm
+  const pm = detectPackageManager()
   let admin = { adminEmail: previous?.answers.adminEmail ?? "", adminPassword: "" }
   const state: ProjectState = previous ?? {
     version: 1,
+    cliVersion: pkg.version,
     templateVersion: TEMPLATE_VERSION,
     answers: { name: names.slug, pitch, preset: preset.id, modules, postgresPort, adminEmail: "" },
     done: [],
@@ -193,6 +198,7 @@ export async function create(flags: CreateFlags) {
           if (entry !== ".findplate") rmSync(resolve(target, entry), { recursive: true, force: true })
       }
       admin = generate({
+        runner: (script) => scriptCommand(pm, script),
         templateDir: templateDir(),
         target,
         names,
@@ -269,14 +275,16 @@ export async function create(flags: CreateFlags) {
   p.note(
     [
       `${accent("cd")} ${names.slug}`,
-      ...(canInstall ? [] : [`${accent("pnpm")} install`]),
-      `${accent("pnpm")} db:up      ${dim(`postgres on :${postgresPort}`)}`,
-      `${accent("pnpm")} dev        ${dim("web :3000 · api :3001 · dashboard :3002")}`,
+      ...(canInstall ? [] : [accent(installCommand(pm))]),
+      `${accent(scriptCommand(pm, "db:up"))}  ${dim(`postgres on :${postgresPort}`)}`,
+      `${accent(scriptCommand(pm, "dev"))}  ${dim("web :3000 · api :3001 · dashboard :3002")}`,
       "",
       `dashboard admin  ${bold(admin.adminEmail)}`,
       `password         ${dim("ADMIN_PASSWORD in .env")}`,
     ].join("\n"),
     "Next",
   )
+  const hint = pnpmHint(hasPnpm)
+  if (hint) p.log.warn(hint)
   p.outro(`${names.title} is ready. Docs: ${accent("docs/")} in the project.`)
 }

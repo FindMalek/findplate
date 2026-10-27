@@ -1,0 +1,35 @@
+---
+title: Waitlist
+description: Email signup on the landing page.
+---
+
+The `waitlist` module adds an email form to the hero of `apps/web`, a `waitlist.join` procedure and a Waitlist page in the dashboard where admins see the signups. It is off by default.
+
+```bash
+findplate create my-app --modules waitlist
+```
+
+## What it adds
+
+Files and folders:
+
+- `packages/db/src/schema/waitlist.ts`
+- `packages/db/drizzle/0001_waitlist.sql`
+- `packages/db/drizzle/meta/0001_snapshot.json`
+- `packages/orpc/src/routers/waitlist.ts`
+- `apps/web/components/waitlist-form.tsx`
+- `apps/dashboard/app/(app)/waitlist`
+
+## Env keys
+
+None.
+
+Duplicates are ignored. It adds the `waitlist` table through the `0001_waitlist` migration, which is dropped with the module.
+
+## Remove
+
+Generate without it: leave `waitlist` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
+
+## Swap
+
+Signups live in your own database. To forward them to a mailing tool, call its api from `packages/orpc/src/routers/waitlist.ts` after the insert, or use the [email](/docs/email) module to send a confirmation.

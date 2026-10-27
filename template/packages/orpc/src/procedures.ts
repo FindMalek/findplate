@@ -1,14 +1,17 @@
 import { ORPCError, os } from "@orpc/server"
 import type { Context } from "./context"
+import { enforceRateLimit, RATE_LIMITS } from "./lib/rate-limit" // @findplate:rate-limit
 
 export const o = os.$context<Context>()
 
-/** Unexpected errors are logged with the procedure path; ORPCErrors are answers, not failures. */
-const logErrors = o.middleware(async ({ next, path }) => {
+/** Unexpected errors are logged with the procedure path; ORPCErrors are answers, not failures. Every call is rate limited per route and caller first. */
+const logErrors = o.middleware(async (options) => {
+  const route = options.path.join(".")
+  await enforceRateLimit(options.context, route, RATE_LIMITS.default) // @findplate:rate-limit
   try {
-    return await next()
+    return await options.next()
   } catch (error) {
-    if (!(error instanceof ORPCError)) console.error(`[${path.join(".")}]`, error)
+    if (!(error instanceof ORPCError)) console.error(`[${route}]`, error)
     throw error
   }
 })

@@ -5,6 +5,7 @@ import { runMigrations } from "@acme/db/migrate"
 import { seedDemo } from "@acme/db/seed"
 import { createMailer } from "@acme/email" // @findplate:email
 import { loadApiEnv } from "@acme/env/api"
+import { createRateLimiter } from "@acme/orpc" // @findplate:rate-limit
 import { createStorage } from "@acme/storage" // @findplate:storage
 import { createTelegram } from "@acme/telegram" // @findplate:telegram
 import { createWhatsApp } from "@acme/whatsapp" // @findplate:whatsapp
@@ -61,6 +62,12 @@ const fetch = createServer(
       webUrl: env.WEB_URL, // @findplate:status
       dashboardUrl: env.DASHBOARD_URL, // @findplate:status
     },
+    // @findplate:rate-limit
+    rateLimiter: createRateLimiter({
+      upstashUrl: env.UPSTASH_REDIS_REST_URL,
+      upstashToken: env.UPSTASH_REDIS_REST_TOKEN,
+    }),
+    // @end
     // @findplate:storage
     storage: createStorage({
       endpoint: env.S3_ENDPOINT,
