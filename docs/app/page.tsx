@@ -150,10 +150,9 @@ export default function HomePage() {
         </div>
         <dl className="relative grid grid-cols-2 divide-x border-t bg-background sm:grid-cols-4">
           {stats.map(([value, label], i) => (
-            <div key={label} className={`px-6 py-5 sm:px-8 ${i > 1 ? "max-sm:border-t" : ""}`}>
-              <dt className="sr-only">{label}</dt>
+            <div key={label} className={`flex flex-col-reverse px-6 py-5 sm:px-8 ${i > 1 ? "max-sm:border-t" : ""}`}>
+              <dt className="mt-1 text-muted-foreground text-xs">{label}</dt>
               <dd className="font-semibold text-2xl tracking-tight">{value}</dd>
-              <dd className="mt-1 text-muted-foreground text-xs">{label}</dd>
             </div>
           ))}
         </dl>

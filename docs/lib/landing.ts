@@ -1,8 +1,17 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs"
 import { join } from "node:path"
 
-/** The repo root. Docs always build from `docs/`, in the workspace and in docker. */
-const ROOT = join(process.cwd(), "..")
+function findRoot(): string {
+  let dir = process.cwd()
+  while (!existsSync(/* turbopackIgnore: true */ join(dir, "template/findplate.json"))) {
+    const parent = join(dir, "..")
+    if (parent === dir) throw new Error("template/findplate.json not found above the docs folder")
+    dir = parent
+  }
+  return dir
+}
+
+const ROOT = findRoot()
 
 /** Module ids whose docs page has another name. */
 const DOC_SLUGS: Record<string, string> = { docs: "docs-module", "rate-limit": "rate-limiting" }
