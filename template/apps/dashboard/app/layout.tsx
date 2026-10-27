@@ -4,6 +4,7 @@ import { Toaster } from "@acme/ui/components/sonner"
 import { TooltipProvider } from "@acme/ui/components/tooltip"
 import { cn } from "@acme/ui/lib/utils"
 import type { Metadata } from "next"
+import { Analytics } from "@/components/analytics" // @findplate:databuddy
 import { ThemeProvider } from "@/components/theme-provider"
 import { fontVariables } from "./fonts"
 
@@ -17,6 +18,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" suppressHydrationWarning className={cn("antialiased", fontVariables, "font-sans")}>
       <body className="bg-background text-foreground">
         <ThemeProvider>
+          {/* @findplate:databuddy */}
+          <Analytics />
+          {/* @end */}
           <QueryProvider>
             <TooltipProvider>{children}</TooltipProvider>
           </QueryProvider>

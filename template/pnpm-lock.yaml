@@ -21,6 +21,9 @@ catalogs:
     '@biomejs/biome':
       specifier: 2.5.15
       version: 2.5.15
+    '@databuddy/sdk':
+      specifier: 3.3.0
+      version: 3.3.0
     '@kapso/whatsapp-cloud-api':
       specifier: 0.4.0
       version: 0.4.0
@@ -225,6 +228,9 @@ importers:
       '@acme/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@databuddy/sdk':
+        specifier: 'catalog:'
+        version: 3.3.0(react@19.3.0)
       '@next/env':
         specifier: 'catalog:'
         version: 16.4.3
@@ -344,6 +350,9 @@ importers:
       '@acme/ui':
         specifier: workspace:*
         version: link:../../packages/ui
+      '@databuddy/sdk':
+        specifier: 'catalog:'
+        version: 3.3.0(react@19.3.0)
       '@next/env':
         specifier: 'catalog:'
         version: 16.4.3
@@ -1015,6 +1024,17 @@ packages:
     engines: {node: '>=14.21.3'}
     cpu: [x64]
     os: [win32]
+
+  '@databuddy/sdk@3.3.0':
+    resolution: {integrity: sha512-nsKdw2jEUUkjWjUBFW/obg3tUJkJP3OagqYFwWxrMwCuEnsRtLHdhXGxb7TQiMwxVQSC2RgILooXaGUAXarMLw==}
+    peerDependencies:
+      react: '>=18'
+      vue: '>=3'
+    peerDependenciesMeta:
+      react:
+        optional: true
+      vue:
+        optional: true
 
   '@dotenvx/dotenvx@1.75.1':
     resolution: {integrity: sha512-/BITOC9dmS/edY2zQwZNicQ059O6RKabtQfyEafV0nGtfYRNHYy1DIPiYVcov40+tob9hfmBnbR963dS+EQ1DQ==}
@@ -5429,6 +5449,10 @@ snapshots:
 
   '@biomejs/cli-win32-x64@2.5.15':
     optional: true
+
+  '@databuddy/sdk@3.3.0(react@19.3.0)':
+    optionalDependencies:
+      react: 19.3.0
 
   '@dotenvx/dotenvx@1.75.1':
     dependencies:

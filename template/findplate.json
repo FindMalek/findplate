@@ -74,6 +74,16 @@
           "url": "https://console.anthropic.com/settings/keys"
         }
       ]
+    },
+    "databuddy": {
+      "label": "Databuddy analytics",
+      "hint": "privacy first, cookieless analytics on web and dashboard",
+      "default": false,
+      "paths": ["apps/web/components/analytics.tsx", "apps/dashboard/components/analytics.tsx"],
+      "packages": ["@databuddy/sdk"],
+      "keys": [
+        { "env": "NEXT_PUBLIC_DATABUDDY_CLIENT_ID", "label": "Databuddy client id", "url": "https://app.databuddy.cc" }
+      ]
     }
   }
 }

@@ -13,6 +13,7 @@ Select modules with `--modules storage,ai,docs,email`, or in the prompt.
 | --- | --- | --- |
 | `storage` | on | `packages/storage`. Uploads to any S3 API: Garage, R2, AWS, MinIO |
 | `ai` | on | `packages/ai`. Vercel AI SDK with Groq, OpenAI or Anthropic |
+| `databuddy` | off | cookieless analytics in web and dashboard |
 | `whatsapp` | off | `packages/whatsapp`. `notify()` through Kapso template messages. [Details](/docs/whatsapp) |
 | `telegram` | off | `packages/telegram`. Bot with `notify()`, a webhook route and a setup command. [Details](/docs/telegram) |
 | `docs` | on | `apps/docs`. A fumadocs site on Next with pages about your project |
@@ -41,6 +42,20 @@ OPENAI_API_KEY=
 ANTHROPIC_API_KEY=
 ```
 
+### databuddy
+
+Create a website in [Databuddy](https://app.databuddy.cc) and set its client id. With the id empty nothing is tracked.
+
+```bash
+NEXT_PUBLIC_DATABUDDY_CLIENT_ID=
+```
+
+The `Analytics` component in `apps/web` and `apps/dashboard` renders the `@databuddy/sdk` script with web vitals on. `NEXT_PUBLIC_*` is inlined at `next build`, so pass the client id as a build arg in docker and dokploy too.
+
+## Coming
+
+- email with email-sdk and resend ([#11](https://github.com/FindMalek/findplate/issues/11))
+- telegram bot ([#12](https://github.com/FindMalek/findplate/issues/12)) and whatsapp via kapso ([#13](https://github.com/FindMalek/findplate/issues/13))
 ### docs
 
 `apps/docs` is a Next app on port 3003 that uses your preset's tokens and fonts. The pages are mdx in `apps/docs/content/docs`: setup, environment, structure, scripts and deploy, written for the generated project. Edit them like any other file. It has its own `Dockerfile` and reads `DOCS_URL`:
