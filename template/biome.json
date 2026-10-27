@@ -17,6 +17,8 @@
       "!.cursor",
       "!.zed",
       "!.agents",
+      "!.opencode",
+      "!.pi",
       "!.claude",
       "!skills-lock.json"
     ]
