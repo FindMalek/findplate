@@ -1,0 +1,51 @@
+---
+title: Why findplate
+description: The philosophy, what is in, what is out and why.
+---
+
+Most starters are a repo you clone, rename by hand and then spend a day cutting down. findplate is a generator instead: it copies a template, renames it, and removes everything you did not ask for, so what you get has no dead code and is yours from the first commit.
+
+## Philosophy
+
+- **Generate, then own it.** There is no runtime dependency on findplate. The output is a normal turborepo that you edit freely. The cli does not come back to update it.
+- **The minimum is real.** A project with no optional modules still builds, lints and passes its tests. CI generates every module alone, all of them together and none, and checks each.
+- **One way to do each thing.** One orm, one auth library, one rpc layer, one linter. Fewer choices means a template that stays tested.
+- **Optional means removable.** A module is a package, its env keys and the lines that use it. Turn it off and all three are gone, not hidden behind a flag.
+- **Keys are optional at runtime.** A missing key turns a feature off instead of crashing the app, so a fresh project always starts.
+
+## What is in
+
+- A turborepo with a landing page, a dashboard with login and an api
+- Next.js, oRPC on bun, better-auth, Drizzle on Postgres, shadcn, Tailwind
+- Biome for format and lint, strict TypeScript, security headers, one root `.env`
+- Design presets driven by shadcn tokens
+- Optional [modules](/docs/modules) for storage, AI, email, chat notifications, analytics, tracing, error tracking, secrets and public pages
+- Deploy paths for [Vercel or your own server](/docs/deploy), PR previews, and provisioning of the pieces around it
+
+## What is out
+
+- **A second choice of stack.** No Prisma, no tRPC, no Auth.js, no pages router. If you want one, findplate is the wrong tool.
+- **Payments, teams and billing.** Every product wants them different, and a half-built version costs more to remove than to write.
+- **A component library of its own.** UI is shadcn, in your repo, so you edit the components.
+- **Updates after generation.** Pull the changes you want from the repo by hand. A diff you read beats a migration you trust.
+- **Hosted services.** The modules that need a server (Umami, GlitchTip, Langfuse and the rest) point at an instance you run, with a [compose file](/docs/self-hosted) each.
+
+## Why these choices
+
+| Choice | Why |
+| --- | --- |
+| oRPC with a separate api app | One typed contract for the web, the dashboard and any other client, and only one app touches the database |
+| better-auth | Lives in your database and your code, no hosted tenant to depend on |
+| Drizzle | Plain SQL migrations you can read and a schema in TypeScript |
+| shadcn | You own the components, and presets are just tokens |
+| Biome | One fast tool for format and lint, so the CI step is seconds |
+| pnpm in the project, bun for the api | pnpm for strict, cacheable installs, bun for a fast api runtime |
+| Markers instead of templating | The template is real code that is type-checked and tested in this repo, not strings with holes |
+
+## Where to go next
+
+<Cards>
+  <Card title="Quickstart" href="/docs/quickstart">Generate a project.</Card>
+  <Card title="Modules" href="/docs/modules">What you can switch on.</Card>
+  <Card title="FAQ" href="/docs/faq">Common questions.</Card>
+</Cards>

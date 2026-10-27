@@ -1,0 +1,37 @@
+---
+title: Databuddy
+description: Cookieless analytics.
+---
+
+The `databuddy` module adds an `Analytics` component to `apps/web` and `apps/dashboard` that renders the `@databuddy/sdk` script with web vitals on. It is off by default.
+
+```bash
+findplate create my-app --modules databuddy
+```
+
+## What it adds
+
+Files and folders:
+
+- `apps/web/components/analytics.tsx`
+- `apps/dashboard/components/analytics.tsx`
+
+Packages:
+
+- `@databuddy/sdk`
+
+## Env keys
+
+```bash
+NEXT_PUBLIC_DATABUDDY_CLIENT_ID=
+```
+
+Create a website in [Databuddy](https://app.databuddy.cc) and set its client id. With the id empty nothing is tracked. `NEXT_PUBLIC_*` is inlined at `next build`, so pass it as a build arg in Docker and Dokploy.
+
+## Remove
+
+Generate without it: leave `databuddy` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
+
+## Swap
+
+Use [Umami](/docs/umami) for a self-hosted alternative. The two do not depend on each other.

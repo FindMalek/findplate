@@ -1,0 +1,52 @@
+---
+title: Updates
+description: Pull template improvements into an existing project with findplate update, and keep dependencies current.
+---
+
+A generated project is yours, so findplate never overwrites it silently. `findplate update` merges only what the template changed since your project was created.
+
+```bash
+npx findplate@latest update --dry-run
+npx findplate@latest update
+```
+
+## How it works
+
+`.findplate/state.json` records the findplate version, preset and modules the project was created with. On update, findplate:
+
+1. downloads the template of the recorded version from npm
+2. renders it, and the newest template, with your project's answers into temp folders
+3. compares each file in a three-way merge (`git merge-file`): your file, the old template, the new template
+
+| Situation | Result |
+| --- | --- |
+| the template did not change the file | left alone, even if you edited it |
+| you did not edit the file | replaced with the new template version |
+| you edited it and the template changed it too | merged, conflict markers where both touched the same lines |
+| the template removed a file you edited, or you deleted a file the template changed | left as it is and listed for you to resolve |
+| the template added a file | added |
+
+The project must be a clean git repository, so `git diff` shows exactly what moved and `git restore .` undoes it. `--force` skips that check.
+
+## Flags
+
+| Flag | Description |
+| --- | --- |
+| `[dir]` | project directory, defaults to the current one |
+| `--dry-run` | print the plan, change nothing |
+| `--force` | update even with uncommitted changes |
+| `--base-template <dir>` | template of the recorded version, instead of downloading it |
+
+After an update, run `pnpm install` and your checks. Projects created before the version was recorded need `--base-template`.
+
+## Dependencies
+
+Dependency versions live in the `pnpm-workspace.yaml` catalog. Update everything to the latest with:
+
+```bash
+pnpm bump-deps
+```
+
+## Update notice
+
+The cli checks the npm registry at most once a day and prints a line when a newer version exists. Nothing else is sent. Turn it off with `--no-update-check` or `FINDPLATE_NO_UPDATE_CHECK=1`. It is skipped in CI and when there is no terminal.

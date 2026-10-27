@@ -23,7 +23,7 @@ export default function HomePage() {
           {after}
         </h1>
         <div className="relative flex w-full justify-center">
-          <CopyCommand command={SITE.command} />
+          <CopyCommand />
         </div>
       </section>
 

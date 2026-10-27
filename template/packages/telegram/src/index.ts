@@ -1,4 +1,4 @@
-import { timingSafeEqual } from "node:crypto"
+import { verifySecretHeader } from "@acme/webhooks"
 
 export interface TelegramConfig {
   token?: string
@@ -45,9 +45,7 @@ export function createTelegram(config: TelegramConfig): Telegram | null {
       await call("sendMessage", { chat_id: chatId, text })
     },
     async handleWebhook(request) {
-      const sent = Buffer.from(request.headers.get("x-telegram-bot-api-secret-token") ?? "")
-      const expected = Buffer.from(webhookSecret ?? "")
-      if (!webhookSecret || sent.length !== expected.length || !timingSafeEqual(sent, expected)) {
+      if (!verifySecretHeader(request, "x-telegram-bot-api-secret-token", webhookSecret)) {
         return Response.json({ message: "Forbidden." }, { status: 403 })
       }
       const update = (await request.json().catch(() => null)) as TelegramUpdate | null

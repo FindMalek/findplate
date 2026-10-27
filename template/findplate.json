@@ -29,10 +29,18 @@
       "packages": ["@acme/whatsapp", "@kapso/whatsapp-cloud-api"],
       "keys": [{ "env": "KAPSO_API_KEY", "label": "Kapso API key", "url": "https://app.kapso.ai" }]
     },
+    "webhooks": {
+      "label": "Webhooks",
+      "hint": "signature checks for inbound webhooks (hmac, svix, secret header)",
+      "default": false,
+      "paths": ["packages/webhooks"],
+      "packages": ["@acme/webhooks"]
+    },
     "telegram": {
       "label": "Telegram bot",
       "hint": "notify() to a chat, webhook route and setup command",
       "default": false,
+      "requires": ["webhooks"],
       "paths": ["packages/telegram", "packages/orpc/src/routers/telegram.ts"],
       "packages": ["@acme/telegram"],
       "keys": [
