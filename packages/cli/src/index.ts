@@ -81,7 +81,6 @@ async function main() {
       force: { type: "boolean", default: false },
       json: { type: "boolean", default: false },
       "dry-run": { type: "boolean", default: false },
-      force: { type: "boolean", default: false },
       "base-template": { type: "string" },
       yes: { type: "boolean", short: "y", default: false },
       help: { type: "boolean", short: "h", default: false },
@@ -98,6 +97,8 @@ async function main() {
       dryRun: values["dry-run"],
       baseTemplate: values["base-template"],
       version: VERSION,
+    })
+  }
   const skip = shouldSkip({ flag: !values["update-check"], env: process.env, isTTY: Boolean(process.stderr.isTTY) })
   const latest = skip ? undefined : await checkForUpdate({ current: VERSION })
   if (latest) {
