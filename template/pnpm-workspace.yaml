@@ -20,7 +20,6 @@ catalog:
   "@opentelemetry/sdk-node": 0.300.0
   "@databuddy/sdk": 3.3.0
   "@kapso/whatsapp-cloud-api": 0.4.0
-  "@next/env": 16.4.3
   "@opencoredev/email-sdk": 3.0.1
   "@orpc/client": 1.15.7
   "@orpc/openapi": 1.15.7
