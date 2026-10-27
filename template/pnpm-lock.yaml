@@ -608,6 +608,10 @@ importers:
         version: 5.9.3
 
   packages/telegram:
+    dependencies:
+      '@acme/webhooks':
+        specifier: workspace:*
+        version: link:../webhooks
     devDependencies:
       '@acme/config':
         specifier: workspace:*
@@ -673,6 +677,18 @@ importers:
       tailwindcss:
         specifier: 'catalog:'
         version: 4.3.3
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
+  packages/webhooks:
+    devDependencies:
+      '@acme/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/bun':
+        specifier: 'catalog:'
+        version: 1.4.3
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
