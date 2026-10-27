@@ -30,6 +30,9 @@ test("enforceRateLimit counts per route and caller, and answers 429", async () =
   })
   await enforceRateLimit(caller("2.2.2.2"), "waitlist.join", rule)
   await enforceRateLimit(caller("1.1.1.1"), "public.status", rule)
+
+  const ssr = { rateLimiter, headers: new Headers(), session: null }
+  for (let call = 0; call < 5; call++) await enforceRateLimit(ssr, "public.repo", rule)
 })
 
 test("upstash limiter reads the counter and fails open when the call breaks", async () => {

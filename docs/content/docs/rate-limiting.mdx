@@ -19,7 +19,7 @@ findplate create my-app --modules rate-limit
 
 Over the limit an oRPC call answers `TOO_MANY_REQUESTS` (429) with `retryAfterMs` in `data`, and the auth route answers 429 with a `retry-after` header. The rules live in `RATE_LIMITS` in `packages/orpc/src/lib/rate-limit.ts`. To limit one procedure harder, call `enforceRateLimit(context, "route.name", rule)` at the top of its handler.
 
-The ip is the first hop of `x-forwarded-for`, so run the api behind a proxy that sets it (Dokploy, Vercel, Cloudflare do).
+The ip is the first hop of `x-forwarded-for`, so run the api behind a proxy that sets it (Dokploy, Vercel, Cloudflare do). Anonymous calls without an ip, like server components calling the api directly, are not counted.
 
 ## Backends
 

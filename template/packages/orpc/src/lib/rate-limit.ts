@@ -86,17 +86,21 @@ export function createRateLimiter(config: { upstashUrl?: string; upstashToken?: 
 }
 
 /** First hop of `x-forwarded-for`. Only trust it behind a proxy that sets it (Dokploy, Vercel, Cloudflare do). */
-export function clientIp(headers: Headers): string {
-  return headers.get("x-forwarded-for")?.split(",")[0]?.trim() || headers.get("x-real-ip") || "unknown"
+export function clientIp(headers: Headers): string | null {
+  return headers.get("x-forwarded-for")?.split(",")[0]?.trim() || headers.get("x-real-ip") || null
 }
 
-/** Counts a call per route and caller (user id when signed in, ip otherwise). Throws 429 when over the rule. */
+/**
+ * Counts a call per route and caller (user id when signed in, ip otherwise). Throws 429 when over the rule.
+ * Callers with neither, like server components calling the api directly, are not counted: they would share one bucket.
+ */
 export async function enforceRateLimit(
   caller: { rateLimiter: RateLimiter; headers: Headers; session: { user: { id: string } } | null },
   route: string,
   rule: RateLimitRule,
 ): Promise<void> {
   const who = caller.session?.user.id ?? clientIp(caller.headers)
+  if (!who) return
   const result = await caller.rateLimiter.hit(`${route}:${who}`, rule)
   if (!result.ok) {
     const seconds = Math.ceil(result.retryAfterMs / 1000)
