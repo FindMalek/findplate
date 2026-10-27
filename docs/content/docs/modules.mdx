@@ -13,6 +13,7 @@ Select modules with `--modules storage,ai`, or in the prompt.
 | --- | --- | --- |
 | `storage` | on | `packages/storage`. Uploads to any S3 API: Garage, R2, AWS, MinIO |
 | `ai` | on | `packages/ai`. Vercel AI SDK with Groq, OpenAI or Anthropic |
+| `databuddy` | off | cookieless analytics in web and dashboard |
 
 ### storage
 
@@ -37,10 +38,19 @@ OPENAI_API_KEY=
 ANTHROPIC_API_KEY=
 ```
 
+### databuddy
+
+Create a website in [Databuddy](https://app.databuddy.cc) and set its client id. With the id empty nothing is tracked.
+
+```bash
+NEXT_PUBLIC_DATABUDDY_CLIENT_ID=
+```
+
+The `Analytics` component in `apps/web` and `apps/dashboard` renders the `@databuddy/sdk` script with web vitals and error tracking on.
+
 ## Coming
 
 - email with email-sdk and resend ([#11](https://github.com/FindMalek/findplate/issues/11))
 - telegram bot ([#12](https://github.com/FindMalek/findplate/issues/12)) and whatsapp via kapso ([#13](https://github.com/FindMalek/findplate/issues/13))
 - waitlist, roadmap and status pages ([#14](https://github.com/FindMalek/findplate/issues/14))
-- analytics with databuddy ([#15](https://github.com/FindMalek/findplate/issues/15))
 - umami, openobserve, glitchtip, infisical and langfuse ([#20](https://github.com/FindMalek/findplate/issues/20))
