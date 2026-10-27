@@ -46,7 +46,7 @@ Create a website in [Databuddy](https://app.databuddy.cc) and set its client id.
 NEXT_PUBLIC_DATABUDDY_CLIENT_ID=
 ```
 
-The `Analytics` component in `apps/web` and `apps/dashboard` renders the `@databuddy/sdk` script with web vitals and error tracking on.
+The `Analytics` component in `apps/web` and `apps/dashboard` renders the `@databuddy/sdk` script with web vitals on. `NEXT_PUBLIC_*` is inlined at `next build`, so pass the client id as a build arg in docker and dokploy too.
 
 ## Coming
 
