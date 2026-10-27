@@ -42,6 +42,15 @@ const schema = z.object({
   WHATSAPP_TEMPLATE_NAME: z.string().default("app_notification"),
   WHATSAPP_TEMPLATE_LANGUAGE: z.string().default("en_US"),
   // @end
+  // @findplate:telegram
+  TELEGRAM_BOT_TOKEN: optional,
+  TELEGRAM_CHAT_ID: optional,
+  TELEGRAM_WEBHOOK_SECRET: optional,
+  // @end
+  // @findplate:email
+  RESEND_API_KEY: optional,
+  EMAIL_FROM: z.string().default("Acme <onboarding@resend.dev>"),
+  // @end
 
   // @findplate:ai
   AI_MODEL: z.string().default("groq:openai/gpt-oss-120b"),

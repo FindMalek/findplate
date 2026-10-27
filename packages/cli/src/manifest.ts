@@ -8,6 +8,12 @@ export interface ModuleKey {
   url: string
 }
 
+/** Public skills from one repo, installed with the skills cli. */
+export interface SkillPack {
+  source: string
+  skills: string[]
+}
+
 export interface ModuleSpec {
   label: string
   hint: string
@@ -17,11 +23,13 @@ export interface ModuleSpec {
   /** Dependencies to drop from every package.json and the pnpm catalog when the module is off. */
   packages: string[]
   keys?: ModuleKey[]
+  skills?: SkillPack[]
 }
 
 export interface Manifest {
   name: string
   scope: string
+  skills: SkillPack[]
   modules: Record<string, ModuleSpec>
 }
 
