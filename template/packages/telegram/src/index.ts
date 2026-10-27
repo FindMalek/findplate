@@ -1,6 +1,8 @@
+import { timingSafeEqual } from "node:crypto"
+
 export interface TelegramConfig {
   token?: string
-  /** Where `notify` sends to. Find it with `/start` (see `pnpm --filter @acme/telegram setup`). */
+  /** Where `notify` sends to. Find it with `/start` (see `pnpm --filter @acme/telegram telegram:setup`). */
   chatId?: string
   /** Sent back by Telegram in `X-Telegram-Bot-Api-Secret-Token` on every webhook call. */
   webhookSecret?: string
@@ -43,16 +45,19 @@ export function createTelegram(config: TelegramConfig): Telegram | null {
       await call("sendMessage", { chat_id: chatId, text })
     },
     async handleWebhook(request) {
-      if (!webhookSecret || request.headers.get("x-telegram-bot-api-secret-token") !== webhookSecret) {
+      const sent = Buffer.from(request.headers.get("x-telegram-bot-api-secret-token") ?? "")
+      const expected = Buffer.from(webhookSecret ?? "")
+      if (!webhookSecret || sent.length !== expected.length || !timingSafeEqual(sent, expected)) {
         return Response.json({ message: "Forbidden." }, { status: 403 })
       }
       const update = (await request.json().catch(() => null)) as TelegramUpdate | null
       const message = update?.message
       if (message?.text?.startsWith("/start")) {
+        // A 500 makes Telegram retry the same update, so a failed reply is logged and acknowledged.
         await call("sendMessage", {
           chat_id: message.chat.id,
           text: `Your chat id is ${message.chat.id}. Set TELEGRAM_CHAT_ID to it to get notifications here.`,
-        })
+        }).catch((error) => console.error("[telegram] reply failed", error))
       }
       return Response.json({ ok: true })
     },

@@ -22,6 +22,9 @@ if (description) await bot.call("setMyDescription", { description })
 let chatId = process.env.TELEGRAM_CHAT_ID
 if (!chatId) {
   await bot.call("deleteWebhook")
+  console.info(
+    "Removed the current webhook so updates can be read; it is registered again below if API_PUBLIC_URL is https.",
+  )
   console.info(`Send /start to @${me.username} (waiting up to 2 minutes)...`)
   const deadline = Date.now() + 120_000
   let offset: number | undefined
