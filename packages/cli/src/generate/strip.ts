@@ -1,11 +1,11 @@
-const START = /^\s*(?:\/\/|#|\{\/\*)\s*@findplate:([\w-]+)\s*(?:\*\/\})?\s*$/
-const END = /^\s*(?:\/\/|#|\{\/\*)\s*@end\s*(?:\*\/\})?\s*$/
+const START = /^\s*(?:\/\/|#|\{\/\*|<!--)\s*@findplate:([\w-]+)\s*(?:\*\/\}|-->)?\s*$/
+const END = /^\s*(?:\/\/|#|\{\/\*|<!--)\s*@end\s*(?:\*\/\}|-->)?\s*$/
 /** One line owned by a module: `import { x } from "y" // @findplate:ai`. Import sorting keeps these attached. */
 const INLINE = /^(.*\S)\s*\/\/\s*@findplate:([\w-]+)\s*$/
 
 /**
  * Keeps the code inside `@findplate:<module>` … `@end` markers when the module is enabled and drops it when not.
- * The marker lines themselves always go. Markers can be `//`, `#` or `{/* … *\/}` comments; they don't nest. A
+ * The marker lines themselves always go. Markers can be `//`, `#`, `{/* … *\/}` or `<!-- … -->` comments; they don't nest. A
  * trailing `// @findplate:<module>` marks a single line instead.
  */
 export function stripModules(source: string, enabled: ReadonlySet<string>): string {

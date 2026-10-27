@@ -10,9 +10,11 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@acme/common": "workspace:*",
     "@acme/env": "workspace:*",
     "@acme/orpc": "workspace:*",
     "@acme/ui": "workspace:*",
+    "@databuddy/sdk": "catalog:",
     "@next/env": "catalog:",
     "@tanstack/react-query": "catalog:",
     "lucide-react": "catalog:",

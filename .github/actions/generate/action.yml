@@ -34,7 +34,7 @@ runs:
       env:
         MODULES: ${{ inputs.modules }}
         TARGET: ${{ inputs.dir }}
-      run: node packages/cli/dist/index.js create "$TARGET" --name acme -y --no-git --no-install --modules "$MODULES"
+      run: node packages/cli/dist/index.js create "$TARGET" --name acme -y --no-git --no-install --no-skills --modules "$MODULES"
     - name: Install the project
       shell: bash
       working-directory: ${{ inputs.dir }}

@@ -4,15 +4,26 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { generate } from "../src/generate"
 import { buildEnv } from "../src/generate/env"
+import { ogColors } from "../src/generate/og"
 import { renameProject, toNames } from "../src/generate/rename"
 import { stripModules } from "../src/generate/strip"
 import { presetsDir, templateDir } from "../src/paths"
 import { listPresets } from "../src/presets"
 
 test("module blocks stay when enabled and disappear when not, markers always go", () => {
-  const source = ["a", "// @findplate:ai", "b", "// @end", "{/* @findplate:storage */}", "c", "{/* @end */}", "d"].join(
-    "\n",
-  )
+  const source = [
+    "a",
+    "// @findplate:ai",
+    "b",
+    "// @end",
+    "{/* @findplate:storage */}",
+    "c",
+    "{/* @end */}",
+    "<!-- @findplate:docs -->",
+    "e",
+    "<!-- @end -->",
+    "d",
+  ].join("\n")
   expect(stripModules(source, new Set(["ai"]))).toBe("a\nb\nd")
   expect(stripModules(source, new Set())).toBe("a\nd")
   expect(stripModules('import { a } from "a" // @findplate:ai\nb', new Set(["ai"]))).toBe('import { a } from "a"\nb')
@@ -27,6 +38,13 @@ test("names: scope, titles, and postgres-safe identifiers only in db files", () 
     'import "@my-cool-app/ui"; // My Cool App my-cool-app',
   )
   expect(renameProject("POSTGRES_USER: acme", "docker/docker-compose.yml", names)).toBe("POSTGRES_USER: my_cool_app")
+})
+
+test("og colors come from the preset tokens, blending translucent borders", () => {
+  const css = readFileSync(join(presetsDir(), "monochrome", "theme.css"), "utf8")
+  expect(ogColors(css, "dark")).toMatchObject({ background: "#0a0a0a", foreground: "#fafafa" })
+  expect(ogColors(css, "dark").border).toMatch(/^#[0-9a-f]{6}$/)
+  expect(ogColors(css, "light").background).toBe("#ffffff")
 })
 
 test("env keeps example defaults and fills the values it's given", () => {
@@ -55,7 +73,7 @@ describe("generate", () => {
   }
 
   test("with every module: no template names or markers left, env filled", () => {
-    const { target } = make(["storage", "ai"])
+    const { target } = make(["storage", "ai", "whatsapp", "telegram", "docs", "email"])
     for (const file of files(target)) {
       if (statSync(file).size > 2_000_000 || /\.(ico|png)$/.test(file)) continue
       const text = readFileSync(file, "utf8")
@@ -88,6 +106,15 @@ describe("generate", () => {
       ).entries.map((entry: { tag: string }) => entry.tag)
     expect(tags(["waitlist"])).toEqual(["0000_init", "0001_waitlist"])
     expect(tags([])).toEqual(["0000_init"])
+  test("docs module: only with --modules docs, with the preset fonts, pitch and env url", () => {
+    const on = make(["docs"]).target
+    expect(readFileSync(join(on, "apps/docs/lib/site.ts"), "utf8")).toContain('tagline: "Demo pitch"')
+    expect(readFileSync(join(on, "apps/docs/app/fonts.ts"), "utf8")).toContain("IBM_Plex_Sans")
+    expect(readFileSync(join(on, ".env.example"), "utf8")).toContain("DOCS_URL=")
+    const off = make([]).target
+    expect(existsSync(join(off, "apps/docs"))).toBe(false)
+    expect(readFileSync(join(off, "pnpm-workspace.yaml"), "utf8")).not.toContain("fumadocs")
+    expect(readFileSync(join(off, ".env.example"), "utf8")).not.toContain("DOCS_URL")
   })
 
   test.each(listPresets().map((p) => p.id))("preset %s: tokens, fonts and theme land, nothing left over", (id) => {

@@ -1,8 +1,14 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 
-export const STEPS = ["generate", "install", "format", "git"] as const
+export const STEPS = ["generate", "agents", "skills", "install", "format", "git", "github"] as const
 export type Step = (typeof STEPS)[number]
+
+/** Progress of `findplate github`: finished plan steps and what they captured (project number and such). */
+export interface GithubState {
+  done: string[]
+  vars: Record<string, string>
+}
 
 export interface ProjectState {
   version: 1
@@ -15,6 +21,7 @@ export interface ProjectState {
     adminEmail: string
   }
   done: Step[]
+  github?: GithubState
 }
 
 export const statePath = (dir: string) => join(dir, ".findplate", "state.json")

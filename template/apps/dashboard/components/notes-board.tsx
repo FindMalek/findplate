@@ -1,5 +1,6 @@
 "use client"
 
+import { NOTE_TITLE_MAX } from "@acme/common/constants"
 import { errorMessage } from "@acme/orpc/errors"
 import { orpc } from "@acme/orpc/react"
 import { Button } from "@acme/ui/components/button"
@@ -51,7 +52,7 @@ export function NotesBoard() {
             <FieldGroup>
               <Field>
                 <FieldLabel htmlFor="title">Title</FieldLabel>
-                <Input id="title" name="title" required maxLength={120} />
+                <Input id="title" name="title" required maxLength={NOTE_TITLE_MAX} />
               </Field>
               <Field>
                 <FieldLabel htmlFor="body">Body</FieldLabel>

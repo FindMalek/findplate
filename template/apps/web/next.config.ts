@@ -18,7 +18,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   output: "standalone",
   outputFileTracingRoot: root,
-  transpilePackages: ["@acme/ui", "@acme/orpc"],
+  transpilePackages: ["@acme/ui", "@acme/orpc", "@acme/common"],
   poweredByHeader: false,
   typedRoutes: true,
   headers: async () => [{ source: "/:path*", headers: securityHeaders }],

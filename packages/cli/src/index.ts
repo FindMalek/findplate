@@ -4,6 +4,7 @@ import * as p from "@clack/prompts"
 import pkg from "../package.json"
 import { configCommand } from "./commands/config"
 import { create } from "./commands/create"
+import { github } from "./commands/github"
 import { provisionCommand } from "./commands/provision"
 
 const VERSION = pkg.version
@@ -12,6 +13,7 @@ const HELP = `findplate: create a production-ready full-stack project
 
 Usage
   findplate create [dir] [options]   re-run in an unfinished project to resume it
+  findplate github [dir] [options]   create the repo, board, labels and rules on GitHub (idempotent)
   findplate config [list|get|set|unset|path] [key] [value]
   findplate provision <dokploy|s3|dns|turbo|backup|all> [--dry-run]   see provision --help
 
@@ -19,12 +21,25 @@ Options
   --name <name>        project name (defaults to dir)
   --pitch <text>       one-line pitch for the landing page
   --preset <id>        design preset (monochrome, …)
-  --modules <a,b>      optional modules to include (storage, ai); empty for none
+  --modules <a,b>      optional modules to include (storage, ai, docs); empty for none
   --no-install         skip pnpm install
   --no-git             skip git init
+  --no-agents          skip generating agent rules (ruler)
+  --no-skills          skip installing the recommended public skills
+  --github / --no-github  create the GitHub repo and board after the first commit
   -y, --yes            no prompts, use defaults (for scripts and coding agents)
   -h, --help           show this help
-  -v, --version        show the version`
+  -v, --version        show the version
+
+GitHub options (findplate github)
+  --dry-run            print the plan, change nothing
+  --owner <name>       user or org (defaults to config githubOwner, then your gh login)
+  --public             public repo (default private)
+  --homepage <url>     repo homepage
+  --no-project         skip the project board
+  --project-token      store your gh token as the PROJECT_TOKEN secret (a scoped pat is safer)
+  --project-template <owner/number>
+                       copy this project as the board instead of building the Status column`
 
 async function main() {
   if (process.argv[2] === "provision") return provisionCommand(process.argv.slice(3))
@@ -38,6 +53,16 @@ async function main() {
       modules: { type: "string" },
       install: { type: "boolean", default: true },
       git: { type: "boolean", default: true },
+      agents: { type: "boolean", default: true },
+      skills: { type: "boolean", default: true },
+      github: { type: "boolean" },
+      owner: { type: "string" },
+      homepage: { type: "string" },
+      public: { type: "boolean", default: false },
+      project: { type: "boolean", default: true },
+      "project-token": { type: "boolean", default: false },
+      "project-template": { type: "string" },
+      "dry-run": { type: "boolean", default: false },
       yes: { type: "boolean", short: "y", default: false },
       help: { type: "boolean", short: "h", default: false },
       version: { type: "boolean", short: "v", default: false },
@@ -47,6 +72,18 @@ async function main() {
   const [command = "create", dir] = positionals
   if (values.help) return console.info(HELP)
   if (command === "config") return configCommand(positionals.slice(1))
+  if (command === "github") {
+    return github({
+      dir,
+      owner: values.owner,
+      homepage: values.homepage,
+      public: values.public,
+      project: values.project,
+      projectTemplate: values["project-template"],
+      projectToken: values["project-token"],
+      dryRun: values["dry-run"],
+    })
+  }
   if (command !== "create") {
     console.error(`Unknown command "${command}"\n\n${HELP}`)
     process.exit(1)
@@ -59,6 +96,15 @@ async function main() {
     modules: values.modules,
     install: values.install,
     git: values.git,
+    agents: values.agents,
+    skills: values.skills,
+    github: values.github,
+    owner: values.owner,
+    homepage: values.homepage,
+    public: values.public,
+    project: values.project,
+    projectTemplate: values["project-template"],
+    projectToken: values["project-token"],
     yes: values.yes,
   })
 }
