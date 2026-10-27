@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync, rmSync } from "node:fs"
 import { join, resolve } from "node:path"
 import * as p from "@clack/prompts"
+import pkg from "../../package.json"
 import { applyAgents } from "../agents"
 import { generate } from "../generate"
 import { isValidSlug, toNames } from "../generate/rename"
@@ -158,6 +159,7 @@ export async function create(flags: CreateFlags) {
   let admin = { adminEmail: previous?.answers.adminEmail ?? "", adminPassword: "" }
   const state: ProjectState = previous ?? {
     version: 1,
+    cliVersion: pkg.version,
     answers: { name: names.slug, pitch, preset: preset.id, modules, postgresPort, adminEmail: "" },
     done: [],
   }

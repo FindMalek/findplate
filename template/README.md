@@ -82,6 +82,7 @@ acme/
 | `pnpm test` | tests in every package |
 | `pnpm db:generate` / `db:migrate` / `db:seed` / `db:studio` | drizzle |
 | `pnpm ui:add <component>` | add a shadcn component |
+| `pnpm bump-deps` | update every dependency, catalog included, to the latest version |
 
 ---
 
