@@ -1,0 +1,11 @@
+{
+  "label": "Soft",
+  "description": "Pastel orchid and mint, very round corners, Nunito and Quicksand. Gentle and playful.",
+  "shadcn": { "style": "base-maia", "baseColor": "zinc" },
+  "defaultTheme": "light",
+  "fonts": {
+    "sans": { "family": "Nunito" },
+    "mono": { "family": "DM_Mono", "weight": ["400", "500"] },
+    "heading": { "family": "Quicksand" }
+  }
+}

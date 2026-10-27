@@ -1,0 +1,11 @@
+{
+  "label": "Editorial",
+  "description": "Ink on paper with a single red accent, near-square corners, Playfair headings. Print feel.",
+  "shadcn": { "style": "base-mira", "baseColor": "neutral" },
+  "defaultTheme": "light",
+  "fonts": {
+    "sans": { "family": "Source_Sans_3" },
+    "mono": { "family": "IBM_Plex_Mono", "weight": ["400", "500"] },
+    "heading": { "family": "Playfair_Display" }
+  }
+}
