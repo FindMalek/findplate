@@ -12,7 +12,10 @@ test("renders a template and posts it to resend", async () => {
     }) as unknown as typeof fetch,
   })
 
-  const result = await mailer?.send("verifyEmail", "ada@example.com", { name: "Ada", url: "https://app.test/verify?t=1" })
+  const result = await mailer?.send("verifyEmail", "ada@example.com", {
+    name: "Ada",
+    url: "https://app.test/verify?t=1",
+  })
 
   expect(result).toEqual({ id: "msg_1" })
   expect(sent[0]?.url).toContain("resend.com")

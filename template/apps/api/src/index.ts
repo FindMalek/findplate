@@ -1,9 +1,9 @@
 import { resolveModel } from "@acme/ai" // @findplate:ai
 import { createAuth } from "@acme/auth"
-import { createMailer } from "@acme/email" // @findplate:email
 import { createDb } from "@acme/db"
 import { runMigrations } from "@acme/db/migrate"
 import { seedDemo } from "@acme/db/seed"
+import { createMailer } from "@acme/email" // @findplate:email
 import { loadApiEnv } from "@acme/env/api"
 import { createStorage } from "@acme/storage" // @findplate:storage
 import { ensureAdmin } from "./admin"
@@ -28,7 +28,9 @@ const auth = createAuth({
       : undefined,
   secureCookies: env.NODE_ENV === "production",
   // @findplate:email
-  sendVerification: mailer ? (user, url) => mailer.send("verifyEmail", user.email, { name: user.name, url }) : undefined,
+  sendVerification: mailer
+    ? (user, url) => mailer.send("verifyEmail", user.email, { name: user.name, url })
+    : undefined,
   sendResetPassword: mailer
     ? (user, url) => mailer.send("resetPassword", user.email, { name: user.name, url })
     : undefined,

@@ -46,7 +46,12 @@ export const templates = {
   magicLink: {
     subject: "Your sign-in link",
     render: ({ url }) => (
-      <LinkTemplate title="Sign in" intro="Use the button below to sign in. The link works once." cta="Sign in" url={url} />
+      <LinkTemplate
+        title="Sign in"
+        intro="Use the button below to sign in. The link works once."
+        cta="Sign in"
+        url={url}
+      />
     ),
   },
 } satisfies Record<string, Template>
