@@ -6,6 +6,7 @@ import {
   readdirSync,
   readFileSync,
   rmSync,
+  statSync,
   unlinkSync,
   writeFileSync,
 } from "node:fs"
@@ -132,7 +133,7 @@ export async function update(flags: UpdateFlags) {
         if (merged.conflicts) conflicts.add(file)
       }
       mkdirSync(dirname(path), { recursive: true })
-      writeFileSync(path, content)
+      writeFileSync(path, content, { mode: statSync(join(next, file)).mode })
     }
 
     const verb = flags.dryRun ? "would be" : "were"
