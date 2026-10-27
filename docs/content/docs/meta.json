@@ -8,7 +8,11 @@
     "presets",
     "theming",
     "deploy",
+<<<<<<< HEAD
     "previews",
+=======
+    "provision",
+>>>>>>> origin/8-dokploy-s3-dns-and-turbo-cache
     "agents",
     "ci"
   ]

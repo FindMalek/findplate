@@ -4,6 +4,7 @@ import * as p from "@clack/prompts"
 import pkg from "../package.json"
 import { configCommand } from "./commands/config"
 import { create } from "./commands/create"
+import { provisionCommand } from "./commands/provision"
 
 const VERSION = pkg.version
 
@@ -12,6 +13,7 @@ const HELP = `findplate: create a production-ready full-stack project
 Usage
   findplate create [dir] [options]   re-run in an unfinished project to resume it
   findplate config [list|get|set|unset|path] [key] [value]
+  findplate provision <dokploy|s3|dns|turbo|backup|all> [--dry-run]   see provision --help
 
 Options
   --name <name>        project name (defaults to dir)
@@ -25,6 +27,7 @@ Options
   -v, --version        show the version`
 
 async function main() {
+  if (process.argv[2] === "provision") return provisionCommand(process.argv.slice(3))
   const { values, positionals } = parseArgs({
     allowPositionals: true,
     allowNegative: true,
