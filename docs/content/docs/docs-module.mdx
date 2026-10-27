@@ -1,0 +1,39 @@
+---
+title: Docs site
+description: A fumadocs site inside your project.
+---
+
+The `docs` module adds `apps/docs`, a Next app on port 3003 that uses your preset's tokens and fonts. It is on by default.
+
+```bash
+findplate create my-app --modules docs
+```
+
+## What it adds
+
+Files and folders:
+
+- `apps/docs`
+
+Packages:
+
+- `fumadocs-core`
+- `fumadocs-mdx`
+- `fumadocs-ui`
+- `@types/mdx`
+
+## Env keys
+
+```bash
+DOCS_URL=http://localhost:3003
+```
+
+The pages are mdx in `apps/docs/content/docs`: setup, environment, structure, scripts and deploy, written for the generated project. Edit them like any other file. It has its own `Dockerfile`.
+
+## Remove
+
+Generate without it: leave `docs` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
+
+## Swap
+
+The content is plain mdx with fumadocs, so move it to any docs tool that reads mdx.

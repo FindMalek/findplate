@@ -43,3 +43,11 @@ With a key set, better-auth sends the verification email on sign up and the rese
 ## Test it
 
 `POST /v1/email/test` with `{ "to": "you@example.com" }` as an admin sends a test message.
+
+## Remove
+
+Generate without it: leave `email` out of `--modules`. In an existing project delete `packages/email` and `packages/orpc/src/routers/email.ts`, drop `@acme/email`, `@opencoredev/email-sdk` and `@react-email/render`, remove the Resend block from `.env` and fix what `pnpm check-types` reports. better-auth then stops sending verification and reset mail.
+
+## Swap
+
+`email-sdk` is provider agnostic. To use another provider than Resend, swap the provider in `packages/email/src` and the key in `.env`. Templates stay as they are.

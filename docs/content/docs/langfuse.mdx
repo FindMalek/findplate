@@ -1,0 +1,40 @@
+---
+title: Langfuse
+description: LLM tracing for the ai module.
+---
+
+The `langfuse` module sends traces of AI SDK calls to [Langfuse](https://langfuse.com), cloud or self-hosted. It requires the [`ai`](/docs/ai) module, which the cli turns on for you. It is off by default.
+
+```bash
+findplate create my-app --modules langfuse
+```
+
+## What it adds
+
+Files and folders:
+
+- `apps/api/src/langfuse.ts`
+
+Packages:
+
+- `@langfuse/otel`
+- `@langfuse/vercel-ai-sdk`
+- `@opentelemetry/sdk-node`
+
+## Env keys
+
+```bash
+LANGFUSE_PUBLIC_KEY=
+LANGFUSE_SECRET_KEY=
+LANGFUSE_BASE_URL=https://cloud.langfuse.com
+```
+
+`apps/api/src/langfuse.ts` registers the OpenTelemetry span processor. Without the keys nothing is sent. A compose file is in [self-hosted tools](/docs/self-hosted#langfuse).
+
+## Remove
+
+Generate without it: leave `langfuse` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
+
+## Swap
+
+Point `LANGFUSE_BASE_URL` at your own instance.

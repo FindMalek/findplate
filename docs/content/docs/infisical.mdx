@@ -1,0 +1,30 @@
+---
+title: Infisical
+description: Secrets for dev through the infisical cli.
+---
+
+The `infisical` module adds `.infisical.json` and a `pnpm dev:secrets` script (`infisical run --env=dev -- turbo dev`) that runs the dev servers with secrets from your [Infisical](https://infisical.com) instance instead of a local `.env`. It is off by default.
+
+```bash
+findplate create my-app --modules infisical
+```
+
+## What it adds
+
+Files and folders:
+
+- `.infisical.json`
+
+## Env keys
+
+None.
+
+Install the cli, run `infisical login`, then `infisical init` to fill the workspace id in `.infisical.json`. `pnpm dev` still reads the root `.env`. A compose file is in [self-hosted tools](/docs/self-hosted#infisical).
+
+## Remove
+
+Generate without it: leave `infisical` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
+
+## Swap
+
+To use another secrets manager, change the `dev:secrets` script in `package.json` to its runner, for example `doppler run -- turbo dev`.
