@@ -12,6 +12,8 @@ export interface GithubState {
 
 export interface ProjectState {
   version: 1
+  /** findplate version that generated (or last updated) the project; `findplate update` merges from it. */
+  cliVersion?: string
   answers: {
     name: string
     pitch: string
@@ -21,6 +23,8 @@ export interface ProjectState {
     adminEmail: string
   }
   done: Step[]
+  /** Template version the project was generated from, updated by `findplate add`. Absent in older projects. */
+  templateVersion?: string
   github?: GithubState
 }
 

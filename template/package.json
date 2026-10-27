@@ -18,6 +18,7 @@
     "db:migrate": "turbo db:migrate -F @acme/db",
     "db:seed": "turbo db:seed -F @acme/db",
     "db:studio": "turbo db:studio -F @acme/db",
+    "bump-deps": "pnpm update --recursive --latest",
     "ui:add": "pnpm --filter @acme/ui exec shadcn add"
   },
   "devDependencies": {
