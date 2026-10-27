@@ -6,6 +6,8 @@ import { configCommand } from "./commands/config"
 import { create } from "./commands/create"
 import { github } from "./commands/github"
 import { provisionCommand } from "./commands/provision"
+import { accent, dim } from "./ui"
+import { checkForUpdate, shouldSkip } from "./update-check"
 
 const VERSION = pkg.version
 
@@ -26,6 +28,7 @@ Options
   --no-git             skip git init
   --no-agents          skip generating agent rules (ruler)
   --no-skills          skip installing the recommended public skills
+  --no-update-check    skip the once-a-day check for a newer findplate (or set FINDPLATE_NO_UPDATE_CHECK)
   --github / --no-github  create the GitHub repo and board after the first commit
   -y, --yes            no prompts, use defaults (for scripts and coding agents)
   -h, --help           show this help
@@ -55,6 +58,7 @@ async function main() {
       git: { type: "boolean", default: true },
       agents: { type: "boolean", default: true },
       skills: { type: "boolean", default: true },
+      "update-check": { type: "boolean", default: true },
       github: { type: "boolean" },
       owner: { type: "string" },
       homepage: { type: "string" },
@@ -71,6 +75,11 @@ async function main() {
   if (values.version) return console.info(VERSION)
   const [command = "create", dir] = positionals
   if (values.help) return console.info(HELP)
+  const skip = shouldSkip({ flag: !values["update-check"], env: process.env, isTTY: Boolean(process.stderr.isTTY) })
+  const latest = skip ? undefined : await checkForUpdate({ current: VERSION })
+  if (latest) {
+    console.error(`${dim(`findplate ${VERSION} is behind ${latest}. Run`)} ${accent("npx findplate@latest")}\n`)
+  }
   if (command === "config") return configCommand(positionals.slice(1))
   if (command === "github") {
     return github({
