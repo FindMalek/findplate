@@ -26,11 +26,12 @@ Each module has a page with what it adds, its env keys, how to remove it and how
 | [`databuddy`](/docs/databuddy) | off | cookieless analytics in web and dashboard |
 | [`whatsapp`](/docs/whatsapp) | off | `packages/whatsapp`. `notify()` through Kapso template messages. |
 | [`telegram`](/docs/telegram) | off | `packages/telegram`. Bot with `notify()`, a webhook route and a setup command. |
+| [`webhooks`](/docs/webhooks) | off | `packages/webhooks`. Signature checks for inbound webhooks: hmac, svix, secret header. |
 | [`docs`](/docs/docs-module) | on | `apps/docs`. A fumadocs site on Next with pages about your project |
 | [`email`](/docs/email) | off | `packages/email`. react-email templates sent through email-sdk and Resend. |
 
 ## Dependencies between modules
 
-`langfuse` requires `ai`. The cli turns required modules on for you, so `--modules langfuse` generates `ai,langfuse`.
+`langfuse` requires `ai`, and `telegram` requires `webhooks`. The cli turns required modules on for you, so `--modules langfuse` generates `ai,langfuse`.
 
 The self-hosted ones (umami, openobserve, glitchtip, infisical, langfuse) also have a compose snippet each in [self-hosted tools](/docs/self-hosted).

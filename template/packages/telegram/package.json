@@ -11,6 +11,9 @@
     "test": "bun test --pass-with-no-tests",
     "telegram:setup": "bun --env-file=../../.env src/setup.ts"
   },
+  "dependencies": {
+    "@acme/webhooks": "workspace:*"
+  },
   "devDependencies": {
     "@acme/config": "workspace:*",
     "@types/bun": "catalog:",

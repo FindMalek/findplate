@@ -1,0 +1,32 @@
+---
+title: Webhooks
+description: Verify inbound webhooks with hmac, svix or a secret header.
+---
+
+The `webhooks` module adds `packages/webhooks`, small helpers to check that a request really came from the provider. It has no dependencies and is off by default. The `telegram` module needs it, so picking telegram turns it on.
+
+```bash
+findplate create my-app --modules webhooks
+```
+
+## Helpers
+
+All helpers compare in constant time and return a boolean. Verify the raw body text, not re-serialized json.
+
+| Helper | Style |
+| --- | --- |
+| `verifySecretHeader(request, header, secret)` | the provider sends your secret as-is in a header (Telegram) |
+| `verifyHmac({ secret, body, signature })` | hmac sha256 of the body, hex or base64, optional `sha256=` prefix (GitHub) |
+| `verifyTimestamped({ secret, body, signature, timestamp })` | hmac of `<timestamp>.<body>`, rejects anything outside `toleranceSeconds` (default 300) |
+| `verifySvix({ secret, headers, body })` | svix style headers `svix-id`, `svix-timestamp`, `svix-signature` with a `whsec_` secret |
+
+```ts
+import { verifySvix } from "@acme/webhooks"
+
+const body = await request.text()
+if (!verifySvix({ secret: env.RESEND_WEBHOOK_SECRET, headers: request.headers, body })) {
+  return Response.json({ message: "Forbidden." }, { status: 403 })
+}
+```
+
+Add the route in `apps/api/src/server.ts` next to the others, the way `/telegram/webhook` is.
