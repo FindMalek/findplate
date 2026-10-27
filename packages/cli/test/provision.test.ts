@@ -1,5 +1,6 @@
 import { expect, test } from "bun:test"
 import { buildPlan } from "../src/commands/provision"
+import { PGWEB_COMPOSE, s3Target } from "../src/provision/browsers"
 import { desiredRecords, missingRecords } from "../src/provision/dns"
 import { desiredProjects, missingProjects } from "../src/provision/dokploy"
 import { signV4 } from "../src/provision/s3"
@@ -55,6 +56,15 @@ test("the plan covers every target without touching the network", () => {
     "turbo:cache",
     "backup:workflow",
   ])
+})
+
+test("browsers plan a read-only pgweb and an s3 browser on preview hosts", () => {
+  const tasks = buildPlan(["browsers"], ctx)
+  expect(tasks.map((task) => task.id)).toEqual(["browsers:db", "browsers:s3"])
+  expect(tasks[0]?.title).toContain("https://db.preview.demo.dev")
+  expect(tasks[1]?.title).toContain("https://s3.preview.demo.dev")
+  expect(PGWEB_COMPOSE).toContain("--readonly")
+  expect(s3Target("https://s3.example.com:3900")).toEqual({ host: "s3.example.com:3900", useSsl: true })
 })
 
 test("planning fails early when the user config is missing", () => {

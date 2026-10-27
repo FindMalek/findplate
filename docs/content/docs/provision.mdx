@@ -49,6 +49,21 @@ gunzip -c db-2026-01-01.sql.gz | psql "$DATABASE_URL"
 
 Restore into an empty database, or drop the schema first. Try it on a scratch database before you need it.
 
+## Database and S3 browsers
+
+```bash
+DOKPLOY_ENVIRONMENT_ID=... BROWSER_PASSWORD=... findplate provision browsers --domain example.com
+```
+
+Deploys two extra Dokploy compose apps in the preview environment, at `db.preview.example.com` and `s3.preview.example.com` (set `PREVIEW_DOMAIN` to change the base). The `*.preview` dns record from `provision dns` already covers them.
+
+- `db` is [pgweb](https://github.com/sosedoff/pgweb) started with `--readonly`. Set `BROWSER_DATABASE_URL` to open one database straight away, or leave it empty and paste a preview database url in the connect form.
+- `s3` is [s3manager](https://github.com/cloudlena/s3manager) pointed at `s3Endpoint`, using `S3_ACCESS_KEY_ID` and `S3_SECRET_ACCESS_KEY`.
+
+Both sit behind Dokploy's basic auth (`BROWSER_USER`, default `preview`, and `BROWSER_PASSWORD`), so they are never public. Put the preview server on a tailnet if you want them off the internet entirely. Rerunning updates the compose files and redeploys, the domain and auth are only created once. The images use `latest`, pin a tag in Dokploy once you have one you trust.
+
+The compose, domain and security calls are isolated in `composeApi`. `compose.create`, `compose.update` and `compose.deploy` follow the Dokploy reference, `security.create` and the compose list inside `project.all` are assumed.
+
 ## What is verified
 
 The Garage admin paths (`/v2/CreateBucket`, `CreateKey`, `AllowBucketKey`, `ListBuckets`, `ListKeys`) come from its OpenAPI spec, and the S3 calls use AWS signature v4. Dokploy's `x-api-key` header, `project.all` and `project.create` are documented, the response shape of `project.all` is assumed and lives in one function, `dokployApi`.
