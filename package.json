@@ -6,7 +6,7 @@
     "dev": "bun packages/cli/src/index.ts",
     "build": "pnpm --filter findplate build",
     "check-types": "pnpm --filter findplate check-types",
-    "test": "pnpm --filter findplate test && bun test ./.github/scripts/preview-lib.test.mjs ./.github/scripts/module-matrix.test.mjs",
+    "test": "pnpm --filter findplate test && bun test ./.github/scripts/preview-lib.test.mjs ./.github/scripts/module-matrix.test.mjs ./.github/scripts/changelog-notes.test.mjs",
     "lint": "biome ci .",
     "check": "biome check --write ."
   },
