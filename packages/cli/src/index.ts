@@ -35,6 +35,7 @@ GitHub options (findplate github)
   --public             public repo (default private)
   --homepage <url>     repo homepage
   --no-project         skip the project board
+  --project-token      store your gh token as the PROJECT_TOKEN secret (a scoped pat is safer)
   --project-template <owner/number>
                        copy this project as the board instead of building the Status column`
 
@@ -56,6 +57,7 @@ async function main() {
       homepage: { type: "string" },
       public: { type: "boolean", default: false },
       project: { type: "boolean", default: true },
+      "project-token": { type: "boolean", default: false },
       "project-template": { type: "string" },
       "dry-run": { type: "boolean", default: false },
       yes: { type: "boolean", short: "y", default: false },
@@ -75,6 +77,7 @@ async function main() {
       public: values.public,
       project: values.project,
       projectTemplate: values["project-template"],
+      projectToken: values["project-token"],
       dryRun: values["dry-run"],
     })
   }
@@ -98,6 +101,7 @@ async function main() {
     public: values.public,
     project: values.project,
     projectTemplate: values["project-template"],
+    projectToken: values["project-token"],
     yes: values.yes,
   })
 }

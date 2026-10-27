@@ -39,6 +39,8 @@ export interface PlanInput {
   homepage?: string
   visibility: "private" | "public"
   project: boolean
+  /** Store your gh token as PROJECT_TOKEN. Off by default: it carries every scope you logged in with. */
+  projectToken?: boolean
   /** `owner/number` of a project to copy instead of building the board from scratch. */
   projectTemplate?: string
   /** Names in .env that have a value. Values are never part of the plan. */
@@ -273,7 +275,9 @@ export function buildPlan(input: PlanInput): PlanStep[] {
     ...(input.project
       ? [gh(["variable", "set", "PROJECT_NUMBER", "--repo", slug], { stdin: { var: "projectNumber" } })]
       : []),
-    ...(input.project ? [gh(["secret", "set", "PROJECT_TOKEN", "--repo", slug], { stdin: { ghToken: true } })] : []),
+    ...(input.project && input.projectToken
+      ? [gh(["secret", "set", "PROJECT_TOKEN", "--repo", slug], { stdin: { ghToken: true } })]
+      : []),
     ...variables.map((key) => gh(["variable", "set", key, "--repo", slug], { stdin: { env: key } })),
     ...secrets.map((key) => gh(["secret", "set", key, "--repo", slug], { stdin: { env: key } })),
   ]

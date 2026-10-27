@@ -19,7 +19,7 @@ findplate github             # run it
 3. creates labels (`bug`, `feature`, `task`, `docs`, `blocked`, `p0` to `p2`) and milestones (`Foundation`, `Launch`, `Later`)
 4. adds `.github/CODEOWNERS` with the owner and pushes it
 5. creates a project board named after the repo, links it, and sets the Status column to Backlog, Ready, In progress, In review, Done. With `--project-template owner/number` it copies that project instead
-6. sets the repo variable `PROJECT_NUMBER`, the secret `PROJECT_TOKEN` (your `gh auth token`), and every value in `.env` as a variable or a secret
+6. sets the repo variable `PROJECT_NUMBER` and every value in `.env` as a variable or a secret. With `--project-token` it also stores your `gh auth token` as `PROJECT_TOKEN`; a fine-grained token with project access is safer, add it yourself with `gh secret set PROJECT_TOKEN`
 7. adds a ruleset on `main`: pull request required, `ci` and the PR hygiene check must pass
 
 Secrets and variables go through stdin, so values never show in the plan, the output or the process list. Local only keys (`POSTGRES_*`, `DATABASE_URL`) are skipped.
@@ -39,5 +39,6 @@ Every step treats "already exists" as done, and finished steps are saved in `.fi
 | `--public` | public repo |
 | `--homepage <url>` | repo homepage |
 | `--no-project` | skip the board |
+| `--project-token` | store your gh token as the `PROJECT_TOKEN` secret |
 | `--project-template <owner/number>` | copy this project. Also settable as config key `githubProjectTemplate` |
 | `--github` / `--no-github` | for `create`: do or skip this step |

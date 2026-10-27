@@ -29,6 +29,7 @@ export interface CreateFlags {
   homepage?: string
   public?: boolean
   project?: boolean
+  projectToken?: boolean
   projectTemplate?: string
   yes: boolean
 }
@@ -251,6 +252,7 @@ export async function create(flags: CreateFlags) {
           homepage: flags.homepage,
           public: flags.public,
           project: flags.project ?? true,
+          projectToken: flags.projectToken,
           projectTemplate: flags.projectTemplate,
           dryRun: false,
         })

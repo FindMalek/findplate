@@ -13,6 +13,7 @@ export interface GithubFlags {
   homepage?: string
   public?: boolean
   project: boolean
+  projectToken?: boolean
   projectTemplate?: string
   dryRun: boolean
 }
@@ -44,6 +45,7 @@ export async function planFor(dir: string, state: ProjectState, flags: GithubFla
     homepage: flags.homepage,
     visibility: flags.public ? "public" : "private",
     project: flags.project,
+    projectToken: flags.projectToken,
     projectTemplate: flags.projectTemplate ?? loadConfig().githubProjectTemplate,
     envKeys: Object.keys(readEnv(dir)),
   }

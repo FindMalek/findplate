@@ -65,7 +65,7 @@ async function runCommand(
   if (command.skipIf && ctx.vars[command.skipIf]) return
   if (command.stdin && "var" in command.stdin && !ctx.vars[command.stdin.var]) return
   const stdin = command.stdin ? await stdinValue(command.stdin, ctx) : undefined
-  if (command.stdin && "env" in command.stdin && !stdin) return
+  if (command.stdin && "env" in command.stdin && !stdin) throw new Error(`${command.stdin.env} has no value in .env`)
   const args = command.args.map((arg) => fill(arg, ctx.vars))
   const result = await ctx.exec(command.cmd, args, ctx.dir, stdin)
   if (result.code !== 0) {
