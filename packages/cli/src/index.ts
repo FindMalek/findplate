@@ -8,9 +8,9 @@ import { create } from "./commands/create"
 import { doctorCommand } from "./commands/doctor"
 import { github } from "./commands/github"
 import { provisionCommand } from "./commands/provision"
+import { CliError, EXIT } from "./errors"
 import { accent, dim } from "./ui"
 import { checkForUpdate, shouldSkip } from "./update-check"
-import { CliError, EXIT } from "./errors"
 
 const VERSION = pkg.version
 
@@ -86,6 +86,7 @@ async function main() {
   const latest = skip ? undefined : await checkForUpdate({ current: VERSION })
   if (latest) {
     console.error(`${dim(`findplate ${VERSION} is behind ${latest}. Run`)} ${accent("npx findplate@latest")}\n`)
+  }
   if (command === "doctor") return doctorCommand({ dir, json: values.json })
   if (command === "add") {
     const args = positionals.slice(1)
