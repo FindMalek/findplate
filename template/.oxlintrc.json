@@ -6,6 +6,7 @@
     "**/node_modules",
     "**/.next",
     "packages/ui/src/components/**",
+    "packages/ui/src/brand/**",
     ".agents/**",
     ".claude/**",
     ".opencode/**",

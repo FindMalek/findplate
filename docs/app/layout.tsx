@@ -9,8 +9,10 @@ const plex = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "
 const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.DOCS_URL ?? "http://localhost:3000"),
   title: { default: `${SITE.name}: ${SITE.pitch}`, template: `%s | ${SITE.name}` },
   description: SITE.pitch,
+  twitter: { card: "summary_large_image" },
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {

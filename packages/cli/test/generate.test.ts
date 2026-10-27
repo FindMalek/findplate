@@ -4,15 +4,26 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { generate } from "../src/generate"
 import { buildEnv } from "../src/generate/env"
+import { ogColors } from "../src/generate/og"
 import { renameProject, toNames } from "../src/generate/rename"
 import { stripModules } from "../src/generate/strip"
 import { presetsDir, templateDir } from "../src/paths"
 import { listPresets } from "../src/presets"
 
 test("module blocks stay when enabled and disappear when not, markers always go", () => {
-  const source = ["a", "// @findplate:ai", "b", "// @end", "{/* @findplate:storage */}", "c", "{/* @end */}", "d"].join(
-    "\n",
-  )
+  const source = [
+    "a",
+    "// @findplate:ai",
+    "b",
+    "// @end",
+    "{/* @findplate:storage */}",
+    "c",
+    "{/* @end */}",
+    "<!-- @findplate:docs -->",
+    "e",
+    "<!-- @end -->",
+    "d",
+  ].join("\n")
   expect(stripModules(source, new Set(["ai"]))).toBe("a\nb\nd")
   expect(stripModules(source, new Set())).toBe("a\nd")
   expect(stripModules('import { a } from "a" // @findplate:ai\nb', new Set(["ai"]))).toBe('import { a } from "a"\nb')
@@ -27,6 +38,13 @@ test("names: scope, titles, and postgres-safe identifiers only in db files", () 
     'import "@my-cool-app/ui"; // My Cool App my-cool-app',
   )
   expect(renameProject("POSTGRES_USER: acme", "docker/docker-compose.yml", names)).toBe("POSTGRES_USER: my_cool_app")
+})
+
+test("og colors come from the preset tokens, blending translucent borders", () => {
+  const css = readFileSync(join(presetsDir(), "monochrome", "theme.css"), "utf8")
+  expect(ogColors(css, "dark")).toMatchObject({ background: "#0a0a0a", foreground: "#fafafa" })
+  expect(ogColors(css, "dark").border).toMatch(/^#[0-9a-f]{6}$/)
+  expect(ogColors(css, "light").background).toBe("#ffffff")
 })
 
 test("env keeps example defaults and fills the values it's given", () => {

@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.DOCS_URL ?? "http://localhost:3003"),
   title: { default: `${SITE.name} docs`, template: `%s | ${SITE.name}` },
   description: SITE.tagline,
+  twitter: { card: "summary_large_image" },
 }
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

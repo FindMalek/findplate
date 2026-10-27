@@ -5,6 +5,7 @@ import { loadManifest } from "../manifest"
 import { type Preset, presetTheme } from "../presets"
 import { buildEnv } from "./env"
 import { fontsModule } from "./fonts"
+import { ogColors, ogEntry } from "./og"
 import { type Names, renameProject } from "./rename"
 import { stripModules } from "./strip"
 
@@ -81,6 +82,13 @@ export function generate(opts: GenerateOptions) {
         .join("\n")
     }
     out = renameProject(out, rel, names)
+    if (rel === "README.md") {
+      const url = (text: string) => encodeURIComponent(text).replaceAll("%20", "+")
+      out = out
+        .replaceAll("{{title_url}}", url(names.title))
+        .replaceAll("{{pitch_url}}", url(opts.pitch))
+        .replaceAll("{{pitch}}", () => opts.pitch)
+    }
     if (out !== source) writeFileSync(file, out)
   }
 
@@ -96,10 +104,19 @@ export function generate(opts: GenerateOptions) {
     if (!source.includes('defaultTheme="dark"')) throw new Error("theme-provider.tsx has no defaultTheme to set")
     writeFileSync(provider, source.replace('defaultTheme="dark"', `defaultTheme="${opts.preset.defaultTheme}"`))
   }
+  const ogEntryText = ogEntry(
+    ogColors(presetTheme(opts.preset.id), opts.preset.defaultTheme === "light" ? "light" : "dark"),
+  )
+  const tagline = `tagline: ${JSON.stringify(opts.pitch)},`
   for (const app of apps) {
     const site = join(target, `apps/${app}/lib/site.ts`)
     if (!existsSync(site)) continue
-    writeFileSync(site, readFileSync(site, "utf8").replace(/tagline: ".*",/, `tagline: ${JSON.stringify(opts.pitch)},`))
+    writeFileSync(
+      site,
+      readFileSync(site, "utf8")
+        .replace(/tagline: ".*",/, () => tagline)
+        .replace(/og: \{[^}]*\},/, () => ogEntryText),
+    )
   }
 
   const adminPassword = randomBytes(12).toString("base64url")
