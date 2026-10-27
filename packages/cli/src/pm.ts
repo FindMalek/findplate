@@ -10,7 +10,7 @@ export const installCommand = (pm: PackageManager) => `${pm} install`
 
 /** How to run a package.json script: `npm run dev`, `pnpm dev`. */
 export const scriptCommand = (pm: PackageManager, script: string) =>
-  pm === "npm" ? `npm run ${script}` : `${pm} ${script}`
+  pm === "npm" || pm === "bun" ? `${pm} run ${script}` : `${pm} ${script}`
 
 /** The template is a pnpm workspace, so every package manager still needs pnpm installed. */
 export function pnpmHint(hasPnpm: boolean): string | undefined {
