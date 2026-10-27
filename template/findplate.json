@@ -75,6 +75,39 @@
         }
       ]
     },
+    "waitlist": {
+      "label": "Waitlist",
+      "hint": "email signup on the landing page, list in the dashboard",
+      "default": false,
+      "paths": [
+        "packages/db/src/schema/waitlist.ts",
+        "packages/db/drizzle/0001_waitlist.sql",
+        "packages/db/drizzle/meta/0001_snapshot.json",
+        "packages/orpc/src/routers/waitlist.ts",
+        "apps/web/components/waitlist-form.tsx",
+        "apps/dashboard/app/(app)/waitlist"
+      ],
+      "packages": []
+    },
+    "roadmap": {
+      "label": "Roadmap page",
+      "hint": "public /roadmap built from the repo's GitHub milestones",
+      "default": false,
+      "paths": [
+        "packages/orpc/src/routers/roadmap.ts",
+        "packages/orpc/src/lib/roadmap.ts",
+        "packages/orpc/src/lib/roadmap.test.ts",
+        "apps/web/app/roadmap"
+      ],
+      "packages": []
+    },
+    "status": {
+      "label": "Status page",
+      "hint": "public /status with live uptime checks of every service",
+      "default": false,
+      "paths": ["packages/orpc/src/routers/status.ts", "apps/web/app/status"],
+      "packages": []
+    },
     "databuddy": {
       "label": "Databuddy analytics",
       "hint": "privacy first, cookieless analytics on web and dashboard",

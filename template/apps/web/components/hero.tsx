@@ -3,6 +3,7 @@ import { ArrowRightIcon } from "lucide-react"
 import type { Route } from "next"
 import { SITE } from "@/lib/site"
 import { StatusWindow } from "./status-window"
+import { WaitlistForm } from "./waitlist-form" // @findplate:waitlist
 import { Wordmark } from "./wordmark"
 
 export function Hero({ dashboardUrl, docsUrl }: { dashboardUrl: string; docsUrl: string }) {
@@ -22,6 +23,9 @@ export function Hero({ dashboardUrl, docsUrl }: { dashboardUrl: string; docsUrl:
           API docs
         </Button>
       </div>
+      {/* @findplate:waitlist */}
+      <WaitlistForm />
+      {/* @end */}
       <StatusWindow />
     </section>
   )

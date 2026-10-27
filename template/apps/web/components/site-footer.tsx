@@ -19,7 +19,17 @@ export async function SiteFooter() {
         <span className="text-muted-foreground">
           <span className="font-medium text-foreground">{SITE.name}</span> · {SITE.license}
         </span>
-        <span className="flex items-center gap-2">
+        <span className="flex items-center gap-3">
+          {/* @findplate:roadmap */}
+          <a href="/roadmap" className="text-muted-foreground hover:text-foreground">
+            Roadmap
+          </a>
+          {/* @end */}
+          {/* @findplate:status */}
+          <a href="/status" className="text-muted-foreground hover:text-foreground">
+            Status
+          </a>
+          {/* @end */}
           {repo && (
             <a
               href={repo.url}

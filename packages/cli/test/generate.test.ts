@@ -73,7 +73,7 @@ describe("generate", () => {
   }
 
   test("with every module: no template names or markers left, env filled", () => {
-    const { target } = make(["storage", "ai", "whatsapp", "telegram", "docs", "email"])
+    const { target } = make(["storage", "ai", "whatsapp", "telegram", "docs", "email", "waitlist", "roadmap", "status"])
     for (const file of files(target)) {
       if (statSync(file).size > 2_000_000 || /\.(ico|png)$/.test(file)) continue
       const text = readFileSync(file, "utf8")
@@ -97,6 +97,15 @@ describe("generate", () => {
     expect(readFileSync(join(target, "apps/api/src/index.ts"), "utf8")).not.toContain("resolveModel")
     expect(readFileSync(join(target, "pnpm-workspace.yaml"), "utf8")).not.toMatch(/ai-sdk|^\s+ai:/m)
     expect(readFileSync(join(target, ".env.example"), "utf8")).not.toContain("S3_BUCKET")
+  })
+
+  test("a module's migration leaves the drizzle journal when the module is off", () => {
+    const tags = (modules: string[]) =>
+      JSON.parse(
+        readFileSync(join(make(modules).target, "packages/db/drizzle/meta/_journal.json"), "utf8"),
+      ).entries.map((entry: { tag: string }) => entry.tag)
+    expect(tags(["waitlist"])).toEqual(["0000_init", "0001_waitlist"])
+    expect(tags([])).toEqual(["0000_init"])
   })
 
   test("docs module: only with --modules docs, with the preset fonts, pitch and env url", () => {

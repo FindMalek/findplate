@@ -13,6 +13,9 @@ Select modules with `--modules storage,ai,docs,email`, or in the prompt.
 | --- | --- | --- |
 | `storage` | on | `packages/storage`. Uploads to any S3 API: Garage, R2, AWS, MinIO |
 | `ai` | on | `packages/ai`. Vercel AI SDK with Groq, OpenAI or Anthropic |
+| `waitlist` | off | email signup on the landing page, signups listed in the dashboard |
+| `roadmap` | off | public `/roadmap` from the repo's GitHub milestones |
+| `status` | off | public `/status` with live checks of api, database, web and dashboard |
 | `databuddy` | off | cookieless analytics in web and dashboard |
 | `whatsapp` | off | `packages/whatsapp`. `notify()` through Kapso template messages. [Details](/docs/whatsapp) |
 | `telegram` | off | `packages/telegram`. Bot with `notify()`, a webhook route and a setup command. [Details](/docs/telegram) |
@@ -42,6 +45,17 @@ OPENAI_API_KEY=
 ANTHROPIC_API_KEY=
 ```
 
+### waitlist
+
+The hero gets an email form that posts to `waitlist.join`. Duplicates are ignored. Admins see the signups under Waitlist in the dashboard. It adds the `waitlist` table through the `0001_waitlist` migration, which is dropped with the module.
+
+### roadmap
+
+`/roadmap` lists the milestones of `GITHUB_REPO` with their progress, cached for 10 minutes. Set `GITHUB_TOKEN` for private repos or a higher rate limit.
+
+### status
+
+`/status` calls `status.services`, which checks the database and pings `WEB_URL` and `DASHBOARD_URL` with a 3 s timeout.
 ### databuddy
 
 Create a website in [Databuddy](https://app.databuddy.cc) and set its client id. With the id empty nothing is tracked.
@@ -56,6 +70,7 @@ The `Analytics` component in `apps/web` and `apps/dashboard` renders the `@datab
 
 - email with email-sdk and resend ([#11](https://github.com/FindMalek/findplate/issues/11))
 - telegram bot ([#12](https://github.com/FindMalek/findplate/issues/12)) and whatsapp via kapso ([#13](https://github.com/FindMalek/findplate/issues/13))
+
 ### docs
 
 `apps/docs` is a Next app on port 3003 that uses your preset's tokens and fonts. The pages are mdx in `apps/docs/content/docs`: setup, environment, structure, scripts and deploy, written for the generated project. Edit them like any other file. It has its own `Dockerfile` and reads `DOCS_URL`:
