@@ -1,0 +1,43 @@
+---
+title: GitHub setup
+description: Repo, project board, labels, rules, variables and secrets in one command.
+---
+
+`findplate github` uses the [gh cli](https://cli.github.com) to set up the GitHub side of a project. Log in first with `gh auth login` (the `project` scope is needed for the board: `gh auth refresh -s project`).
+
+```bash
+findplate github --dry-run   # print the plan, change nothing
+findplate github             # run it
+```
+
+`findplate create --github` runs the same thing after the first commit. Interactively, create asks.
+
+## What it does
+
+1. creates the repo (private, or `--public`) with the pitch as description, adds the `origin` remote, enables delete branch on merge
+2. pushes `main`
+3. creates labels (`bug`, `feature`, `task`, `docs`, `blocked`, `p0` to `p2`) and milestones (`Foundation`, `Launch`, `Later`)
+4. adds `.github/CODEOWNERS` with the owner and pushes it
+5. creates a project board named after the repo, links it, and sets the Status column to Backlog, Ready, In progress, In review, Done. With `--project-template owner/number` it copies that project instead
+6. sets the repo variable `PROJECT_NUMBER`, the secret `PROJECT_TOKEN` (your `gh auth token`), and every value in `.env` as a variable or a secret
+7. adds a ruleset on `main`: pull request required, `ci` and the PR hygiene check must pass
+
+Secrets and variables go through stdin, so values never show in the plan, the output or the process list. Local only keys (`POSTGRES_*`, `DATABASE_URL`) are skipped.
+
+The issue templates (bug, feature, task), the PR template and the workflows (`ci`, `pr-hygiene`, `project-status`) are part of the generated project, so they land with the first push. `project-status` moves the issue a PR closes to In review, and to Done on merge, using `PROJECT_NUMBER` and `PROJECT_TOKEN`.
+
+## Safe to run again
+
+Every step treats "already exists" as done, and finished steps are saved in `.findplate/state.json`. If something fails (a free plan can't have rulesets on private repos, a token without the `project` scope), the step is reported and the rest carries on. Fix it and run `findplate github` again: only what is left runs.
+
+## Options
+
+| Flag | What it does |
+| --- | --- |
+| `--dry-run` | print the plan |
+| `--owner <name>` | user or org. Defaults to the config key `githubOwner`, then your gh login |
+| `--public` | public repo |
+| `--homepage <url>` | repo homepage |
+| `--no-project` | skip the board |
+| `--project-template <owner/number>` | copy this project. Also settable as config key `githubProjectTemplate` |
+| `--github` / `--no-github` | for `create`: do or skip this step |

@@ -11,6 +11,7 @@ import { freePort, has, run } from "../run"
 import { installSkills, SKILLS_PACKAGE, skillPacks } from "../skills"
 import { loadState, markDone, type ProjectState, type Step, saveState } from "../state"
 import { accent, bold, brand, dim } from "../ui"
+import { ghLogin, provision } from "./github"
 
 export interface CreateFlags {
   dir?: string
@@ -22,6 +23,13 @@ export interface CreateFlags {
   git: boolean
   agents: boolean
   skills: boolean
+  /** undefined asks when interactive and skips otherwise. */
+  github?: boolean
+  owner?: string
+  homepage?: string
+  public?: boolean
+  project?: boolean
+  projectTemplate?: string
   yes: boolean
 }
 
@@ -136,6 +144,11 @@ export async function create(flags: CreateFlags) {
     }
   }
 
+  let wantGithub = flags.github ?? false
+  if (flags.github === undefined && interactive && flags.git && (await ghLogin())) {
+    wantGithub = answered(await p.confirm({ message: "Create the GitHub repo, board and rules?", initialValue: false }))
+  }
+
   const postgresPort = previous?.answers.postgresPort ?? (await freePort(5432))
   const canInstall = flags.install && (await has("pnpm"))
   let admin = { adminEmail: previous?.answers.adminEmail ?? "", adminPassword: "" }
@@ -226,6 +239,27 @@ export async function create(flags: CreateFlags) {
           return "Git repository created (set user.name and user.email to make the first commit)"
         }
         return "First commit on main"
+      }),
+    )
+  }
+  if (wantGithub && flags.git) {
+    steps.push(
+      ...step("github", "Setting up GitHub", async () => {
+        const outcomes = await provision(target, state, {
+          dir: target,
+          owner: flags.owner,
+          homepage: flags.homepage,
+          public: flags.public,
+          project: flags.project ?? true,
+          projectTemplate: flags.projectTemplate,
+          dryRun: false,
+        })
+        const failed = outcomes.filter((outcome) => outcome.status === "failed")
+        if (failed.length) {
+          const what = failed.map((outcome) => `${outcome.title}: ${outcome.error}`).join("; ")
+          return `GitHub setup incomplete (${what}). Run findplate github to retry`
+        }
+        return "GitHub repo, board and rules ready"
       }),
     )
   }
