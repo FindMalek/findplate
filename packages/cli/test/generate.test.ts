@@ -73,7 +73,7 @@ describe("generate", () => {
   }
 
   test("with every module: no template names or markers left, env filled", () => {
-    const { target } = make(["storage", "ai", "docs", "email"])
+    const { target } = make(["storage", "ai", "telegram", "docs", "email"])
     for (const file of files(target)) {
       if (statSync(file).size > 2_000_000 || /\.(ico|png)$/.test(file)) continue
       const text = readFileSync(file, "utf8")

@@ -3,6 +3,7 @@ import { adminRouter, meRouter } from "./account"
 import { emailRouter } from "./email" // @findplate:email
 import { notesRouter } from "./notes"
 import { publicRouter } from "./public"
+import { telegramRouter } from "./telegram" // @findplate:telegram
 
 /** One router, namespaced: `public` needs no session, everything else does (and `admin` needs the admin role). */
 export const appRouter = {
@@ -10,6 +11,9 @@ export const appRouter = {
   me: meRouter,
   notes: notesRouter,
   admin: adminRouter,
+  // @findplate:telegram
+  telegram: telegramRouter,
+  // @end
   // @findplate:email
   email: emailRouter,
   // @end

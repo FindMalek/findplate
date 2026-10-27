@@ -35,6 +35,11 @@ const schema = z.object({
   S3_SECRET_ACCESS_KEY: optional,
   // @end
 
+  // @findplate:telegram
+  TELEGRAM_BOT_TOKEN: optional,
+  TELEGRAM_CHAT_ID: optional,
+  TELEGRAM_WEBHOOK_SECRET: optional,
+  // @end
   // @findplate:email
   RESEND_API_KEY: optional,
   EMAIL_FROM: z.string().default("Acme <onboarding@resend.dev>"),

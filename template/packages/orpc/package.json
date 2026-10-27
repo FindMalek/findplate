@@ -27,6 +27,7 @@
     "zod": "catalog:",
     "@acme/email": "workspace:*",
     "@acme/storage": "workspace:*",
+    "@acme/telegram": "workspace:*",
     "ai": "catalog:"
   },
   "peerDependencies": {

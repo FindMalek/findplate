@@ -13,6 +13,7 @@ import { sql } from "drizzle-orm"
  *   /rpc/*        oRPC for web + dashboard (needs `x-csrf-token: orpc`)
  *   /v1/*         the same procedures as REST, docs at /v1/docs, spec at /v1/openapi.json
  *   /files/<key>  redirect to a short-lived url for an uploaded file
+ *   /telegram/webhook  Telegram bot updates (secret header checked)
  *   /health       for Dokploy and uptime checks
  */
 export function createServer(services: Services & { auth: Auth }, opts: { publicUrl: string }) {
@@ -48,6 +49,13 @@ export function createServer(services: Services & { auth: Auth }, opts: { public
         .catch(() => false)
       return Response.json({ ok: db, db, env: services.config.deployEnv }, { status: db ? 200 : 503 })
     }
+    // @findplate:telegram
+    if (pathname === "/telegram/webhook" && request.method === "POST") {
+      return services.telegram
+        ? services.telegram.handleWebhook(request)
+        : Response.json({ message: "Telegram is not configured." }, { status: 404 })
+    }
+    // @end
     // @findplate:storage
     if (pathname.startsWith("/files/")) {
       if (!services.storage) return Response.json({ message: "Storage is not configured." }, { status: 404 })

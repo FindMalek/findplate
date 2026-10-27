@@ -21,6 +21,20 @@
       "paths": ["packages/storage"],
       "packages": ["@acme/storage"]
     },
+    "telegram": {
+      "label": "Telegram bot",
+      "hint": "notify() to a chat, webhook route and setup command",
+      "default": false,
+      "paths": ["packages/telegram", "packages/orpc/src/routers/telegram.ts"],
+      "packages": ["@acme/telegram"],
+      "keys": [
+        {
+          "env": "TELEGRAM_BOT_TOKEN",
+          "label": "Telegram bot token (from @BotFather)",
+          "url": "https://t.me/BotFather"
+        }
+      ]
+    },
     "email": {
       "label": "Email",
       "hint": "react-email templates sent through email-sdk and Resend",

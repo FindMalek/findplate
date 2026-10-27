@@ -2,6 +2,7 @@ import type { Auth, Session } from "@acme/auth"
 import type { Db } from "@acme/db"
 import type { Mailer } from "@acme/email" // @findplate:email
 import type { Storage } from "@acme/storage" // @findplate:storage
+import type { Telegram } from "@acme/telegram" // @findplate:telegram
 import type { LanguageModel } from "ai" // @findplate:ai
 
 /** Everything procedures need, built once by the api at startup (and by tests with their own). */
@@ -12,6 +13,9 @@ export interface Services {
   config: { deployEnv: string; githubAuth: boolean; githubRepo?: string; githubToken?: string }
   // @findplate:storage
   storage: Storage | null
+  // @end
+  // @findplate:telegram
+  telegram: Telegram | null
   // @end
   // @findplate:email
   mailer: Mailer | null
