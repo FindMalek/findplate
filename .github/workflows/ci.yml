@@ -1,0 +1,121 @@
+name: ci
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  repo:
+    name: repo
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm check-types
+      - run: pnpm test
+      - name: Template versions agree
+        run: >
+          npx --yes syncpack@14.3.1 lint
+          --source "template/package.json"
+          --source "template/apps/*/package.json"
+          --source "template/packages/*/package.json"
+
+  template:
+    name: template (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: all modules
+            modules: storage,ai
+          - name: minimum
+            modules: ""
+    env:
+      PROJECT: /tmp/generated
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/generate
+        with:
+          modules: ${{ matrix.modules }}
+          dir: ${{ env.PROJECT }}
+      - name: Lint
+        working-directory: ${{ env.PROJECT }}
+        run: pnpm lint
+      - name: Types
+        working-directory: ${{ env.PROJECT }}
+        run: pnpm check-types
+      - name: Tests
+        working-directory: ${{ env.PROJECT }}
+        run: pnpm test
+      - name: Build
+        working-directory: ${{ env.PROJECT }}
+        run: pnpm build
+
+  migrations:
+    name: template migrations
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PROJECT: /tmp/generated
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/generate
+        with:
+          dir: ${{ env.PROJECT }}
+      - name: Generate a migration from the schema
+        working-directory: ${{ env.PROJECT }}
+        run: |
+          find packages/db/drizzle -type f | sort | xargs sha256sum > "$RUNNER_TEMP/before.txt"
+          pnpm db:generate
+          find packages/db/drizzle -type f | sort | xargs sha256sum > "$RUNNER_TEMP/after.txt"
+      - name: Fail on drift
+        run: |
+          if ! diff -u "$RUNNER_TEMP/before.txt" "$RUNNER_TEMP/after.txt"; then
+            echo "::error::schema changed without a migration, run pnpm db:generate in the template and commit the result"
+            exit 1
+          fi
+
+  lighthouse:
+    name: lighthouse
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PROJECT: /tmp/generated
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/generate
+        with:
+          dir: ${{ env.PROJECT }}
+      - name: Build web
+        working-directory: ${{ env.PROJECT }}
+        run: pnpm --filter web build
+      - name: Audit the landing page
+        working-directory: ${{ env.PROJECT }}
+        continue-on-error: true
+        run: npx --yes @lhci/cli@0.15.1 autorun --config="$GITHUB_WORKSPACE/.github/lighthouserc.json"
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: lighthouse
+          path: ${{ env.PROJECT }}/.lighthouseci
+          if-no-files-found: ignore
