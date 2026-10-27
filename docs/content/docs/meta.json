@@ -9,6 +9,7 @@
     "presets",
     "theming",
     "deploy",
+    "github",
     "provision",
     "previews",
     "agents",
