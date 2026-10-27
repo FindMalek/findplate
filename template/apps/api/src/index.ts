@@ -5,6 +5,7 @@ import { runMigrations } from "@acme/db/migrate"
 import { seedDemo } from "@acme/db/seed"
 import { loadApiEnv } from "@acme/env/api"
 import { createStorage } from "@acme/storage" // @findplate:storage
+import { createTelegram } from "@acme/telegram" // @findplate:telegram
 import { ensureAdmin } from "./admin"
 import { createServer } from "./server"
 
@@ -46,6 +47,13 @@ const fetch = createServer(
       accessKeyId: env.S3_ACCESS_KEY_ID,
       secretAccessKey: env.S3_SECRET_ACCESS_KEY,
       prefix: env.DEPLOY_ENV.startsWith("pr-") ? `${env.DEPLOY_ENV}/` : "",
+    }),
+    // @end
+    // @findplate:telegram
+    telegram: createTelegram({
+      token: env.TELEGRAM_BOT_TOKEN,
+      chatId: env.TELEGRAM_CHAT_ID,
+      webhookSecret: env.TELEGRAM_WEBHOOK_SECRET,
     }),
     // @end
     // @findplate:ai

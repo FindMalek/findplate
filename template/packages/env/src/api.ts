@@ -35,6 +35,12 @@ const schema = z.object({
   S3_SECRET_ACCESS_KEY: optional,
   // @end
 
+  // @findplate:telegram
+  TELEGRAM_BOT_TOKEN: optional,
+  TELEGRAM_CHAT_ID: optional,
+  TELEGRAM_WEBHOOK_SECRET: optional,
+  // @end
+
   // @findplate:ai
   AI_MODEL: z.string().default("groq:openai/gpt-oss-120b"),
   GROQ_API_KEY: optional,
