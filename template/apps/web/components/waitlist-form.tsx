@@ -13,7 +13,7 @@ export function WaitlistForm() {
     event.preventDefault()
     join.mutate({ email })
   }
-  if (join.isSuccess) return <p className="text-muted-foreground text-sm">You're on the list. We'll be in touch.</p>
+  if (join.isSuccess) return <p className="text-muted-foreground text-sm">You're on the list.</p>
   return (
     <form onSubmit={submit} className="flex w-full max-w-sm flex-col gap-2">
       <div className="flex gap-2">

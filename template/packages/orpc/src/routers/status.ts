@@ -22,7 +22,7 @@ export const statusRouter = {
         .catch(() => false)
       const [web, dashboard] = await Promise.all([probe(context.config.webUrl), probe(context.config.dashboardUrl)])
       return [
-        { name: "api", ok: true, ms: 0 },
+        { name: "api", ok: true, ms: null },
         { name: "database", ok: dbOk, ms: dbOk ? Math.round(performance.now() - started) : null },
         { name: "web", ...web },
         { name: "dashboard", ...dashboard },

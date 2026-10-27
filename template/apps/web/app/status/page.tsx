@@ -21,7 +21,7 @@ export default async function StatusPage() {
             <span>{s.name}</span>
             <span className="inline-flex items-center gap-2">
               <span className={s.ok ? "size-1.5 bg-primary" : "size-1.5 bg-destructive"} />
-              {s.ok ? `ok · ${s.ms} ms` : "down"}
+              {s.ok ? (s.ms === null ? "ok" : `ok · ${s.ms} ms`) : "down"}
             </span>
           </div>
         ))}
