@@ -2,9 +2,9 @@ import "@acme/ui/globals.css"
 import { QueryProvider } from "@acme/orpc/react"
 import { cn } from "@acme/ui/lib/utils"
 import type { Metadata } from "next"
+import { Analytics } from "@/components/analytics" // @findplate:databuddy
 import { ThemeProvider } from "@/components/theme-provider"
 import { SITE } from "@/lib/site"
-import { Analytics } from "@/components/analytics" // @findplate:databuddy
 import { fontVariables } from "./fonts"
 
 export const metadata: Metadata = {

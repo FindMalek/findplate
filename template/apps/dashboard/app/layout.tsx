@@ -4,8 +4,8 @@ import { Toaster } from "@acme/ui/components/sonner"
 import { TooltipProvider } from "@acme/ui/components/tooltip"
 import { cn } from "@acme/ui/lib/utils"
 import type { Metadata } from "next"
-import { ThemeProvider } from "@/components/theme-provider"
 import { Analytics } from "@/components/analytics" // @findplate:databuddy
+import { ThemeProvider } from "@/components/theme-provider"
 import { fontVariables } from "./fonts"
 
 export const metadata: Metadata = {
