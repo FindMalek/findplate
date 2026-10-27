@@ -83,7 +83,11 @@ export function composeApi(baseUrl: string, apiKey: string) {
         composeId = created.composeId ?? (await find(browser.name, environmentId))
         if (!composeId) throw new Error(`compose.create returned no composeId for ${browser.name}`)
       }
-      await post("compose.update", { composeId, composeFile: browser.compose, env: browser.env })
+      await post("compose.update", {
+        composeId,
+        composeFile: browser.compose,
+        ...(browser.env ? { env: browser.env } : {}),
+      })
       if (isNew) {
         await post("domain.create", {
           host,
@@ -118,7 +122,7 @@ export function planBrowsers(ctx: Ctx): Task[] {
       service: "pgweb",
       port: 8081,
       compose: PGWEB_COMPOSE,
-      env: toEnvText({ PGWEB_DATABASE_URL: process.env.BROWSER_DATABASE_URL ?? "" }),
+      env: process.env.BROWSER_DATABASE_URL ? toEnvText({ PGWEB_DATABASE_URL: process.env.BROWSER_DATABASE_URL }) : "",
     },
     {
       id: "s3",
