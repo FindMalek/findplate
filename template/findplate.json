@@ -2,6 +2,17 @@
   "$comment": "Read by the findplate cli: what each optional module owns. Code inside `@findplate:<module>` ... `@end` markers is removed when the module is off.",
   "name": "acme",
   "scope": "@acme",
+  "skills": [
+    {
+      "source": "vercel-labs/agent-skills",
+      "skills": ["vercel-react-best-practices", "vercel-composition-patterns", "web-design-guidelines"]
+    },
+    { "source": "shadcn/ui", "skills": ["shadcn"] },
+    { "source": "vercel-labs/openreview", "skills": ["next-best-practices"] },
+    { "source": "vercel/turborepo", "skills": ["turborepo"] },
+    { "source": "better-auth/skills", "skills": ["better-auth-best-practices"] },
+    { "source": "vercel-labs/skills", "skills": ["find-skills"] }
+  ],
   "modules": {
     "storage": {
       "label": "File storage",
@@ -10,12 +21,50 @@
       "paths": ["packages/storage"],
       "packages": ["@acme/storage"]
     },
+    "whatsapp": {
+      "label": "WhatsApp",
+      "hint": "notify() through Kapso template messages",
+      "default": false,
+      "paths": ["packages/whatsapp", "packages/orpc/src/routers/whatsapp.ts"],
+      "packages": ["@acme/whatsapp", "@kapso/whatsapp-cloud-api"],
+      "keys": [{ "env": "KAPSO_API_KEY", "label": "Kapso API key", "url": "https://app.kapso.ai" }]
+    },
+    "telegram": {
+      "label": "Telegram bot",
+      "hint": "notify() to a chat, webhook route and setup command",
+      "default": false,
+      "paths": ["packages/telegram", "packages/orpc/src/routers/telegram.ts"],
+      "packages": ["@acme/telegram"],
+      "keys": [
+        {
+          "env": "TELEGRAM_BOT_TOKEN",
+          "label": "Telegram bot token (from @BotFather)",
+          "url": "https://t.me/BotFather"
+        }
+      ]
+    },
+    "email": {
+      "label": "Email",
+      "hint": "react-email templates sent through email-sdk and Resend",
+      "default": false,
+      "paths": ["packages/email", "packages/orpc/src/routers/email.ts"],
+      "packages": ["@acme/email", "@opencoredev/email-sdk", "@react-email/render"],
+      "keys": [{ "env": "RESEND_API_KEY", "label": "Resend API key", "url": "https://resend.com/api-keys" }]
+    },
+    "docs": {
+      "label": "Docs site",
+      "hint": "fumadocs on Next, with pages about your project",
+      "default": true,
+      "paths": ["apps/docs"],
+      "packages": ["fumadocs-core", "fumadocs-mdx", "fumadocs-ui", "@types/mdx"]
+    },
     "ai": {
       "label": "AI",
       "hint": "Vercel AI SDK with Groq, OpenAI or Anthropic",
       "default": true,
       "paths": ["packages/ai", "apps/dashboard/components/summarize-button.tsx"],
       "packages": ["@acme/ai", "ai", "@ai-sdk/anthropic", "@ai-sdk/groq", "@ai-sdk/openai"],
+      "skills": [{ "source": "vercel/ai", "skills": ["ai-sdk"] }],
       "keys": [
         { "env": "GROQ_API_KEY", "label": "Groq API key", "url": "https://console.groq.com/keys" },
         { "env": "OPENAI_API_KEY", "label": "OpenAI API key", "url": "https://platform.openai.com/api-keys" },
@@ -72,6 +121,47 @@
       "keys": [
         { "env": "LANGFUSE_PUBLIC_KEY", "label": "Langfuse public key", "url": "https://langfuse.com/docs/get-started" },
         { "env": "LANGFUSE_SECRET_KEY", "label": "Langfuse secret key", "url": "https://langfuse.com/docs/get-started" }
+    "waitlist": {
+      "label": "Waitlist",
+      "hint": "email signup on the landing page, list in the dashboard",
+      "default": false,
+      "paths": [
+        "packages/db/src/schema/waitlist.ts",
+        "packages/db/drizzle/0001_waitlist.sql",
+        "packages/db/drizzle/meta/0001_snapshot.json",
+        "packages/orpc/src/routers/waitlist.ts",
+        "apps/web/components/waitlist-form.tsx",
+        "apps/dashboard/app/(app)/waitlist"
+      ],
+      "packages": []
+    },
+    "roadmap": {
+      "label": "Roadmap page",
+      "hint": "public /roadmap built from the repo's GitHub milestones",
+      "default": false,
+      "paths": [
+        "packages/orpc/src/routers/roadmap.ts",
+        "packages/orpc/src/lib/roadmap.ts",
+        "packages/orpc/src/lib/roadmap.test.ts",
+        "apps/web/app/roadmap"
+      ],
+      "packages": []
+    },
+    "status": {
+      "label": "Status page",
+      "hint": "public /status with live uptime checks of every service",
+      "default": false,
+      "paths": ["packages/orpc/src/routers/status.ts", "apps/web/app/status"],
+      "packages": []
+    },
+    "databuddy": {
+      "label": "Databuddy analytics",
+      "hint": "privacy first, cookieless analytics on web and dashboard",
+      "default": false,
+      "paths": ["apps/web/components/analytics.tsx", "apps/dashboard/components/analytics.tsx"],
+      "packages": ["@databuddy/sdk"],
+      "keys": [
+        { "env": "NEXT_PUBLIC_DATABUDDY_CLIENT_ID", "label": "Databuddy client id", "url": "https://app.databuddy.cc" }
       ]
     }
   }

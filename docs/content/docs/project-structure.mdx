@@ -8,10 +8,12 @@ my-app/
 ├─ apps/
 │  ├─ web/          hero landing, next
 │  ├─ dashboard/    better-auth login and app shell, next
-│  └─ api/          orpc on bun
+│  ├─ api/          orpc on bun
+│  └─ docs/         optional module, fumadocs on next
 ├─ packages/
 │  ├─ ui/           shadcn components and theme tokens
-│  ├─ orpc/         shared contracts and clients
+│  ├─ common/       shared zod schemas, constants and utils
+│  ├─ orpc/         procedures and clients, built on common
 │  ├─ db/           drizzle schema, migrations, seed scenario
 │  ├─ auth/         better-auth setup
 │  ├─ env/          zod-validated env, one root .env
@@ -26,6 +28,10 @@ my-app/
 ## One rule for the apps
 
 `apps/api` is the only app that touches the database, auth, storage and providers. `web` and `dashboard` only call the api, so secrets and data access live in one place and the two frontends stay thin.
+
+## Shared code lives in common
+
+`packages/common` holds what more than one app or package needs: zod schemas and their inferred types, constants such as input limits, and small utils. The api validates with the same schemas the dashboard forms read their limits from, so a rule changes in one file. Import from `@your-scope/common/schemas`, `/constants` or `/utils`; don't redeclare a type in an app when one exists there.
 
 ## Commands
 

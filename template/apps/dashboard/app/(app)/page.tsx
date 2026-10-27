@@ -1,3 +1,4 @@
+import { firstName } from "@acme/common/utils"
 import { nextEnv } from "@acme/env/next"
 import { Button } from "@acme/ui/components/button"
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@acme/ui/components/card"
@@ -15,7 +16,7 @@ export default async function OverviewPage() {
   const env = nextEnv()
   return (
     <>
-      <PageHeader title="Overview" description={`Hello ${me.name.split(" ")[0]}, here's where things stand.`} />
+      <PageHeader title="Overview" description={`Hello ${firstName(me.name)}, here's where things stand.`} />
       <div className="grid gap-4 p-4 md:grid-cols-3 md:p-6">
         <Card>
           <CardHeader>

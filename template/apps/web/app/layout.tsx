@@ -2,6 +2,7 @@ import "@acme/ui/globals.css"
 import { QueryProvider } from "@acme/orpc/react"
 import { cn } from "@acme/ui/lib/utils"
 import type { Metadata } from "next"
+import { Analytics } from "@/components/analytics" // @findplate:databuddy
 import { ThemeProvider } from "@/components/theme-provider"
 import { Umami } from "@/components/umami" // @findplate:umami
 import { SITE } from "@/lib/site"
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
   title: SITE.name,
   description: SITE.tagline,
   openGraph: { title: SITE.name, description: SITE.tagline, type: "website" },
+  twitter: { card: "summary_large_image" },
 }
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -21,6 +23,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <ThemeProvider>
           {/* @findplate:umami */}
           <Umami />
+          {/* @end */}
+          {/* @findplate:databuddy */}
+          <Analytics />
           {/* @end */}
           <QueryProvider>
             <div aria-hidden className="pointer-events-none fixed inset-0 -z-10">

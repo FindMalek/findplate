@@ -30,5 +30,10 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const { slug } = await props.params
   const page = source.getPage(slug)
   if (!page) notFound()
-  return { title: page.data.title, description: page.data.description }
+  const image = `/og${slug?.length ? `/${slug.join("/")}` : ""}`
+  return {
+    title: page.data.title,
+    description: page.data.description,
+    openGraph: { images: [{ url: image, width: 1200, height: 630 }] },
+  }
 }

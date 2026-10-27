@@ -5,7 +5,7 @@ description: Optional packages the cli switches on or off.
 
 A module is a package plus the code and env keys that depend on it. Turn one off and the cli deletes its package, its env block and every line between the `@findplate:<module>` and `@end` markers in the template.
 
-Select modules with `--modules storage,ai`, or in the prompt.
+Select modules with `--modules storage,ai,docs,email`, or in the prompt.
 
 ## Available
 
@@ -18,6 +18,14 @@ Select modules with `--modules storage,ai`, or in the prompt.
 | `glitchtip` | off | sentry sdk in api, web and dashboard, pointed at GlitchTip |
 | `infisical` | off | `pnpm dev:secrets` runs dev with infisical |
 | `langfuse` | off | Langfuse traces for AI SDK calls (needs `ai`) |
+| `waitlist` | off | email signup on the landing page, signups listed in the dashboard |
+| `roadmap` | off | public `/roadmap` from the repo's GitHub milestones |
+| `status` | off | public `/status` with live checks of api, database, web and dashboard |
+| `databuddy` | off | cookieless analytics in web and dashboard |
+| `whatsapp` | off | `packages/whatsapp`. `notify()` through Kapso template messages. [Details](/docs/whatsapp) |
+| `telegram` | off | `packages/telegram`. Bot with `notify()`, a webhook route and a setup command. [Details](/docs/telegram) |
+| `docs` | on | `apps/docs`. A fumadocs site on Next with pages about your project |
+| `email` | off | `packages/email`. react-email templates sent through email-sdk and Resend. [Details](/docs/email) |
 
 ### storage
 
@@ -33,7 +41,7 @@ S3_SECRET_ACCESS_KEY=
 
 ### ai
 
-Pick the model with `AI_MODEL` as `provider:model`, where provider is `groq`, `openai` or `anthropic`, and set the matching key:
+Pick the model with `AI_MODEL` as `provider:model`, where provider is `groq`, `openai` or `anthropic`, and set the matching key. `packages/ai` registers the providers that have a key in an AI SDK provider registry and resolves the id to a model, so a missing key turns the feature off instead of crashing:
 
 ```bash
 AI_MODEL=groq:openai/gpt-oss-120b
@@ -44,10 +52,43 @@ ANTHROPIC_API_KEY=
 
 
 The self-hosted ones (umami, openobserve, glitchtip, infisical, langfuse) are covered in [self-hosted tools](/docs/self-hosted), with a compose snippet each.
+### waitlist
+
+The hero gets an email form that posts to `waitlist.join`. Duplicates are ignored. Admins see the signups under Waitlist in the dashboard. It adds the `waitlist` table through the `0001_waitlist` migration, which is dropped with the module.
+
+### roadmap
+
+`/roadmap` lists the milestones of `GITHUB_REPO` with their progress, cached for 10 minutes. Set `GITHUB_TOKEN` for private repos or a higher rate limit.
+
+### status
+
+`/status` calls `status.services`, which checks the database and pings `WEB_URL` and `DASHBOARD_URL` with a 3 s timeout.
+### databuddy
+
+Create a website in [Databuddy](https://app.databuddy.cc) and set its client id. With the id empty nothing is tracked.
+
+```bash
+NEXT_PUBLIC_DATABUDDY_CLIENT_ID=
+```
+
+The `Analytics` component in `apps/web` and `apps/dashboard` renders the `@databuddy/sdk` script with web vitals on. `NEXT_PUBLIC_*` is inlined at `next build`, so pass the client id as a build arg in docker and dokploy too.
 
 ## Coming
 
 - email with email-sdk and resend ([#11](https://github.com/FindMalek/findplate/issues/11))
 - telegram bot ([#12](https://github.com/FindMalek/findplate/issues/12)) and whatsapp via kapso ([#13](https://github.com/FindMalek/findplate/issues/13))
-- waitlist, roadmap and status pages ([#14](https://github.com/FindMalek/findplate/issues/14))
+
+### docs
+
+`apps/docs` is a Next app on port 3003 that uses your preset's tokens and fonts. The pages are mdx in `apps/docs/content/docs`: setup, environment, structure, scripts and deploy, written for the generated project. Edit them like any other file. It has its own `Dockerfile` and reads `DOCS_URL`:
+
+```bash
+DOCS_URL=http://localhost:3003
+```
+
+## Coming
+
 - analytics with databuddy ([#15](https://github.com/FindMalek/findplate/issues/15))
+
+- waitlist, roadmap and status pages ([#14](https://github.com/FindMalek/findplate/issues/14))
+- umami, openobserve, glitchtip, infisical and langfuse ([#20](https://github.com/FindMalek/findplate/issues/20))

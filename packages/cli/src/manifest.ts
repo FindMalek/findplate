@@ -8,6 +8,12 @@ export interface ModuleKey {
   url: string
 }
 
+/** Public skills from one repo, installed with the skills cli. */
+export interface SkillPack {
+  source: string
+  skills: string[]
+}
+
 export interface ModuleSpec {
   label: string
   hint: string
@@ -21,11 +27,13 @@ export interface ModuleSpec {
   requires?: string[]
   /** Root package.json scripts added when the module is on. */
   scripts?: Record<string, string>
+  skills?: SkillPack[]
 }
 
 export interface Manifest {
   name: string
   scope: string
+  skills: SkillPack[]
   modules: Record<string, ModuleSpec>
 }
 

@@ -6,7 +6,22 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!**/drizzle/meta", "!**/next-env.d.ts", "!.findplate", "!packages/ui/src/components"]
+    "includes": [
+      "**",
+      "!**/drizzle/meta",
+      "!**/next-env.d.ts",
+      "!.findplate",
+      "!packages/ui/src/components",
+      "!.mcp.json",
+      "!opencode.json",
+      "!.cursor",
+      "!.zed",
+      "!.agents",
+      "!.opencode",
+      "!.pi",
+      "!.claude",
+      "!skills-lock.json"
+    ]
   },
   "formatter": {
     "indentStyle": "space",

@@ -10,6 +10,7 @@ const schema = z.object({
   NEXT_PUBLIC_UMAMI_URL: z.url().default("https://cloud.umami.is"), // @findplate:umami
   NEXT_PUBLIC_UMAMI_WEBSITE_ID: z.string().optional(), // @findplate:umami
   NEXT_PUBLIC_GLITCHTIP_DSN: z.string().optional(), // @findplate:glitchtip
+  NEXT_PUBLIC_DATABUDDY_CLIENT_ID: z.string().optional(), // @findplate:databuddy
 })
 
 export const nextEnv = () => parseEnv(schema)
