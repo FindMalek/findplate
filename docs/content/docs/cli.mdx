@@ -58,10 +58,22 @@ Add `--no-install --no-git` when the agent will run those steps itself.
 2. copies the template, renames `acme` to your project, removes the modules you turned off
 3. replaces the theme tokens with the preset's `theme.css`
 4. writes `.env` with generated secrets and an admin password
-5. `pnpm install`, `pnpm check`, then `git init` with a first commit on `main`
+5. `pnpm install`, `pnpm check`, then `git init` with a first commit
+
+## Git
+
+The first commit lands on your `init.defaultBranch` (or `main` when unset). The step is skipped, with a note, when git isn't installed or when the target already sits inside a git repository, so a project generated into a monorepo never commits to the outer repo. The GitHub step needs its own repo, so pass `--no-github` there.
+
+## Exit codes
+
+| Code | Meaning |
+| --- | --- |
+| `0` | done, or you cancelled a prompt |
+| `1` | a step failed, or `doctor` found a failing check |
+| `2` | usage error, such as a missing `--name` without a terminal, an unknown preset or module |
+| `3` | `findplate add` refused because the git tree has uncommitted changes, see [add and doctor](/docs/add-doctor) |
 
 ## Coming
 
-- `findplate add` and `findplate doctor` ([#19](https://github.com/FindMalek/findplate/issues/19))
 - per-user config and resumable state ([#6](https://github.com/FindMalek/findplate/issues/6))
 - github, dokploy and dns provisioning ([#7](https://github.com/FindMalek/findplate/issues/7), [#8](https://github.com/FindMalek/findplate/issues/8))
