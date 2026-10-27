@@ -6,7 +6,7 @@ import { generate } from "../src/generate"
 import { buildEnv } from "../src/generate/env"
 import { renameProject, toNames } from "../src/generate/rename"
 import { stripModules } from "../src/generate/strip"
-import { templateDir } from "../src/paths"
+import { presetsDir, templateDir } from "../src/paths"
 import { listPresets } from "../src/presets"
 
 test("module blocks stay when enabled and disappear when not, markers always go", () => {
@@ -39,8 +39,7 @@ const files = (dir: string): string[] =>
   )
 
 describe("generate", () => {
-  const preset = listPresets().find((p) => p.id === "monochrome")!
-  const make = (modules: string[]) => {
+  const make = (modules: string[], preset = listPresets().find((p) => p.id === "monochrome")!) => {
     const target = join(mkdtempSync(join(tmpdir(), "findplate-")), "demo-app")
     const result = generate({
       templateDir: templateDir(),
@@ -80,5 +79,21 @@ describe("generate", () => {
     expect(readFileSync(join(target, "apps/api/src/index.ts"), "utf8")).not.toContain("resolveModel")
     expect(readFileSync(join(target, "pnpm-workspace.yaml"), "utf8")).not.toMatch(/ai-sdk|^\s+ai:/m)
     expect(readFileSync(join(target, ".env.example"), "utf8")).not.toContain("S3_BUCKET")
+  })
+
+  test.each(listPresets().map((p) => p.id))("preset %s: tokens, fonts and theme land, nothing left over", (id) => {
+    const preset = listPresets().find((p) => p.id === id)!
+    const { target } = make([], preset)
+    const theme = readFileSync(join(target, "packages/ui/src/styles/theme.css"), "utf8")
+    expect(theme).toBe(readFileSync(join(presetsDir(), id, "theme.css"), "utf8"))
+    expect(theme).toMatch(/:root \{[\s\S]*--radius:/)
+    expect(theme).toMatch(/\.dark \{/)
+    expect(readFileSync(join(target, "apps/web/app/fonts.ts"), "utf8")).toContain(`${preset.fonts.heading.family}(`)
+    expect(JSON.parse(readFileSync(join(target, "apps/web/components.json"), "utf8")).style).toBe(preset.shadcn.style)
+    for (const file of files(target)) {
+      if (statSync(file).size > 2_000_000 || /\.(ico|png)$/.test(file)) continue
+      const text = readFileSync(file, "utf8")
+      expect({ file, left: /\bacme\b|@acme\/|@findplate:/i.test(text) }).toEqual({ file, left: false })
+    }
   })
 })
