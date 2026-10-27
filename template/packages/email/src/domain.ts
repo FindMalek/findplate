@@ -22,7 +22,7 @@ async function call<T>(apiKey: string, path: string, method: string, body?: unkn
     headers: { authorization: `Bearer ${apiKey}`, "content-type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
   })
-  const json = (await response.json()) as T & { message?: string }
+  const json = (await response.json().catch(() => ({}))) as T & { message?: string }
   if (!response.ok) throw new Error(`Resend ${path}: ${json.message ?? response.status}`)
   return json
 }

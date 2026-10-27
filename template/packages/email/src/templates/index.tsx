@@ -37,6 +37,12 @@ export const templates = {
       />
     ),
   },
+  test: {
+    subject: "Test email",
+    render: ({ url }) => (
+      <LinkTemplate title="Test email" intro="Email is set up and sending from your api." cta="Open app" url={url} />
+    ),
+  },
   magicLink: {
     subject: "Your sign-in link",
     render: ({ url }) => (

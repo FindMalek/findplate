@@ -9,6 +9,6 @@ export const emailRouter = {
     .output(z.object({ id: z.string().optional() }))
     .handler(async ({ context, input }) => {
       if (!context.mailer) throw new ORPCError("SERVICE_UNAVAILABLE", { message: "Set RESEND_API_KEY to send email." })
-      return context.mailer.send("magicLink", input.to, { url: "https://example.com" })
+      return context.mailer.send("test", input.to, { url: context.headers.get("origin") ?? "http://localhost:3002" })
     }),
 }

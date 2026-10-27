@@ -17,9 +17,10 @@ export interface AuthConfig {
   sendResetPassword?: (user: { email: string; name: string }, url: string) => Promise<unknown>
 }
 
-const quiet = (task: Promise<unknown> | undefined) => task?.catch((error) => console.error("[auth] email failed", error))
+const quiet = (task: Promise<unknown>) => task.catch((error) => console.error("[auth] email failed", error))
 
 export function createAuth(config: AuthConfig) {
+  const { sendVerification, sendResetPassword } = config
   return betterAuth({
     baseURL: config.dashboardUrl,
     secret: config.secret,
@@ -28,12 +29,12 @@ export function createAuth(config: AuthConfig) {
     emailAndPassword: {
       enabled: true,
       minPasswordLength: 10,
-      sendResetPassword: config.sendResetPassword
-        ? async ({ user, url }) => void quiet(config.sendResetPassword?.(user, url))
+      sendResetPassword: sendResetPassword
+        ? async ({ user, url }) => void quiet(sendResetPassword(user, url))
         : undefined,
     },
-    emailVerification: config.sendVerification
-      ? { sendOnSignUp: true, sendVerificationEmail: async ({ user, url }) => void quiet(config.sendVerification?.(user, url)) }
+    emailVerification: sendVerification
+      ? { sendOnSignUp: true, sendVerificationEmail: async ({ user, url }) => void quiet(sendVerification(user, url)) }
       : undefined,
     socialProviders: config.github ? { github: config.github } : undefined,
     plugins: [admin()],
