@@ -5,6 +5,7 @@ import pkg from "../package.json"
 import { configCommand } from "./commands/config"
 import { create } from "./commands/create"
 import { github } from "./commands/github"
+import { provisionCommand } from "./commands/provision"
 
 const VERSION = pkg.version
 
@@ -14,6 +15,7 @@ Usage
   findplate create [dir] [options]   re-run in an unfinished project to resume it
   findplate github [dir] [options]   create the repo, board, labels and rules on GitHub (idempotent)
   findplate config [list|get|set|unset|path] [key] [value]
+  findplate provision <dokploy|s3|dns|turbo|backup|all> [--dry-run]   see provision --help
 
 Options
   --name <name>        project name (defaults to dir)
@@ -40,6 +42,7 @@ GitHub options (findplate github)
                        copy this project as the board instead of building the Status column`
 
 async function main() {
+  if (process.argv[2] === "provision") return provisionCommand(process.argv.slice(3))
   const { values, positionals } = parseArgs({
     allowPositionals: true,
     allowNegative: true,

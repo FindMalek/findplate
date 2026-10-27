@@ -9,6 +9,8 @@
     "theming",
     "deploy",
     "github",
+    "provision",
+    "previews",
     "agents",
     "ci"
   ]
