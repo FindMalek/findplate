@@ -19,7 +19,7 @@ Options
   --name <name>        project name (defaults to dir)
   --pitch <text>       one-line pitch for the landing page
   --preset <id>        design preset (monochrome, …)
-  --modules <a,b>      optional modules to include (storage, ai); empty for none
+  --modules <a,b>      optional modules to include (storage, ai, docs); empty for none
   --no-install         skip pnpm install
   --no-git             skip git init
   --no-agents          skip generating agent rules (ruler)

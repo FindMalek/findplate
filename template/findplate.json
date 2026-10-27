@@ -21,6 +21,13 @@
       "paths": ["packages/storage"],
       "packages": ["@acme/storage"]
     },
+    "docs": {
+      "label": "Docs site",
+      "hint": "fumadocs on Next, with pages about your project",
+      "default": true,
+      "paths": ["apps/docs"],
+      "packages": ["fumadocs-core", "fumadocs-mdx", "fumadocs-ui", "@types/mdx"]
+    },
     "ai": {
       "label": "AI",
       "hint": "Vercel AI SDK with Groq, OpenAI or Anthropic",
