@@ -121,6 +121,8 @@
       "keys": [
         { "env": "LANGFUSE_PUBLIC_KEY", "label": "Langfuse public key", "url": "https://langfuse.com/docs/get-started" },
         { "env": "LANGFUSE_SECRET_KEY", "label": "Langfuse secret key", "url": "https://langfuse.com/docs/get-started" }
+      ]
+    },
     "waitlist": {
       "label": "Waitlist",
       "hint": "email signup on the landing page, list in the dashboard",
