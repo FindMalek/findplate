@@ -1,0 +1,34 @@
+---
+title: Status
+description: A public /status page with live checks.
+---
+
+The `status` module adds a public `/status` page to `apps/web`. It calls `status.services`, which checks the database and pings the web and dashboard. It is off by default.
+
+```bash
+findplate create my-app --modules status
+```
+
+## What it adds
+
+Files and folders:
+
+- `packages/orpc/src/routers/status.ts`
+- `apps/web/app/status`
+
+## Env keys
+
+```bash
+WEB_URL=
+DASHBOARD_URL=
+```
+
+Each check has a 3 second timeout. Both urls are already part of the base `.env`.
+
+## Remove
+
+Generate without it: leave `status` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
+
+## Swap
+
+Add a service by adding a check in `packages/orpc/src/routers/status.ts`. For uptime history from outside your own infra, point a hosted monitor at `/status`.

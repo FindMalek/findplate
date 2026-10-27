@@ -1,0 +1,44 @@
+---
+title: AI
+description: Vercel AI SDK with Groq, OpenAI or Anthropic.
+---
+
+The `ai` module adds `packages/ai` and a summarize button in the dashboard. It wires the Vercel AI SDK to Groq, OpenAI or Anthropic. It is on by default.
+
+```bash
+findplate create my-app --modules ai
+```
+
+## What it adds
+
+Files and folders:
+
+- `packages/ai`
+- `apps/dashboard/components/summarize-button.tsx`
+
+Packages:
+
+- `@acme/ai`
+- `ai`
+- `@ai-sdk/anthropic`
+- `@ai-sdk/groq`
+- `@ai-sdk/openai`
+
+## Env keys
+
+```bash
+AI_MODEL=groq:openai/gpt-oss-120b
+GROQ_API_KEY=
+OPENAI_API_KEY=
+ANTHROPIC_API_KEY=
+```
+
+`AI_MODEL` is `provider:model`. `resolveModel(id, keys)` registers only the providers that have a key and returns `null` for an unknown or unkeyed one, so a missing key turns the feature off.
+
+## Remove
+
+Generate without it: leave `ai` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
+
+## Swap
+
+Change `AI_MODEL` and set the matching key, for example `anthropic:claude-sonnet-4-5` with `ANTHROPIC_API_KEY`. To add another provider, install its `@ai-sdk/*` package and register it in `packages/ai/src/index.ts`. [Langfuse](/docs/langfuse) traces the calls.

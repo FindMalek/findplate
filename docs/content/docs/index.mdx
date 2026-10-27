@@ -5,9 +5,36 @@ description: What findplate generates and how the docs are laid out.
 
 findplate is a generator. One command creates a working turborepo with a landing page, a dashboard with login, and an api, wired to a database, auth and typed rpc. You pick a design preset and the optional modules you want, and you get a project you own from the first commit.
 
+<Tabs groupId="pm" persist items={["bun", "pnpm", "npm", "yarn"]}>
+  <Tab value="bun">
+
 ```bash
 bunx findplate create
 ```
+
+  </Tab>
+  <Tab value="pnpm">
+
+```bash
+pnpm dlx findplate create
+```
+
+  </Tab>
+  <Tab value="npm">
+
+```bash
+npx findplate create
+```
+
+  </Tab>
+  <Tab value="yarn">
+
+```bash
+yarn dlx findplate create
+```
+
+  </Tab>
+</Tabs>
 
 ## What you get
 

@@ -38,18 +38,30 @@ jobs:
           --source "template/apps/*/package.json"
           --source "template/packages/*/package.json"
 
+  plan:
+    name: module matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.matrix.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - id: matrix
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: node .github/scripts/module-matrix.mjs template/findplate.json
+
   template:
     name: template (${{ matrix.name }})
+    needs: plan
     runs-on: ubuntu-latest
     timeout-minutes: 25
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - name: all modules
-            modules: storage,ai,whatsapp,telegram,docs,email
-          - name: minimum
-            modules: ""
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
     env:
       PROJECT: /tmp/generated
     steps:
@@ -68,6 +80,7 @@ jobs:
         working-directory: ${{ env.PROJECT }}
         run: pnpm test
       - name: Build
+        if: matrix.build
         working-directory: ${{ env.PROJECT }}
         run: pnpm build
 

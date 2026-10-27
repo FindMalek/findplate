@@ -52,3 +52,18 @@ test("a resume keeps the api keys already in .env", async () => {
   await create(flags)
   expect(readFileSync(envFile, "utf8")).toContain("GROQ_API_KEY=gsk_test")
 })
+
+test("a fresh project has a clean git tree after create", async () => {
+  const target = join(mkdtempSync(join(tmpdir(), "fp-clean-")), "demo")
+  const identity = {
+    GIT_AUTHOR_NAME: "t",
+    GIT_AUTHOR_EMAIL: "t@t.t",
+    GIT_COMMITTER_NAME: "t",
+    GIT_COMMITTER_EMAIL: "t@t.t",
+  }
+  Object.assign(process.env, identity)
+  await create({ dir: target, install: false, git: true, yes: true, name: "demo", modules: "" })
+  for (const key of Object.keys(identity)) delete process.env[key]
+  const status = Bun.spawnSync(["git", "status", "--porcelain"], { cwd: target }).stdout.toString()
+  expect(status).toBe("")
+})

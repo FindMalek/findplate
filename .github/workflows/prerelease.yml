@@ -1,0 +1,98 @@
+name: prerelease
+
+# Publishes a prerelease of the cli under the `pr-<n>` dist-tag so a pull request can be tried with
+# `bunx findplate@pr-<n> create`. Skipped without NPM_TOKEN and for pull requests from forks.
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "packages/cli/**"
+      - "template/**"
+      - "presets/**"
+      - ".github/workflows/prerelease.yml"
+
+concurrency:
+  group: prerelease-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    name: publish pr-${{ github.event.pull_request.number }}
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    env:
+      PR: ${{ github.event.pull_request.number }}
+      HAS_TOKEN: ${{ secrets.NPM_TOKEN != '' }}
+    steps:
+      - name: Skip without a token
+        if: env.HAS_TOKEN != 'true'
+        run: |
+          echo "### Prerelease skipped" >> "$GITHUB_STEP_SUMMARY"
+          echo >> "$GITHUB_STEP_SUMMARY"
+          echo "Set the \`NPM_TOKEN\` secret to publish \`pr-$PR\` prereleases." >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/checkout@v7
+        if: env.HAS_TOKEN == 'true'
+      - uses: pnpm/action-setup@v6
+        if: env.HAS_TOKEN == 'true'
+      - uses: actions/setup-node@v7
+        if: env.HAS_TOKEN == 'true'
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+      - uses: oven-sh/setup-bun@v2
+        if: env.HAS_TOKEN == 'true'
+        with:
+          bun-version: 1.4.2
+      - name: Install
+        if: env.HAS_TOKEN == 'true'
+        run: pnpm install --frozen-lockfile
+      - name: Version
+        if: env.HAS_TOKEN == 'true'
+        id: version
+        working-directory: packages/cli
+        run: |
+          base=$(node -p "require('./package.json').version.split('-')[0]")
+          version="$base-pr.$PR.${{ github.run_number }}.${{ github.run_attempt }}"
+          npm version "$version" --no-git-tag-version
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+      - name: Publish (prepack copies template and presets)
+        if: env.HAS_TOKEN == 'true'
+        working-directory: packages/cli
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npm publish --provenance --access public --tag "pr-$PR"
+      - name: Sticky install comment
+        if: env.HAS_TOKEN == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+          REPO: ${{ github.repository }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          marker="<!-- findplate-prerelease -->"
+          {
+            echo "$marker"
+            echo "### try this pr"
+            echo
+            echo '```bash'
+            echo "bunx findplate@pr-$PR create"
+            echo '```'
+            echo
+            echo "published \`findplate@$VERSION\` from ${HEAD_SHA::7}. \`pnpm dlx findplate@pr-$PR create\` and \`npx findplate@pr-$PR create\` work too."
+          } > comment.md
+          id=$(gh api "repos/$REPO/issues/$PR/comments" --paginate --jq ".[] | select(.body | contains(\"$marker\")) | .id" | head -n 1)
+          if [ -n "$id" ]; then
+            gh api "repos/$REPO/issues/comments/$id" -X PATCH -F body=@comment.md
+          else
+            gh api "repos/$REPO/issues/$PR/comments" -F body=@comment.md
+          fi

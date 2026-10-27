@@ -1,0 +1,40 @@
+---
+title: FAQ
+description: Short answers to common questions.
+---
+
+## Can I add a module after generating?
+
+By hand. Generate a throwaway project with the module on, copy its paths, env block and the lines it adds into your project, and run `pnpm check-types`. The [module pages](/docs/modules) list what each one adds.
+
+## Can I remove a module later?
+
+Yes. Each module page has a Remove section. Delete the paths it lists, drop its packages, remove its env block and fix what the type check reports.
+
+## Does the project depend on findplate?
+
+No. The output is a normal turborepo. Nothing at runtime imports findplate and the cli never touches the project again.
+
+## Why do I need bun?
+
+Only to run the cli with `bunx`, and for the api in the generated project. Install dependencies and run scripts with pnpm. With `npx` or `pnpm dlx` you only need bun if you run the api locally.
+
+## Why pnpm and not npm or yarn?
+
+The template uses pnpm workspaces and a lockfile for strict, cacheable installs. The scripts in `package.json` call `pnpm`. Switching package manager is possible but you carry the changes.
+
+## What happens when a key is missing?
+
+The feature turns off. Storage, AI, email, WhatsApp and Telegram return `null` from their factory and the code that uses them checks for it, so the app still starts.
+
+## Can I use a different database?
+
+The template is built on Postgres with Drizzle, and local development runs it in Docker with `pnpm db:up`. Another database means changing the `db` package and its migrations.
+
+## Can I change the design after generating?
+
+Yes. The preset only sets tokens in `packages/ui`. Edit the css variables, or paste a new theme from [shadcn create](https://ui.shadcn.com/create).
+
+## Where do I report a problem?
+
+On [GitHub issues](https://github.com/FindMalek/findplate/issues). Include the command you ran and the output of `findplate --version`.

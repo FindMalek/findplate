@@ -1,0 +1,36 @@
+---
+title: Roadmap
+description: A public /roadmap from GitHub milestones.
+---
+
+The `roadmap` module adds a public `/roadmap` page to `apps/web` that lists the milestones of `GITHUB_REPO` with their progress. It is off by default.
+
+```bash
+findplate create my-app --modules roadmap
+```
+
+## What it adds
+
+Files and folders:
+
+- `packages/orpc/src/routers/roadmap.ts`
+- `packages/orpc/src/lib/roadmap.ts`
+- `packages/orpc/src/lib/roadmap.test.ts`
+- `apps/web/app/roadmap`
+
+## Env keys
+
+```bash
+GITHUB_REPO=
+GITHUB_TOKEN=
+```
+
+Results are cached for 10 minutes. `GITHUB_TOKEN` is optional, set it for a private repo or a higher rate limit. Both keys are part of the base `.env`.
+
+## Remove
+
+Generate without it: leave `roadmap` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
+
+## Swap
+
+The data comes from `packages/orpc/src/lib/roadmap.ts`. Replace the fetch there to read from another tracker, the page only needs the milestone shape.
