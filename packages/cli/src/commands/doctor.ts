@@ -119,7 +119,7 @@ export async function runChecks(dir: string): Promise<CheckResult[]> {
     )
   }
 
-  if (loadDone(dir).some((id) => id.includes("dns"))) {
+  if (loadDone(dir).includes("dns")) {
     for (const key of ["WEB_URL", "DASHBOARD_URL", "API_PUBLIC_URL"]) {
       const host = env[key] ? new URL(env[key]).hostname : ""
       if (!host || isLocalHost(host)) continue

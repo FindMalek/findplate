@@ -25,7 +25,7 @@ export interface AddFlags {
 }
 
 /** Never copied from the regenerated project: local secrets, state, the lockfile pnpm owns, build output. */
-const IGNORED = new Set([".env", ".findplate", "node_modules", ".next", ".turbo", "dist", ".git", "pnpm-lock.yaml"])
+const IGNORED = new Set([".env", ".findplate", "node_modules", ".next", ".turbo", "dist", ".git", ".vercel", "pnpm-lock.yaml"])
 
 function readTree(root: string): Tree {
   const tree = new Map<string, string>()
