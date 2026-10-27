@@ -21,13 +21,18 @@ export default async function RoadmapPage() {
               <a href={m.url} target="_blank" rel="noreferrer" className="hover:underline">
                 {m.title}
               </a>
-              <Badge variant={m.state === "closed" ? "default" : "outline"}>{m.state === "closed" ? "shipped" : `${m.progress}%`}</Badge>
+              <Badge variant={m.state === "closed" ? "default" : "outline"}>
+                {m.state === "closed" ? "shipped" : `${m.progress}%`}
+              </Badge>
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-3 text-muted-foreground text-sm">
             {m.description && <p>{m.description}</p>}
             <div className="h-1.5 bg-muted">
-              <div className="h-full w-(--progress) bg-primary" style={{ "--progress": `${m.progress}%` } as React.CSSProperties} />
+              <div
+                className="h-full w-(--progress) bg-primary"
+                style={{ "--progress": `${m.progress}%` } as React.CSSProperties}
+              />
             </div>
             <span className="font-mono text-xs">
               {m.closed} done · {m.open} open

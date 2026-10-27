@@ -6,7 +6,7 @@ import { adminProcedure, publicProcedure } from "../procedures"
 export const waitlistRouter = {
   join: publicProcedure
     .route({ method: "POST", path: "/waitlist", summary: "Join the waitlist", tags: ["waitlist"] })
-    .input(z.object({ email: z.email().max(254).transform((email) => email.toLowerCase()) }))
+    .input(z.object({ email: z.email().max(254).toLowerCase() }))
     .output(z.object({ ok: z.literal(true) }))
     .handler(async ({ context, input }) => {
       await context.db.insert(waitlist).values({ email: input.email }).onConflictDoNothing()
