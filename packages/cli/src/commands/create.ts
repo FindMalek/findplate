@@ -1,5 +1,5 @@
-import { existsSync, readdirSync, rmSync } from "node:fs"
-import { resolve } from "node:path"
+import { existsSync, readdirSync, readFileSync, rmSync } from "node:fs"
+import { join, resolve } from "node:path"
 import * as p from "@clack/prompts"
 import { generate } from "../generate"
 import { isValidSlug, toNames } from "../generate/rename"
@@ -153,8 +153,16 @@ export async function create(flags: CreateFlags) {
             },
           },
         ]
+  saveState(target, state)
   const steps: p.Task[] = [
     ...step("generate", "Copying the template", () => {
+      if (existsSync(join(target, ".env"))) {
+        const old = readFileSync(join(target, ".env"), "utf8")
+        for (const key of modules.flatMap((id) => manifest.modules[id]?.keys ?? [])) {
+          const value = old.match(new RegExp(`^${key.env}=(.+)$`, "m"))?.[1]
+          if (value) env[key.env] = value
+        }
+      }
       if (existsSync(target)) {
         for (const entry of readdirSync(target))
           if (entry !== ".findplate") rmSync(resolve(target, entry), { recursive: true, force: true })

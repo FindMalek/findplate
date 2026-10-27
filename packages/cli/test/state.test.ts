@@ -29,6 +29,17 @@ test("re-running create in an interrupted project resumes from its saved answers
   expect(existsSync(join(target, "stray"))).toBe(false)
   expect(existsSync(join(target, "packages/ai"))).toBe(true)
   expect(existsSync(join(target, "packages/storage"))).toBe(false)
-  expect(readFileSync(join(target, "apps/web/app/page.tsx"), "utf8")).toContain("first pitch")
+  expect(readFileSync(join(target, "apps/web/lib/site.ts"), "utf8")).toContain("first pitch")
   expect(loadState(target)?.done).toEqual(["generate"])
+})
+
+test("a resume keeps the api keys already in .env", async () => {
+  const target = join(mkdtempSync(join(tmpdir(), "fp-keys-")), "demo")
+  const flags = { dir: target, install: false, git: false, yes: true, name: "demo", modules: "ai" }
+  await create(flags)
+  const envFile = join(target, ".env")
+  writeFileSync(envFile, readFileSync(envFile, "utf8").replace(/^GROQ_API_KEY=.*$/m, "GROQ_API_KEY=gsk_test"))
+  writeFileSync(join(target, ".findplate", "state.json"), JSON.stringify({ ...loadState(target), done: [] }))
+  await create(flags)
+  expect(readFileSync(envFile, "utf8")).toContain("GROQ_API_KEY=gsk_test")
 })
