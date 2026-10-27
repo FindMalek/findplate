@@ -10,6 +10,8 @@ import * as Sentry from "@sentry/bun" // @findplate:glitchtip
 import { sql } from "drizzle-orm"
 import { traceCall } from "./openobserve" // @findplate:openobserve
 
+type Interceptors = NonNullable<NonNullable<ConstructorParameters<typeof RPCHandler>[1]>["interceptors"]>
+
 /**
  * The api is the only app that touches the database, auth, storage and providers. Routes:
  *   /auth/*       better-auth (the dashboard proxies /api/auth/* here, so cookies stay first-party)
@@ -19,14 +21,9 @@ import { traceCall } from "./openobserve" // @findplate:openobserve
  *   /health       for Dokploy and uptime checks
  */
 export function createServer(services: Services & { auth: Auth }, opts: { publicUrl: string }) {
-  const interceptors: NonNullable<ConstructorParameters<typeof RPCHandler>[1]>["interceptors"] = [
-    // @findplate:glitchtip
-    onError((error) => void Sentry.captureException(error)),
-    // @end
-    // @findplate:openobserve
-    traceCall,
-    // @end
-  ]
+  const interceptors: Interceptors = []
+  interceptors.push(onError((error) => void Sentry.captureException(error))) // @findplate:glitchtip
+  interceptors.push(traceCall) // @findplate:openobserve
   const rpc = new RPCHandler(appRouter, { plugins: [new SimpleCsrfProtectionHandlerPlugin()], interceptors })
   const rest = new OpenAPIHandler(appRouter, {
     interceptors,

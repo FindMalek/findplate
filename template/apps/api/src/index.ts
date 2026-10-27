@@ -4,8 +4,8 @@ import { createDb } from "@acme/db"
 import { runMigrations } from "@acme/db/migrate"
 import { seedDemo } from "@acme/db/seed"
 import { loadApiEnv } from "@acme/env/api"
-import * as Sentry from "@sentry/bun" // @findplate:glitchtip
 import { createStorage } from "@acme/storage" // @findplate:storage
+import * as Sentry from "@sentry/bun" // @findplate:glitchtip
 import { ensureAdmin } from "./admin"
 import { startLangfuse } from "./langfuse" // @findplate:langfuse
 import { startOpenObserve } from "./openobserve" // @findplate:openobserve

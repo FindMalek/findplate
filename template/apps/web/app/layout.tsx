@@ -3,8 +3,8 @@ import { QueryProvider } from "@acme/orpc/react"
 import { cn } from "@acme/ui/lib/utils"
 import type { Metadata } from "next"
 import { ThemeProvider } from "@/components/theme-provider"
-import { SITE } from "@/lib/site"
 import { Umami } from "@/components/umami" // @findplate:umami
+import { SITE } from "@/lib/site"
 import { fontVariables } from "./fonts"
 
 export const metadata: Metadata = {
