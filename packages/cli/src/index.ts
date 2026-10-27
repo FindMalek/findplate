@@ -6,6 +6,7 @@ import { configCommand } from "./commands/config"
 import { create } from "./commands/create"
 import { github } from "./commands/github"
 import { provisionCommand } from "./commands/provision"
+import { CliError, EXIT } from "./errors"
 
 const VERSION = pkg.version
 
@@ -111,5 +112,5 @@ async function main() {
 
 main().catch((error: Error) => {
   p.log.error(error.message)
-  process.exit(1)
+  process.exit(error instanceof CliError ? error.code : EXIT.failure)
 })
