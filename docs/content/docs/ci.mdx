@@ -1,0 +1,25 @@
+---
+title: CI
+description: Checks for the generator and for generated projects.
+---
+
+<Callout title="Coming" type="warn">
+  CI is tracked in [#5](https://github.com/FindMalek/findplate/issues/5) and [#18](https://github.com/FindMalek/findplate/issues/18). Generated projects do not include workflows yet.
+</Callout>
+
+## Run the checks yourself
+
+Until then, the same checks run locally in a generated project:
+
+```bash
+pnpm lint
+pnpm check-types
+pnpm test
+pnpm build
+```
+
+## Planned
+
+- generator CI: generate a project from the template and build it, so a template change cannot break `create` ([#5](https://github.com/FindMalek/findplate/issues/5))
+- CI for generated projects, based on the setups from dukkani and sonaraem ([#18](https://github.com/FindMalek/findplate/issues/18))
+- vercel style preview comments and github deployments ([#9](https://github.com/FindMalek/findplate/issues/9))

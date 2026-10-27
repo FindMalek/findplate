@@ -1,0 +1,50 @@
+---
+title: Presets
+description: Design starting points, one folder each.
+---
+
+A preset decides how the generated project looks: shadcn style, color tokens, fonts, radius and the hero accents. Pick one with `--preset <id>` or in the prompt.
+
+## Available
+
+| Preset | Look |
+| --- | --- |
+| `monochrome` | Black and white, square corners, IBM Plex and JetBrains Mono. Quiet and technical. This site uses it |
+
+## Coming
+
+These are being added under [#4](https://github.com/FindMalek/findplate/issues/4).
+
+| Preset | Look |
+| --- | --- |
+| `clay` | coming |
+| `editorial` | coming |
+| `midnight` | coming |
+| `soft` | coming |
+
+## Anatomy
+
+Each preset is a folder in `presets/`. Adding a preset is adding a folder, the cli lists whatever it finds.
+
+```text
+presets/monochrome/
+├─ preset.json   label, description, shadcn style, base color, fonts
+└─ theme.css     :root and .dark color tokens, radius
+```
+
+`preset.json` for monochrome:
+
+```json
+{
+  "label": "Monochrome",
+  "description": "Black and white, square corners, IBM Plex + JetBrains Mono. Quiet and technical.",
+  "shadcn": { "style": "base-lyra", "baseColor": "neutral" },
+  "fonts": {
+    "sans": { "family": "IBM_Plex_Sans", "weight": ["400", "500", "600", "700"] },
+    "mono": { "family": "JetBrains_Mono" },
+    "heading": { "family": "IBM_Plex_Sans", "weight": ["600", "700"] }
+  }
+}
+```
+
+On `create`, the cli copies `theme.css` into `packages/ui/src/styles/theme.css` and applies the fonts and shadcn style. To change the look after generation, see [customizing the theme](/docs/theming).

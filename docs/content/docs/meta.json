@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "index",
+    "quickstart",
+    "project-structure",
+    "cli",
+    "modules",
+    "presets",
+    "theming",
+    "deploy",
+    "agents",
+    "ci"
+  ]
+}

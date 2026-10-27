@@ -1,0 +1,43 @@
+---
+title: Quickstart
+description: From zero to a running project in a few minutes.
+---
+
+## Requirements
+
+- Node 24 or newer
+- [pnpm](https://pnpm.io) for the generated project
+- Docker, for the local Postgres
+- [bun](https://bun.sh), if you run the cli with `bunx`
+
+## Create a project
+
+```bash
+bunx findplate create
+```
+
+The prompts ask for a project name, a one-line pitch, a design preset and the modules to include. Every answer has a flag, see the [CLI reference](/docs/cli).
+
+The cli then copies the template, installs dependencies, formats the result with biome and makes the first git commit on `main`.
+
+## Run it
+
+```bash
+cd my-app
+pnpm db:up
+pnpm dev
+```
+
+| App | URL |
+| --- | --- |
+| web | http://localhost:3000 |
+| api | http://localhost:3001 |
+| dashboard | http://localhost:3002 |
+
+`pnpm db:up` starts Postgres in docker, on the first free port from 5432. The dashboard admin email is printed when the cli finishes, and the password is `ADMIN_PASSWORD` in your `.env`.
+
+## Next steps
+
+- Shape the look: [customizing the theme](/docs/theming)
+- Add keys for the modules you picked in `.env`
+- Ship it: [deploy](/docs/deploy)
