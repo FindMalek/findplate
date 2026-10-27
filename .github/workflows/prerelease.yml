@@ -62,7 +62,7 @@ jobs:
         working-directory: packages/cli
         run: |
           base=$(node -p "require('./package.json').version.split('-')[0]")
-          version="$base-pr.$PR.${{ github.run_number }}"
+          version="$base-pr.$PR.${{ github.run_number }}.${{ github.run_attempt }}"
           npm version "$version" --no-git-tag-version
           echo "version=$version" >> "$GITHUB_OUTPUT"
       - name: Publish (prepack copies template and presets)

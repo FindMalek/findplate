@@ -66,4 +66,8 @@ jobs:
         run: |
           node .github/scripts/changelog-notes.mjs "${TAG#v}" > notes.md
           if [[ "$TAG" == *-* ]]; then flag="--prerelease"; else flag=""; fi
-          gh release create "$TAG" --title "$TAG" --notes-file notes.md $flag
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --notes-file notes.md
+          else
+            gh release create "$TAG" --title "$TAG" --notes-file notes.md $flag
+          fi
