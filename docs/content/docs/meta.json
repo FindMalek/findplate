@@ -26,6 +26,7 @@
     "telegram",
     "webhooks",
     "email",
+    "rate-limiting",
     "presets",
     "theming",
     "deploy",

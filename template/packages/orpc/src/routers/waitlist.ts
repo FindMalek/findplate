@@ -1,6 +1,7 @@
 import { waitlist } from "@acme/db"
 import { count, desc } from "drizzle-orm"
 import { z } from "zod"
+import { enforceRateLimit, RATE_LIMITS } from "../lib/rate-limit" // @findplate:rate-limit
 import { adminProcedure, publicProcedure } from "../procedures"
 
 export const waitlistRouter = {
@@ -9,6 +10,7 @@ export const waitlistRouter = {
     .input(z.object({ email: z.email().max(254).toLowerCase() }))
     .output(z.object({ ok: z.literal(true) }))
     .handler(async ({ context, input }) => {
+      await enforceRateLimit(context, "waitlist.join", RATE_LIMITS.waitlist) // @findplate:rate-limit
       await context.db.insert(waitlist).values({ email: input.email }).onConflictDoNothing()
       return { ok: true as const }
     }),

@@ -9,12 +9,13 @@ import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
 import * as Sentry from "@sentry/bun" // @findplate:glitchtip
 import { sql } from "drizzle-orm"
 import { traceCall } from "./openobserve" // @findplate:openobserve
+import { limitAuth } from "./rate-limit" // @findplate:rate-limit
 
 type Interceptors = NonNullable<NonNullable<ConstructorParameters<typeof RPCHandler>[1]>["interceptors"]>
 
 /**
  * The api is the only app that touches the database, auth, storage and providers. Routes:
- *   /auth/*       better-auth (the dashboard proxies /api/auth/* here, so cookies stay first-party)
+ *   /auth/*       better-auth (sign-in posts are rate limited per ip) (the dashboard proxies /api/auth/* here, so cookies stay first-party)
  *   /rpc/*        oRPC for web + dashboard (needs `x-csrf-token: orpc`)
  *   /v1/*         the same procedures as REST, docs at /v1/docs, spec at /v1/openapi.json
  *   /files/<key>  redirect to a short-lived url for an uploaded file
@@ -46,6 +47,10 @@ export function createServer(services: Services & { auth: Auth }, opts: { public
     const { pathname } = new URL(request.url)
     if (pathname === "/" || pathname === "/docs") return Response.redirect(new URL("/v1/docs", request.url), 302)
     if (pathname.startsWith("/auth/")) {
+      // @findplate:rate-limit
+      const limited = await limitAuth(services, request)
+      if (limited) return limited
+      // @end
       // The proxy strips the app's `/api` prefix; better-auth expects its default `/api/auth` base path back.
       const url = new URL(request.url)
       url.pathname = `/api${pathname}`
