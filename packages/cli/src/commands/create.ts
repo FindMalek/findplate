@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync, rmSync } from "node:fs"
 import { join, resolve } from "node:path"
 import * as p from "@clack/prompts"
+import { applyAgents } from "../agents"
 import { generate } from "../generate"
 import { isValidSlug, toNames } from "../generate/rename"
 import { loadManifest } from "../manifest"
@@ -18,6 +19,7 @@ export interface CreateFlags {
   modules?: string
   install: boolean
   git: boolean
+  agents: boolean
   yes: boolean
 }
 
@@ -181,6 +183,16 @@ export async function create(flags: CreateFlags) {
       return `Created ${bold(names.slug)} with the ${preset.label.toLowerCase()} preset`
     }),
   ]
+  if (flags.agents) {
+    steps.push(
+      ...step("agents", "Generating agent rules", async () => {
+        const result = await applyAgents(target)
+        return result.ok
+          ? "Agent rules written for claude, cursor, opencode, zed and oh-my-pi"
+          : `Skipped agent rules (${result.reason}). Run pnpm agents later`
+      }),
+    )
+  }
   if (canInstall) {
     steps.push(
       ...step(

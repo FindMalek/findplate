@@ -3,25 +3,31 @@ title: Agent rules and skills
 description: One source of rules for every coding agent.
 ---
 
-<Callout title="Coming" type="warn">
-  This ships with [#16](https://github.com/FindMalek/findplate/issues/16) and [#17](https://github.com/FindMalek/findplate/issues/17). Nothing below is generated yet.
-</Callout>
-
 ## Rules with ruler
 
-The plan is one source in `.ruler/`, and [ruler](https://github.com/intellectronica/ruler) generating the rules each agent reads:
+Every project has one source of rules in `.ruler/AGENTS.md`: the stack, structure, naming, commit format, test style and the oRPC, drizzle and better-auth conventions. [ruler](https://github.com/intellectronica/ruler) turns it into what each agent reads:
 
-- Claude Code
-- Cursor
-- opencode
-- Zed
-- oh-my-pi
+| Agent | Files |
+| --- | --- |
+| Claude Code | `CLAUDE.md`, `.mcp.json` |
+| Cursor | `AGENTS.md`, `.cursor/mcp.json` |
+| opencode | `AGENTS.md`, `opencode.json` |
+| Zed | `AGENTS.md`, `.zed/settings.json` |
+| oh-my-pi | `AGENTS.md` |
 
-MCP servers and skills are installed through the skills cli, so a new teammate or a fresh agent session starts with the same context.
+`.ruler/ruler.toml` lists the agents and the MCP servers every one of them gets: context7, shadcn and vercel. The generated files are committed, so a fresh clone works without ruler.
+
+`findplate create` runs `ruler apply` at the end. If ruler can't be fetched (offline), it skips with a note. Skip it on purpose with `--no-agents`.
+
+To change a rule, edit `.ruler/AGENTS.md` and run:
+
+```bash
+pnpm agents
+```
 
 ## Skills
 
-Per-project skills for the workflow around a ticket: dive into it, plan it, ship it ([#17](https://github.com/FindMalek/findplate/issues/17)).
+Per-project skills for the workflow around a ticket are coming with [#17](https://github.com/FindMalek/findplate/issues/17).
 
 ## Today
 
