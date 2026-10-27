@@ -21,4 +21,3 @@ export const noteUpdateSchema = noteInputSchema.partial().extend({ id: z.uuid() 
 export const noteStatsSchema = z.object({ total: z.number(), pinned: z.number() })
 
 export type Note = z.infer<typeof noteSchema>
-export type NoteInput = z.input<typeof noteInputSchema>
