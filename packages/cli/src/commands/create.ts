@@ -2,8 +2,10 @@ import { existsSync, readdirSync, readFileSync, rmSync } from "node:fs"
 import { join, resolve } from "node:path"
 import * as p from "@clack/prompts"
 import { applyAgents } from "../agents"
+import { CliError, EXIT } from "../errors"
 import { generate } from "../generate"
 import { isValidSlug, toNames } from "../generate/rename"
+import { initRepo } from "../git"
 import { loadManifest } from "../manifest"
 import { templateDir } from "../paths"
 import { detectPackageManager, installCommand, pnpmHint, scriptCommand } from "../pm"
@@ -12,6 +14,7 @@ import { freePort, has, run } from "../run"
 import { installSkills, SKILLS_PACKAGE, skillPacks } from "../skills"
 import { loadState, markDone, type ProjectState, type Step, saveState } from "../state"
 import { accent, bold, brand, dim } from "../ui"
+import { TEMPLATE_VERSION } from "../version"
 import { ghLogin, provision } from "./github"
 
 export interface CreateFlags {
@@ -53,7 +56,7 @@ export async function create(flags: CreateFlags) {
 
   let name = flags.name ?? flags.dir
   if (!name) {
-    if (!canPrompt) throw new Error("--name is required with --yes")
+    if (!canPrompt) throw new CliError("--name is required when there is no terminal or --yes is set", EXIT.usage)
     const answer = answered(
       await p.text({
         message: "Project name",
@@ -161,6 +164,7 @@ export async function create(flags: CreateFlags) {
   let admin = { adminEmail: previous?.answers.adminEmail ?? "", adminPassword: "" }
   const state: ProjectState = previous ?? {
     version: 1,
+    templateVersion: TEMPLATE_VERSION,
     answers: { name: names.slug, pitch, preset: preset.id, modules, postgresPort, adminEmail: "" },
     done: [],
   }
@@ -238,22 +242,13 @@ export async function create(flags: CreateFlags) {
   }
   if (flags.git) {
     steps.push(
-      ...step("git", "Creating the git repository", async () => {
-        await run("git", ["init", "-q", "-b", "main"], target)
-        markDone(target, state, "git")
-        await run("git", ["add", "-A"], target)
-        try {
-          await run("git", ["commit", "-q", "-m", "chore(repo): start from findplate"], target)
-        } catch {
-          return "Git repository created (set user.name and user.email to make the first commit)"
-        }
-        return "First commit on main"
-      }),
+      ...step("git", "Creating the git repository", () => initRepo(target, () => markDone(target, state, "git"))),
     )
   }
   if (wantGithub && flags.git) {
     steps.push(
       ...step("github", "Setting up GitHub", async () => {
+        if (!existsSync(join(target, ".git"))) return "Skipped GitHub, no git repository was created here"
         const outcomes = await provision(target, state, {
           dir: target,
           owner: flags.owner,
