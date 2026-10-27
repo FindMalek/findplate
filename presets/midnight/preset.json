@@ -1,0 +1,11 @@
+{
+  "label": "Midnight",
+  "description": "Deep blue-black with a cool electric accent, Space Grotesk headings. Dark first.",
+  "shadcn": { "style": "base-nova", "baseColor": "slate" },
+  "defaultTheme": "dark",
+  "fonts": {
+    "sans": { "family": "Inter" },
+    "mono": { "family": "Geist_Mono" },
+    "heading": { "family": "Space_Grotesk" }
+  }
+}
