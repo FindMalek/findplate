@@ -2,8 +2,10 @@ import { existsSync, readdirSync, readFileSync, rmSync } from "node:fs"
 import { join, resolve } from "node:path"
 import * as p from "@clack/prompts"
 import { applyAgents } from "../agents"
+import { CliError, EXIT } from "../errors"
 import { generate } from "../generate"
 import { isValidSlug, toNames } from "../generate/rename"
+import { initRepo } from "../git"
 import { loadManifest } from "../manifest"
 import { templateDir } from "../paths"
 import { listPresets } from "../presets"
@@ -52,7 +54,7 @@ export async function create(flags: CreateFlags) {
 
   let name = flags.name ?? flags.dir
   if (!name) {
-    if (!canPrompt) throw new Error("--name is required with --yes")
+    if (!canPrompt) throw new CliError("--name is required when there is no terminal or --yes is set", EXIT.usage)
     const answer = answered(
       await p.text({
         message: "Project name",
@@ -233,18 +235,7 @@ export async function create(flags: CreateFlags) {
     )
   }
   if (flags.git) {
-    steps.push(
-      ...step("git", "Creating the git repository", async () => {
-        await run("git", ["init", "-q", "-b", "main"], target)
-        await run("git", ["add", "-A"], target)
-        try {
-          await run("git", ["commit", "-q", "-m", "chore(repo): start from findplate"], target)
-        } catch {
-          return "Git repository created (set user.name and user.email to make the first commit)"
-        }
-        return "First commit on main"
-      }),
-    )
+    steps.push(...step("git", "Creating the git repository", () => initRepo(target)))
   }
   if (wantGithub && flags.git) {
     steps.push(
