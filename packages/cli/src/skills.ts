@@ -27,8 +27,15 @@ export async function installSkills(dir: string, packs: SkillPack[]): Promise<Sk
   for (const pack of packs) {
     try {
       await run("npx", skillsAddArgs(pack), dir)
-    } catch {
-      failed.push(pack.source)
+    } catch (error) {
+      const last =
+        error instanceof Error
+          ? error.message
+              .split("\n")
+              .filter((line) => line.trim())
+              .at(-1)
+          : undefined
+      failed.push(last ? `${pack.source} (${last.trim()})` : pack.source)
     }
   }
   return failed.length
