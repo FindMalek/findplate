@@ -5,6 +5,7 @@ import { runMigrations } from "@acme/db/migrate"
 import { seedDemo } from "@acme/db/seed"
 import { loadApiEnv } from "@acme/env/api"
 import { createStorage } from "@acme/storage" // @findplate:storage
+import { createWhatsApp } from "@acme/whatsapp" // @findplate:whatsapp
 import { ensureAdmin } from "./admin"
 import { createServer } from "./server"
 
@@ -46,6 +47,15 @@ const fetch = createServer(
       accessKeyId: env.S3_ACCESS_KEY_ID,
       secretAccessKey: env.S3_SECRET_ACCESS_KEY,
       prefix: env.DEPLOY_ENV.startsWith("pr-") ? `${env.DEPLOY_ENV}/` : "",
+    }),
+    // @end
+    // @findplate:whatsapp
+    whatsapp: createWhatsApp({
+      apiKey: env.KAPSO_API_KEY,
+      phoneNumberId: env.WHATSAPP_PHONE_NUMBER_ID,
+      to: env.WHATSAPP_NOTIFY_TO,
+      templateName: env.WHATSAPP_TEMPLATE_NAME,
+      templateLanguage: env.WHATSAPP_TEMPLATE_LANGUAGE,
     }),
     // @end
     // @findplate:ai

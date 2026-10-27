@@ -21,6 +21,9 @@ catalogs:
     '@biomejs/biome':
       specifier: 2.5.15
       version: 2.5.15
+    '@kapso/whatsapp-cloud-api':
+      specifier: 0.4.0
+      version: 0.4.0
     '@next/env':
       specifier: 16.4.3
       version: 16.4.3
@@ -155,6 +158,9 @@ importers:
       '@acme/storage':
         specifier: workspace:*
         version: link:../../packages/storage
+      '@acme/whatsapp':
+        specifier: workspace:*
+        version: link:../../packages/whatsapp
       '@orpc/openapi':
         specifier: 'catalog:'
         version: 1.15.7
@@ -404,6 +410,9 @@ importers:
       '@acme/storage':
         specifier: workspace:*
         version: link:../storage
+      '@acme/whatsapp':
+        specifier: workspace:*
+        version: link:../whatsapp
       '@orpc/client':
         specifier: 'catalog:'
         version: 1.15.7
@@ -508,6 +517,22 @@ importers:
       tailwindcss:
         specifier: 'catalog:'
         version: 4.3.3
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
+  packages/whatsapp:
+    dependencies:
+      '@kapso/whatsapp-cloud-api':
+        specifier: 'catalog:'
+        version: 0.4.0
+    devDependencies:
+      '@acme/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/bun':
+        specifier: 'catalog:'
+        version: 1.4.3
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -1511,6 +1536,10 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.31':
     resolution: {integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==}
+
+  '@kapso/whatsapp-cloud-api@0.4.0':
+    resolution: {integrity: sha512-N1P6G//TYMvV9sUiplHFoN+fFJ2oQgaHcIky3Eklr6nm9Y8qJHdIun6e/Nt5v5q/msoFCiMhqNnKi7zNDkYZVQ==}
+    engines: {node: '>=20.19'}
 
   '@modelcontextprotocol/sdk@1.32.1':
     resolution: {integrity: sha512-2DdE+SJDtzLEEWzY1ZjY7Q+VcPhcV1KisD3zI4u0XZyktsjHum1mwbMI+JaulUBi2OZk+KJAi2uPXzxichPkdw==}
@@ -4392,6 +4421,10 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.6.0
+
+  '@kapso/whatsapp-cloud-api@0.4.0':
+    dependencies:
+      zod: 4.6.7
 
   '@modelcontextprotocol/sdk@1.32.1(zod@4.6.7)':
     dependencies:

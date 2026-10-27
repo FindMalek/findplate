@@ -35,6 +35,14 @@ const schema = z.object({
   S3_SECRET_ACCESS_KEY: optional,
   // @end
 
+  // @findplate:whatsapp
+  KAPSO_API_KEY: optional,
+  WHATSAPP_PHONE_NUMBER_ID: optional,
+  WHATSAPP_NOTIFY_TO: optional,
+  WHATSAPP_TEMPLATE_NAME: z.string().default("app_notification"),
+  WHATSAPP_TEMPLATE_LANGUAGE: z.string().default("en_US"),
+  // @end
+
   // @findplate:ai
   AI_MODEL: z.string().default("groq:openai/gpt-oss-120b"),
   GROQ_API_KEY: optional,

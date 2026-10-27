@@ -10,6 +10,14 @@
       "paths": ["packages/storage"],
       "packages": ["@acme/storage"]
     },
+    "whatsapp": {
+      "label": "WhatsApp",
+      "hint": "notify() through Kapso template messages",
+      "default": false,
+      "paths": ["packages/whatsapp", "packages/orpc/src/routers/whatsapp.ts"],
+      "packages": ["@acme/whatsapp", "@kapso/whatsapp-cloud-api"],
+      "keys": [{ "env": "KAPSO_API_KEY", "label": "Kapso API key", "url": "https://app.kapso.ai" }]
+    },
     "ai": {
       "label": "AI",
       "hint": "Vercel AI SDK with Groq, OpenAI or Anthropic",

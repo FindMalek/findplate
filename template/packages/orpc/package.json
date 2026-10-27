@@ -25,6 +25,7 @@
     "drizzle-orm": "catalog:",
     "zod": "catalog:",
     "@acme/storage": "workspace:*",
+    "@acme/whatsapp": "workspace:*",
     "ai": "catalog:"
   },
   "peerDependencies": {
