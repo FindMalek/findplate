@@ -238,6 +238,7 @@ export async function create(flags: CreateFlags) {
     steps.push(
       ...step("git", "Creating the git repository", async () => {
         await run("git", ["init", "-q", "-b", "main"], target)
+        markDone(target, state, "git")
         await run("git", ["add", "-A"], target)
         try {
           await run("git", ["commit", "-q", "-m", "chore(repo): start from findplate"], target)
