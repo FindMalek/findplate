@@ -23,7 +23,8 @@ Options
   --no-install         skip pnpm install
   --no-git             skip git init
   --no-agents          skip generating agent rules (ruler)
-  -y, --yes            no prompts, use defaults (for scripts and coding agents)
+  --no-skills          skip installing the recommended public skills
+  -y, --yes           no prompts, use defaults (for scripts and coding agents)
   -h, --help           show this help
   -v, --version        show the version`
 
@@ -40,6 +41,7 @@ async function main() {
       install: { type: "boolean", default: true },
       git: { type: "boolean", default: true },
       agents: { type: "boolean", default: true },
+      skills: { type: "boolean", default: true },
       yes: { type: "boolean", short: "y", default: false },
       help: { type: "boolean", short: "h", default: false },
       version: { type: "boolean", short: "v", default: false },
@@ -62,6 +64,7 @@ async function main() {
     install: values.install,
     git: values.git,
     agents: values.agents,
+    skills: values.skills,
     yes: values.yes,
   })
 }
