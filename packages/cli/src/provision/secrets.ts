@@ -1,12 +1,15 @@
 import { spawnSync } from "node:child_process"
 import * as p from "@clack/prompts"
 
+const prompted = new Map<string, string>()
+
 export async function secret(envName: string, label: string): Promise<string> {
-  const fromEnv = process.env[envName]
-  if (fromEnv) return fromEnv
+  const known = process.env[envName] ?? prompted.get(envName)
+  if (known) return known
   if (!process.stdin.isTTY) throw new Error(`Set ${envName} in the environment (${label})`)
   const value = await p.password({ message: `${label} (${envName})` })
   if (p.isCancel(value) || !value) throw new Error(`${envName} is required`)
+  prompted.set(envName, value)
   return value
 }
 

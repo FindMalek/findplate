@@ -27,6 +27,7 @@ jobs:
           DATABASE_URL: ${{ secrets.BACKUP_DATABASE_URL }}
           BUCKET: ${{ vars.S3_BUCKET_PRODUCTION }}
           ENDPOINT: ${{ vars.S3_ENDPOINT }}
+        shell: bash
         run: |
           file="db-$(date -u +%Y-%m-%d).sql.gz"
           pg_dump --no-owner --no-privileges "$DATABASE_URL" | gzip > "$file"

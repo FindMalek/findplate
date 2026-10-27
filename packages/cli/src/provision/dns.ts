@@ -37,10 +37,11 @@ interface Provider {
 function vercelDns(domain: string, token: string): Provider {
   const auth = { authorization: `Bearer ${token}` }
   const team = process.env.VERCEL_TEAM_ID ? `?teamId=${process.env.VERCEL_TEAM_ID}` : ""
+  const teamAnd = team ? `${team}&` : "?"
   return {
     async list() {
       const res = await request<{ records: DnsRecord[] }>(
-        `https://api.vercel.com/v4/domains/${domain}/records${team}`,
+        `https://api.vercel.com/v4/domains/${domain}/records${teamAnd}limit=100`,
         json(auth),
       )
       return res.records
