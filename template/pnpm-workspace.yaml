@@ -12,15 +12,22 @@ catalog:
   "@ai-sdk/openai": 4.0.96
   "@base-ui/react": ^1.9.0
   "@biomejs/biome": 2.5.15
+  "@langfuse/otel": 6.0.2
+  "@langfuse/vercel-ai-sdk": 6.0.2
+  "@next/env": 16.4.3
+  "@opentelemetry/api": 1.10.0
+  "@opentelemetry/exporter-trace-otlp-http": 0.300.0
+  "@opentelemetry/sdk-node": 0.300.0
   "@databuddy/sdk": 3.3.0
   "@kapso/whatsapp-cloud-api": 0.4.0
-  "@next/env": 16.4.3
   "@opencoredev/email-sdk": 3.0.1
   "@orpc/client": 1.15.7
   "@orpc/openapi": 1.15.7
   "@orpc/server": 1.15.7
   "@orpc/tanstack-query": 1.15.7
   "@orpc/zod": 1.15.7
+  "@sentry/bun": 11.9.0
+  "@sentry/nextjs": 11.9.0
   "@react-email/render": 2.1.1
   "@shadcn/lint": 0.2.1
   "@tailwindcss/postcss": ^4

@@ -8,10 +8,16 @@ import { loadApiEnv } from "@acme/env/api"
 import { createStorage } from "@acme/storage" // @findplate:storage
 import { createTelegram } from "@acme/telegram" // @findplate:telegram
 import { createWhatsApp } from "@acme/whatsapp" // @findplate:whatsapp
+import * as Sentry from "@sentry/bun" // @findplate:glitchtip
 import { ensureAdmin } from "./admin"
+import { startLangfuse } from "./langfuse" // @findplate:langfuse
+import { startOpenObserve } from "./openobserve" // @findplate:openobserve
 import { createServer } from "./server"
 
 const env = loadApiEnv()
+Sentry.init({ dsn: env.GLITCHTIP_DSN, environment: env.DEPLOY_ENV }) // @findplate:glitchtip
+startOpenObserve(env) // @findplate:openobserve
+startLangfuse(env) // @findplate:langfuse
 const db = createDb(env.DATABASE_URL)
 await runMigrations(db)
 

@@ -13,6 +13,11 @@ Select modules with `--modules storage,ai,docs,email`, or in the prompt.
 | --- | --- | --- |
 | `storage` | on | `packages/storage`. Uploads to any S3 API: Garage, R2, AWS, MinIO |
 | `ai` | on | `packages/ai`. Vercel AI SDK with Groq, OpenAI or Anthropic |
+| `umami` | off | umami script in web and dashboard |
+| `openobserve` | off | otel traces from the api to OpenObserve |
+| `glitchtip` | off | sentry sdk in api, web and dashboard, pointed at GlitchTip |
+| `infisical` | off | `pnpm dev:secrets` runs dev with infisical |
+| `langfuse` | off | Langfuse traces for AI SDK calls (needs `ai`) |
 | `waitlist` | off | email signup on the landing page, signups listed in the dashboard |
 | `roadmap` | off | public `/roadmap` from the repo's GitHub milestones |
 | `status` | off | public `/status` with live checks of api, database, web and dashboard |
@@ -45,6 +50,8 @@ OPENAI_API_KEY=
 ANTHROPIC_API_KEY=
 ```
 
+
+The self-hosted ones (umami, openobserve, glitchtip, infisical, langfuse) are covered in [self-hosted tools](/docs/self-hosted), with a compose snippet each.
 ### waitlist
 
 The hero gets an email form that posts to `waitlist.join`. Duplicates are ignored. Admins see the signups under Waitlist in the dashboard. It adds the `waitlist` table through the `0001_waitlist` migration, which is dropped with the module.
@@ -82,5 +89,6 @@ DOCS_URL=http://localhost:3003
 ## Coming
 
 - analytics with databuddy ([#15](https://github.com/FindMalek/findplate/issues/15))
+
 - waitlist, roadmap and status pages ([#14](https://github.com/FindMalek/findplate/issues/14))
 - umami, openobserve, glitchtip, infisical and langfuse ([#20](https://github.com/FindMalek/findplate/issues/20))

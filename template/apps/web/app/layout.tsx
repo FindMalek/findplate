@@ -4,6 +4,7 @@ import { cn } from "@acme/ui/lib/utils"
 import type { Metadata } from "next"
 import { Analytics } from "@/components/analytics" // @findplate:databuddy
 import { ThemeProvider } from "@/components/theme-provider"
+import { Umami } from "@/components/umami" // @findplate:umami
 import { SITE } from "@/lib/site"
 import { fontVariables } from "./fonts"
 
@@ -20,6 +21,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" suppressHydrationWarning className={cn("h-full antialiased", fontVariables, "font-sans")}>
       <body className="relative flex min-h-full flex-col bg-background text-foreground">
         <ThemeProvider>
+          {/* @findplate:umami */}
+          <Umami />
+          {/* @end */}
           {/* @findplate:databuddy */}
           <Analytics />
           {/* @end */}

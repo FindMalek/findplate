@@ -23,6 +23,10 @@ export interface ModuleSpec {
   /** Dependencies to drop from every package.json and the pnpm catalog when the module is off. */
   packages: string[]
   keys?: ModuleKey[]
+  /** Modules this one needs; the cli switches them on too. */
+  requires?: string[]
+  /** Root package.json scripts added when the module is on. */
+  scripts?: Record<string, string>
   skills?: SkillPack[]
 }
 

@@ -15,6 +15,7 @@
     "@acme/ui": "workspace:*",
     "@databuddy/sdk": "catalog:",
     "@next/env": "catalog:",
+    "@sentry/nextjs": "catalog:",
     "@tanstack/react-query": "catalog:",
     "lucide-react": "catalog:",
     "next": "catalog:",
