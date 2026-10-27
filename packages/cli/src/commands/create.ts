@@ -1,12 +1,14 @@
 import { existsSync, readdirSync, readFileSync, rmSync } from "node:fs"
 import { join, resolve } from "node:path"
 import * as p from "@clack/prompts"
+import { applyAgents } from "../agents"
 import { generate } from "../generate"
 import { isValidSlug, toNames } from "../generate/rename"
 import { loadManifest } from "../manifest"
 import { templateDir } from "../paths"
 import { listPresets } from "../presets"
 import { freePort, has, run } from "../run"
+import { installSkills, SKILLS_PACKAGE, skillPacks } from "../skills"
 import { loadState, markDone, type ProjectState, type Step, saveState } from "../state"
 import { accent, bold, brand, dim } from "../ui"
 
@@ -18,6 +20,8 @@ export interface CreateFlags {
   modules?: string
   install: boolean
   git: boolean
+  agents: boolean
+  skills: boolean
   yes: boolean
 }
 
@@ -181,6 +185,26 @@ export async function create(flags: CreateFlags) {
       return `Created ${bold(names.slug)} with the ${preset.label.toLowerCase()} preset`
     }),
   ]
+  if (flags.agents) {
+    steps.push(
+      ...step("agents", "Generating agent rules", async () => {
+        const result = await applyAgents(target)
+        return result.ok
+          ? "Agent rules written for claude, cursor, opencode, zed and oh-my-pi"
+          : `Skipped agent rules (${result.reason}). Run pnpm agents later`
+      }),
+    )
+  }
+  if (flags.skills) {
+    steps.push(
+      ...step("skills", "Installing agent skills", async () => {
+        const result = await installSkills(target, skillPacks(manifest, modules))
+        return result.ok
+          ? `${result.installed} skill packs installed`
+          : `Some skills were skipped (${result.reason}). Run npx ${SKILLS_PACKAGE} add <repo> later`
+      }),
+    )
+  }
   if (canInstall) {
     steps.push(
       ...step(

@@ -9,3 +9,4 @@ dist
 *.log
 packages/cli/template
 packages/cli/presets
+.claude/worktrees

@@ -2,7 +2,16 @@
   "$schema": "./node_modules/oxlint/configuration_schema.json",
   "jsPlugins": ["@shadcn/lint"],
   "categories": { "correctness": "off" },
-  "ignorePatterns": ["**/node_modules", "**/.next", "packages/ui/src/components/**", "packages/ui/src/brand/**"],
+  "ignorePatterns": [
+    "**/node_modules",
+    "**/.next",
+    "packages/ui/src/components/**",
+    "packages/ui/src/brand/**",
+    ".agents/**",
+    ".claude/**",
+    ".opencode/**",
+    ".pi/**"
+  ],
   "rules": {
     "shadcn/no-raw-colors": "error",
     "shadcn/no-arbitrary-values": "warn",
