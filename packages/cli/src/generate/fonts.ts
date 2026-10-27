@@ -1,7 +1,7 @@
 import type { FontSpec, Preset } from "../presets"
 
 function call(name: string, spec: FontSpec, variable: string): string {
-  const weight = spec.weight ? `, weight: ${JSON.stringify(spec.weight)}` : ""
+  const weight = spec.weight ? `, weight: [${spec.weight.map((w) => `"${w}"`).join(", ")}]` : ""
   return `const ${name} = ${spec.family}({ subsets: ["latin"]${weight}, variable: "${variable}" })`
 }
 
