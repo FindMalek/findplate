@@ -9,10 +9,11 @@ import { Field, FieldGroup, FieldLabel } from "@acme/ui/components/field"
 import { Input } from "@acme/ui/components/input"
 import { Textarea } from "@acme/ui/components/textarea"
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query"
-import { PinIcon, PinOffIcon, SparklesIcon, Trash2Icon } from "lucide-react"
+import { PinIcon, PinOffIcon, Trash2Icon } from "lucide-react"
 import { type FormEvent, useRef } from "react"
 import { toast } from "sonner"
 import { LocalDate } from "./local-date"
+import { SummarizeButton } from "./summarize-button" // @findplate:ai
 
 export function NotesBoard() {
   const queryClient = useQueryClient()
@@ -32,11 +33,6 @@ export function NotesBoard() {
   )
   const update = useMutation(orpc.notes.update.mutationOptions({ onSuccess: refresh, onError }))
   const remove = useMutation(orpc.notes.remove.mutationOptions({ onSuccess: refresh, onError }))
-  // @findplate:ai
-  const summarize = useMutation(
-    orpc.notes.summarize.mutationOptions({ onSuccess: ({ summary }) => toast(summary), onError }),
-  )
-  // @end
 
   const submit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -78,14 +74,7 @@ export function NotesBoard() {
               </CardDescription>
               <CardAction className="flex gap-1">
                 {/* @findplate:ai */}
-                <Button
-                  variant="ghost"
-                  size="icon-sm"
-                  aria-label="Summarize"
-                  onClick={() => summarize.mutate({ id: note.id })}
-                >
-                  <SparklesIcon />
-                </Button>
+                <SummarizeButton id={note.id} />
                 {/* @end */}
                 <Button
                   variant="ghost"

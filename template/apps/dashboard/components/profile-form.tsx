@@ -9,12 +9,13 @@ import { Field, FieldDescription, FieldGroup, FieldLabel } from "@acme/ui/compon
 import { Input } from "@acme/ui/components/input"
 import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
-import { type FormEvent, useRef } from "react"
+import type { FormEvent } from "react"
+import { useRef } from "react" // @findplate:storage
 import { toast } from "sonner"
 
 export function ProfileForm({ me }: { me: { name: string; email: string; image: string | null } }) {
   const router = useRouter()
-  const file = useRef<HTMLInputElement>(null)
+  const file = useRef<HTMLInputElement>(null) // @findplate:storage
   const onError = (error: Error) => toast.error(errorMessage(error))
   const save = useMutation(
     orpc.me.update.mutationOptions({
