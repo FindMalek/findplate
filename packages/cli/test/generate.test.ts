@@ -106,6 +106,8 @@ describe("generate", () => {
       ).entries.map((entry: { tag: string }) => entry.tag)
     expect(tags(["waitlist"])).toEqual(["0000_init", "0001_waitlist"])
     expect(tags([])).toEqual(["0000_init"])
+  })
+
   test("docs module: only with --modules docs, with the preset fonts, pitch and env url", () => {
     const on = make(["docs"]).target
     expect(readFileSync(join(on, "apps/docs/lib/site.ts"), "utf8")).toContain('tagline: "Demo pitch"')
