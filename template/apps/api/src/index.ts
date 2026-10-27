@@ -6,8 +6,8 @@ import { seedDemo } from "@acme/db/seed"
 import { createMailer } from "@acme/email" // @findplate:email
 import { loadApiEnv } from "@acme/env/api"
 import { createStorage } from "@acme/storage" // @findplate:storage
-import { createWhatsApp } from "@acme/whatsapp" // @findplate:whatsapp
 import { createTelegram } from "@acme/telegram" // @findplate:telegram
+import { createWhatsApp } from "@acme/whatsapp" // @findplate:whatsapp
 import { ensureAdmin } from "./admin"
 import { createServer } from "./server"
 
