@@ -1,0 +1,10 @@
+{
+  "extends": "@acme/config/react-library.json",
+  "compilerOptions": {
+    "paths": {
+      "@acme/ui/*": ["./src/*"]
+    }
+  },
+  "include": ["."],
+  "exclude": ["node_modules", "dist"]
+}
