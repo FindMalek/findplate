@@ -8,6 +8,7 @@ import { create } from "./commands/create"
 import { doctorCommand } from "./commands/doctor"
 import { github } from "./commands/github"
 import { provisionCommand } from "./commands/provision"
+import { update } from "./commands/update"
 import { CliError, EXIT } from "./errors"
 import { accent, dim } from "./ui"
 import { checkForUpdate, shouldSkip } from "./update-check"
@@ -19,6 +20,7 @@ const HELP = `findplate: create a production-ready full-stack project
 Usage
   findplate create [dir] [options]   re-run in an unfinished project to resume it
   findplate github [dir] [options]   create the repo, board, labels and rules on GitHub (idempotent)
+  findplate update [dir] [options]   merge the newest template into an existing project
   findplate add <module...> [dir] [--force]   add modules to an existing project
   findplate doctor [dir] [--json]    check env, database, tools, dns and deploys
   findplate config [list|get|set|unset|path] [key] [value]
@@ -38,6 +40,11 @@ Options
   -y, --yes            no prompts, use defaults (for scripts and coding agents)
   -h, --help           show this help
   -v, --version        show the version
+
+Update options (findplate update)
+  --dry-run            print what would change, touch nothing
+  --force              update even with uncommitted changes
+  --base-template <dir>  template of the recorded version, instead of downloading it
 
 GitHub options (findplate github)
   --dry-run            print the plan, change nothing
@@ -74,6 +81,7 @@ async function main() {
       force: { type: "boolean", default: false },
       json: { type: "boolean", default: false },
       "dry-run": { type: "boolean", default: false },
+      "base-template": { type: "string" },
       yes: { type: "boolean", short: "y", default: false },
       help: { type: "boolean", short: "h", default: false },
       version: { type: "boolean", short: "v", default: false },
@@ -82,6 +90,15 @@ async function main() {
   if (values.version) return console.info(VERSION)
   const [command = "create", dir] = positionals
   if (values.help) return console.info(HELP)
+  if (command === "update") {
+    return update({
+      dir,
+      force: values.force,
+      dryRun: values["dry-run"],
+      baseTemplate: values["base-template"],
+      version: VERSION,
+    })
+  }
   const skip = shouldSkip({ flag: !values["update-check"], env: process.env, isTTY: Boolean(process.stderr.isTTY) })
   const latest = skip ? undefined : await checkForUpdate({ current: VERSION })
   if (latest) {
