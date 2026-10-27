@@ -1,0 +1,47 @@
+name: ci failure summary
+
+on:
+  workflow_run:
+    workflows: [ci]
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  summarize:
+    if: github.event.workflow_run.conclusion == 'failure'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      RUN_ID: ${{ github.event.workflow_run.id }}
+      REPO: ${{ github.repository }}
+      RUN_URL: ${{ github.event.workflow_run.html_url }}
+      BRANCH: ${{ github.event.workflow_run.head_branch }}
+    steps:
+      - name: Failed jobs and steps
+        run: |
+          {
+            echo "## ci failed"
+            echo
+            echo "run: $RUN_URL on \`$BRANCH\`"
+            echo
+            echo "| job | failed step |"
+            echo "| --- | --- |"
+            gh api "repos/$REPO/actions/runs/$RUN_ID/jobs" --paginate \
+              --jq '.jobs[] | select(.conclusion == "failure") | "| \(.name) | \([.steps[] | select(.conclusion == "failure") | .name] | join(", ")) |"'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Log tail of each failed job
+        run: |
+          gh run view "$RUN_ID" --repo "$REPO" --log-failed | tail -n 120 > failed.log || true
+          {
+            echo
+            echo "<details><summary>last lines of the failed logs</summary>"
+            echo
+            echo '```'
+            sed 's/\x1b\[[0-9;]*m//g' failed.log
+            echo '```'
+            echo "</details>"
+          } >> "$GITHUB_STEP_SUMMARY"

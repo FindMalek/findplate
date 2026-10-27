@@ -1,0 +1,4 @@
+{
+  "$schema": "https://raw.githubusercontent.com/JamieMason/syncpack/main/schema.json",
+  "versionGroups": [{ "label": "template workspace packages", "dependencyTypes": ["local"], "isIgnored": true }]
+}

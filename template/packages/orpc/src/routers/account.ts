@@ -1,10 +1,12 @@
 import { user } from "@acme/db"
-import { ORPCError } from "@orpc/server"
+import { ORPCError } from "@orpc/server" // @findplate:storage
 import { count, desc, eq } from "drizzle-orm"
 import { z } from "zod"
 import { adminProcedure, protectedProcedure } from "../procedures"
 
+// @findplate:storage
 const IMAGE_TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" }
+// @end
 
 export const meRouter = {
   get: protectedProcedure

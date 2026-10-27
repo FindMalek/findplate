@@ -14,7 +14,7 @@
       "label": "AI",
       "hint": "Vercel AI SDK with Groq, OpenAI or Anthropic",
       "default": true,
-      "paths": ["packages/ai"],
+      "paths": ["packages/ai", "apps/dashboard/components/summarize-button.tsx"],
       "packages": ["@acme/ai", "ai", "@ai-sdk/anthropic", "@ai-sdk/groq", "@ai-sdk/openai"],
       "keys": [
         { "env": "GROQ_API_KEY", "label": "Groq API key", "url": "https://console.groq.com/keys" },

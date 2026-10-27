@@ -13,6 +13,7 @@ export function stripModules(source: string, enabled: ReadonlySet<string>): stri
   const out: string[] = []
   let skipping: string | null = null
   let open: string | null = null
+  let removed = false
   for (const line of source.split("\n")) {
     const start = line.match(START)
     if (start) {
@@ -30,10 +31,27 @@ export function stripModules(source: string, enabled: ReadonlySet<string>): stri
     const inline = line.match(INLINE)
     if (inline) {
       if (!skipping && enabled.has(inline[2]!)) out.push(inline[1]!)
+      else removed = true
       continue
     }
-    if (!skipping) out.push(line)
+    if (skipping) removed = true
+    else out.push(line)
   }
   if (open) throw new Error(`@findplate:${open} is never closed with @end`)
-  return out.join("\n")
+  return (removed ? tidyBlankLines(out) : out).join("\n")
+}
+
+/** Dropping a block can leave doubled blank lines or one next to a bracket; the formatter would reject both. */
+function tidyBlankLines(lines: string[]): string[] {
+  const kept: string[] = []
+  for (const [index, line] of lines.entries()) {
+    if (line.trim() === "") {
+      const before = kept[kept.length - 1]?.trimEnd()
+      const next = lines.slice(index + 1).find((candidate) => candidate.trim() !== "")
+      if (before === "" || (before !== undefined && /[{([]$/.test(before))) continue
+      if (next !== undefined && /^\s*[})\]]/.test(next)) continue
+    }
+    kept.push(line)
+  }
+  return kept
 }
