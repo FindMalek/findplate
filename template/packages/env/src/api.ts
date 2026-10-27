@@ -50,6 +50,7 @@ const schema = z.object({
   LANGFUSE_PUBLIC_KEY: optional,
   LANGFUSE_SECRET_KEY: optional,
   LANGFUSE_BASE_URL: z.url().default("https://cloud.langfuse.com"),
+  // @end
   // @findplate:whatsapp
   KAPSO_API_KEY: optional,
   WHATSAPP_PHONE_NUMBER_ID: optional,
