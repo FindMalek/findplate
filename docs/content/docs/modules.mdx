@@ -13,6 +13,11 @@ Select modules with `--modules storage,ai`, or in the prompt.
 | --- | --- | --- |
 | `storage` | on | `packages/storage`. Uploads to any S3 API: Garage, R2, AWS, MinIO |
 | `ai` | on | `packages/ai`. Vercel AI SDK with Groq, OpenAI or Anthropic |
+| `umami` | off | umami script in web and dashboard |
+| `openobserve` | off | otel traces from the api to OpenObserve |
+| `glitchtip` | off | sentry sdk in api, web and dashboard, pointed at GlitchTip |
+| `infisical` | off | `pnpm dev:secrets` runs dev with infisical |
+| `langfuse` | off | Langfuse traces for AI SDK calls (needs `ai`) |
 
 ### storage
 
@@ -37,10 +42,12 @@ OPENAI_API_KEY=
 ANTHROPIC_API_KEY=
 ```
 
+
+The self-hosted ones (umami, openobserve, glitchtip, infisical, langfuse) are covered in [self-hosted tools](/docs/self-hosted), with a compose snippet each.
+
 ## Coming
 
 - email with email-sdk and resend ([#11](https://github.com/FindMalek/findplate/issues/11))
 - telegram bot ([#12](https://github.com/FindMalek/findplate/issues/12)) and whatsapp via kapso ([#13](https://github.com/FindMalek/findplate/issues/13))
 - waitlist, roadmap and status pages ([#14](https://github.com/FindMalek/findplate/issues/14))
 - analytics with databuddy ([#15](https://github.com/FindMalek/findplate/issues/15))
-- umami, openobserve, glitchtip, infisical and langfuse ([#20](https://github.com/FindMalek/findplate/issues/20))

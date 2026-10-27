@@ -117,6 +117,9 @@ export async function create(flags: CreateFlags) {
       .map(([id]) => id)
   }
 
+  for (const id of modules)
+    for (const required of manifest.modules[id]?.requires ?? []) if (!modules.includes(required)) modules.push(required)
+
   const env: Record<string, string> = {}
   if (interactive) {
     for (const id of modules) {

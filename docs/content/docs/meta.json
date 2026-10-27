@@ -5,6 +5,7 @@
     "project-structure",
     "cli",
     "modules",
+    "self-hosted",
     "presets",
     "theming",
     "deploy",

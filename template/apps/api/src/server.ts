@@ -2,10 +2,13 @@ import type { Auth } from "@acme/auth"
 import { appRouter, createContext, type Services } from "@acme/orpc"
 import { OpenAPIHandler } from "@orpc/openapi/fetch"
 import { OpenAPIReferencePlugin } from "@orpc/openapi/plugins"
+import { onError } from "@orpc/server" // @findplate:glitchtip
 import { RPCHandler } from "@orpc/server/fetch"
 import { SimpleCsrfProtectionHandlerPlugin } from "@orpc/server/plugins"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
+import * as Sentry from "@sentry/bun" // @findplate:glitchtip
 import { sql } from "drizzle-orm"
+import { traceCall } from "./openobserve" // @findplate:openobserve
 
 /**
  * The api is the only app that touches the database, auth, storage and providers. Routes:
@@ -16,8 +19,17 @@ import { sql } from "drizzle-orm"
  *   /health       for Dokploy and uptime checks
  */
 export function createServer(services: Services & { auth: Auth }, opts: { publicUrl: string }) {
-  const rpc = new RPCHandler(appRouter, { plugins: [new SimpleCsrfProtectionHandlerPlugin()] })
+  const interceptors: NonNullable<ConstructorParameters<typeof RPCHandler>[1]>["interceptors"] = [
+    // @findplate:glitchtip
+    onError((error) => void Sentry.captureException(error)),
+    // @end
+    // @findplate:openobserve
+    traceCall,
+    // @end
+  ]
+  const rpc = new RPCHandler(appRouter, { plugins: [new SimpleCsrfProtectionHandlerPlugin()], interceptors })
   const rest = new OpenAPIHandler(appRouter, {
+    interceptors,
     plugins: [
       new OpenAPIReferencePlugin({
         docsPath: "/docs",

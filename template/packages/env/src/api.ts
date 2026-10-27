@@ -35,6 +35,23 @@ const schema = z.object({
   S3_SECRET_ACCESS_KEY: optional,
   // @end
 
+  // @findplate:openobserve
+  OPENOBSERVE_URL: z.url().optional(),
+  OPENOBSERVE_ORG: z.string().default("default"),
+  OPENOBSERVE_USER: optional,
+  OPENOBSERVE_PASSWORD: optional,
+  // @end
+
+  // @findplate:glitchtip
+  GLITCHTIP_DSN: optional,
+  // @end
+
+  // @findplate:langfuse
+  LANGFUSE_PUBLIC_KEY: optional,
+  LANGFUSE_SECRET_KEY: optional,
+  LANGFUSE_BASE_URL: z.url().default("https://cloud.langfuse.com"),
+  // @end
+
   // @findplate:ai
   AI_MODEL: z.string().default("groq:openai/gpt-oss-120b"),
   GROQ_API_KEY: optional,

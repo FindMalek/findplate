@@ -81,6 +81,14 @@ describe("generate", () => {
     expect(readFileSync(join(target, ".env.example"), "utf8")).not.toContain("S3_BUCKET")
   })
 
+  test("a package shared by two modules stays while one is on; module scripts land in the root", () => {
+    const { target } = make(["openobserve", "infisical"])
+    const api = readFileSync(join(target, "apps/api/package.json"), "utf8")
+    expect(api).toContain("@opentelemetry/sdk-node")
+    expect(api).not.toContain("@langfuse/otel")
+    expect(JSON.parse(readFileSync(join(target, "package.json"), "utf8")).scripts["dev:secrets"]).toContain("infisical")
+  })
+
   test.each(listPresets().map((p) => p.id))("preset %s: tokens, fonts and theme land, nothing left over", (id) => {
     const preset = listPresets().find((p) => p.id === id)!
     const { target } = make([], preset)

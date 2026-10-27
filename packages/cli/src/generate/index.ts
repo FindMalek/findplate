@@ -59,7 +59,10 @@ export function generate(opts: GenerateOptions) {
   const disabled = Object.entries(manifest.modules).filter(([id]) => !opts.modules.has(id))
   for (const [, spec] of disabled)
     for (const path of spec.paths) rmSync(join(target, path), { recursive: true, force: true })
-  const dropped = new Set(disabled.flatMap(([, spec]) => spec.packages))
+  const kept = new Set(
+    Object.entries(manifest.modules).flatMap(([id, spec]) => (opts.modules.has(id) ? spec.packages : [])),
+  )
+  const dropped = new Set(disabled.flatMap(([, spec]) => spec.packages).filter((name) => !kept.has(name)))
 
   for (const file of walk(target)) {
     const rel = relative(target, file)
@@ -69,7 +72,11 @@ export function generate(opts: GenerateOptions) {
     if (rel.endsWith("package.json")) {
       const pkg = JSON.parse(out)
       removeDependencies(pkg, dropped)
-      if (rel === "package.json") pkg.name = names.slug
+      if (rel === "package.json") {
+        pkg.name = names.slug
+        for (const [id, spec] of Object.entries(manifest.modules))
+          if (opts.modules.has(id)) Object.assign(pkg.scripts, spec.scripts)
+      }
       out = `${JSON.stringify(pkg, null, 2)}\n`
     }
     if (rel === "pnpm-workspace.yaml") {

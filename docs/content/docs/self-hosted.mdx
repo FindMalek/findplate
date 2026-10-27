@@ -1,0 +1,113 @@
+---
+title: Self-hosted tools
+description: Run umami, openobserve, glitchtip, infisical and langfuse next to your project.
+---
+
+Each module points at your own instance through env. Nothing is hardcoded to a host. Run the tool on Dokploy (compose service, one domain each) or anywhere docker runs, then fill the keys in `.env`.
+
+## umami
+
+```yaml
+services:
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    environment:
+      DATABASE_URL: postgres://umami:umami@db:5432/umami
+      APP_SECRET: change-me
+    ports: ["3100:3000"]
+    depends_on: [db]
+  db:
+    image: postgres:17-alpine
+    environment: { POSTGRES_USER: umami, POSTGRES_PASSWORD: umami, POSTGRES_DB: umami }
+    volumes: [umami-db:/var/lib/postgresql/data]
+volumes:
+  umami-db:
+```
+
+Log in (`admin` / `umami`), add a website, then set `NEXT_PUBLIC_UMAMI_URL` and `NEXT_PUBLIC_UMAMI_WEBSITE_ID`. The script loads in `apps/web` and `apps/dashboard`. Both are inlined at build, so pass them as build args on Dokploy.
+
+## openobserve
+
+```yaml
+services:
+  openobserve:
+    image: public.ecr.aws/zinclabs/openobserve:latest
+    environment:
+      ZO_ROOT_USER_EMAIL: you@example.com
+      ZO_ROOT_USER_PASSWORD: change-me
+      ZO_DATA_DIR: /data
+    ports: ["5080:5080"]
+    volumes: [openobserve:/data]
+volumes:
+  openobserve:
+```
+
+Set `OPENOBSERVE_URL`, `OPENOBSERVE_USER` and `OPENOBSERVE_PASSWORD`. The api sends one otlp trace per request to `/api/<org>/v1/traces`. For container logs, point the docker log driver or a collector such as vector at `/api/<org>/<stream>/_json`.
+
+## glitchtip
+
+Create a project in GlitchTip and copy its DSN into `GLITCHTIP_DSN` (api) and `NEXT_PUBLIC_GLITCHTIP_DSN` (web and dashboard). They use the sentry sdk, which GlitchTip accepts.
+
+```yaml
+x-glitchtip: &glitchtip
+  image: glitchtip/glitchtip
+  depends_on: [postgres, valkey]
+  environment:
+    DATABASE_URL: postgres://postgres:postgres@postgres:5432/postgres
+    SECRET_KEY: change-me
+    GLITCHTIP_DOMAIN: https://errors.example.com
+    VALKEY_URL: redis://valkey:6379
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment: { POSTGRES_PASSWORD: postgres }
+    volumes: [glitchtip-pg:/var/lib/postgresql/data]
+  valkey:
+    image: valkey/valkey:8-alpine
+  web:
+    <<: *glitchtip
+    ports: ["8000:8000"]
+  worker:
+    <<: *glitchtip
+    command: ./bin/run-celery-with-beat.sh
+  migrate:
+    <<: *glitchtip
+    command: ./manage.py migrate
+    restart: "no"
+volumes:
+  glitchtip-pg:
+```
+
+## infisical
+
+```yaml
+services:
+  infisical:
+    image: infisical/infisical:latest-postgres
+    environment:
+      ENCRYPTION_KEY: change-me-32-hex
+      AUTH_SECRET: change-me
+      DB_CONNECTION_URI: postgres://infisical:infisical@db:5432/infisical
+      REDIS_URL: redis://redis:6379
+      SITE_URL: https://secrets.example.com
+    ports: ["8080:8080"]
+    depends_on: [db, redis]
+  db:
+    image: postgres:17-alpine
+    environment: { POSTGRES_USER: infisical, POSTGRES_PASSWORD: infisical, POSTGRES_DB: infisical }
+    volumes: [infisical-db:/var/lib/postgresql/data]
+  redis:
+    image: redis:7-alpine
+volumes:
+  infisical-db:
+```
+
+Run `infisical login --domain https://secrets.example.com`, then `infisical init` to fill `.infisical.json` with your project id. Create the `dev`, `staging` and `prod` environments in the UI. `pnpm dev:secrets` runs `turbo dev` with the secrets injected instead of the local `.env`.
+
+## langfuse
+
+Langfuse v3 needs postgres, clickhouse, redis and s3. Use the compose file from the langfuse repo (`docker-compose.yml` on its main branch), or its Dokploy template. Create a project, then set `LANGFUSE_PUBLIC_KEY`, `LANGFUSE_SECRET_KEY` and `LANGFUSE_BASE_URL`.
+
+The module needs `ai` and switches it on. AI SDK calls in the api show up as traces.
+
+openobserve and langfuse each start their own otel sdk in the api. Only the first one to start receives spans, so with both on, send traces through an otel collector that fans out to both.

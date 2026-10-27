@@ -15,9 +15,16 @@
     "@acme/env": "workspace:*",
     "@acme/orpc": "workspace:*",
     "@acme/storage": "workspace:*",
+    "@langfuse/otel": "catalog:",
+    "@langfuse/vercel-ai-sdk": "catalog:",
+    "@opentelemetry/api": "catalog:",
+    "@opentelemetry/exporter-trace-otlp-http": "catalog:",
+    "@opentelemetry/sdk-node": "catalog:",
     "@orpc/openapi": "catalog:",
     "@orpc/server": "catalog:",
     "@orpc/zod": "catalog:",
+    "@sentry/bun": "catalog:",
+    "ai": "catalog:",
     "drizzle-orm": "catalog:"
   },
   "devDependencies": {

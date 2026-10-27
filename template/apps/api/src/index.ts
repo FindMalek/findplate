@@ -4,11 +4,17 @@ import { createDb } from "@acme/db"
 import { runMigrations } from "@acme/db/migrate"
 import { seedDemo } from "@acme/db/seed"
 import { loadApiEnv } from "@acme/env/api"
+import * as Sentry from "@sentry/bun" // @findplate:glitchtip
 import { createStorage } from "@acme/storage" // @findplate:storage
 import { ensureAdmin } from "./admin"
+import { startLangfuse } from "./langfuse" // @findplate:langfuse
+import { startOpenObserve } from "./openobserve" // @findplate:openobserve
 import { createServer } from "./server"
 
 const env = loadApiEnv()
+Sentry.init({ dsn: env.GLITCHTIP_DSN, environment: env.DEPLOY_ENV }) // @findplate:glitchtip
+startOpenObserve(env) // @findplate:openobserve
+startLangfuse(env) // @findplate:langfuse
 const db = createDb(env.DATABASE_URL)
 await runMigrations(db)
 

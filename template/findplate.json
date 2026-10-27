@@ -25,6 +25,54 @@
           "url": "https://console.anthropic.com/settings/keys"
         }
       ]
+    },
+    "umami": {
+      "label": "Umami analytics",
+      "hint": "self-hosted web analytics script in web and dashboard",
+      "default": false,
+      "paths": ["apps/web/components/umami.tsx", "apps/dashboard/components/umami.tsx"],
+      "packages": [],
+      "keys": [{ "env": "NEXT_PUBLIC_UMAMI_WEBSITE_ID", "label": "Umami website id", "url": "https://umami.is/docs/add-a-website" }]
+    },
+    "openobserve": {
+      "label": "OpenObserve",
+      "hint": "self-hosted otel traces from the api",
+      "default": false,
+      "paths": ["apps/api/src/openobserve.ts"],
+      "packages": ["@opentelemetry/api", "@opentelemetry/sdk-node", "@opentelemetry/exporter-trace-otlp-http"]
+    },
+    "glitchtip": {
+      "label": "GlitchTip",
+      "hint": "self-hosted error tracking (sentry sdk) in api, web and dashboard",
+      "default": false,
+      "paths": [
+        "apps/web/instrumentation.ts",
+        "apps/web/instrumentation-client.ts",
+        "apps/dashboard/instrumentation.ts",
+        "apps/dashboard/instrumentation-client.ts"
+      ],
+      "packages": ["@sentry/bun", "@sentry/nextjs"],
+      "keys": [{ "env": "GLITCHTIP_DSN", "label": "GlitchTip DSN", "url": "https://glitchtip.com/documentation/install" }]
+    },
+    "infisical": {
+      "label": "Infisical",
+      "hint": "self-hosted secrets, dev scripts run through the infisical cli",
+      "default": false,
+      "paths": [".infisical.json"],
+      "packages": [],
+      "scripts": { "dev:secrets": "infisical run --env=dev -- turbo dev" }
+    },
+    "langfuse": {
+      "label": "Langfuse",
+      "hint": "self-hosted LLM tracing for the ai module",
+      "default": false,
+      "requires": ["ai"],
+      "paths": ["apps/api/src/langfuse.ts"],
+      "packages": ["@langfuse/otel", "@langfuse/vercel-ai-sdk", "@opentelemetry/sdk-node"],
+      "keys": [
+        { "env": "LANGFUSE_PUBLIC_KEY", "label": "Langfuse public key", "url": "https://langfuse.com/docs/get-started" },
+        { "env": "LANGFUSE_SECRET_KEY", "label": "Langfuse secret key", "url": "https://langfuse.com/docs/get-started" }
+      ]
     }
   }
 }
