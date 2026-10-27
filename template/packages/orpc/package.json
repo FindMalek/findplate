@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@acme/auth": "workspace:*",
+    "@acme/common": "workspace:*",
     "@acme/db": "workspace:*",
     "@orpc/client": "catalog:",
     "@orpc/server": "catalog:",

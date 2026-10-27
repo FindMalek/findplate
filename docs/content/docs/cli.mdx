@@ -20,6 +20,8 @@ findplate create [dir] [options]
 | `--modules <a,b>` | optional modules to include, see [modules](/docs/modules). Pass an empty value for none |
 | `--no-install` | skip `pnpm install` |
 | `--no-git` | skip `git init` and the first commit |
+| `--no-agents` | skip generating agent rules, see [agents](/docs/agents) |
+| `--no-skills` | skip installing the recommended public skills |
 | `-y`, `--yes` | no prompts, use defaults |
 | `-h`, `--help` | show help |
 | `-v`, `--version` | show the version |
@@ -38,7 +40,7 @@ Coding agents and scripts have no tty. Pass `-y` and everything you want as flag
 bunx findplate create my-app \
   --pitch "Invoices for freelancers" \
   --preset monochrome \
-  --modules storage,ai \
+  --modules storage,ai,docs \
   -y
 ```
 
