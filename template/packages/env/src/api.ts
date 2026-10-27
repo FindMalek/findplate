@@ -35,6 +35,13 @@ const schema = z.object({
   S3_SECRET_ACCESS_KEY: optional,
   // @end
 
+  // @findplate:whatsapp
+  KAPSO_API_KEY: optional,
+  WHATSAPP_PHONE_NUMBER_ID: optional,
+  WHATSAPP_NOTIFY_TO: optional,
+  WHATSAPP_TEMPLATE_NAME: z.string().default("app_notification"),
+  WHATSAPP_TEMPLATE_LANGUAGE: z.string().default("en_US"),
+  // @end
   // @findplate:telegram
   TELEGRAM_BOT_TOKEN: optional,
   TELEGRAM_CHAT_ID: optional,

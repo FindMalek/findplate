@@ -16,6 +16,7 @@
     "@acme/env": "workspace:*",
     "@acme/orpc": "workspace:*",
     "@acme/storage": "workspace:*",
+    "@acme/whatsapp": "workspace:*",
     "@acme/telegram": "workspace:*",
     "@orpc/openapi": "catalog:",
     "@orpc/server": "catalog:",
