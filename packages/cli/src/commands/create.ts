@@ -235,7 +235,9 @@ export async function create(flags: CreateFlags) {
     )
   }
   if (flags.git) {
-    steps.push(...step("git", "Creating the git repository", () => initRepo(target)))
+    steps.push(
+      ...step("git", "Creating the git repository", () => initRepo(target, () => markDone(target, state, "git"))),
+    )
   }
   if (wantGithub && flags.git) {
     steps.push(

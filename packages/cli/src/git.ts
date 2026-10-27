@@ -32,7 +32,7 @@ export async function probeGit(cwd: string): Promise<GitProbe> {
 }
 
 /** Inits and makes the first commit unless git is missing or the folder already sits in a repo. */
-export async function initRepo(cwd: string): Promise<string> {
+export async function initRepo(cwd: string, afterInit?: () => void): Promise<string> {
   const plan = planGitInit(await probeGit(cwd))
   if (plan.action === "skip") {
     return plan.reason === "missing"
@@ -40,6 +40,7 @@ export async function initRepo(cwd: string): Promise<string> {
       : "Skipped git init, this folder is already inside a git repository"
   }
   await run("git", ["init", "-q", "-b", plan.branch], cwd)
+  afterInit?.()
   await run("git", ["add", "-A"], cwd)
   try {
     await run("git", ["commit", "-q", "-m", "chore(repo): start from findplate"], cwd)
