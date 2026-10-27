@@ -35,6 +35,11 @@ const schema = z.object({
   S3_SECRET_ACCESS_KEY: optional,
   // @end
 
+  // @findplate:email
+  RESEND_API_KEY: optional,
+  EMAIL_FROM: z.string().default("Acme <onboarding@resend.dev>"),
+  // @end
+
   // @findplate:ai
   AI_MODEL: z.string().default("groq:openai/gpt-oss-120b"),
   GROQ_API_KEY: optional,

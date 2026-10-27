@@ -1,5 +1,6 @@
 import { resolveModel } from "@acme/ai" // @findplate:ai
 import { createAuth } from "@acme/auth"
+import { createMailer } from "@acme/email" // @findplate:email
 import { createDb } from "@acme/db"
 import { runMigrations } from "@acme/db/migrate"
 import { seedDemo } from "@acme/db/seed"
@@ -12,6 +13,10 @@ const env = loadApiEnv()
 const db = createDb(env.DATABASE_URL)
 await runMigrations(db)
 
+// @findplate:email
+const mailer = createMailer({ apiKey: env.RESEND_API_KEY, from: env.EMAIL_FROM })
+// @end
+
 const auth = createAuth({
   db,
   secret: env.BETTER_AUTH_SECRET,
@@ -22,6 +27,12 @@ const auth = createAuth({
       ? { clientId: env.GITHUB_CLIENT_ID, clientSecret: env.GITHUB_CLIENT_SECRET }
       : undefined,
   secureCookies: env.NODE_ENV === "production",
+  // @findplate:email
+  sendVerification: mailer ? (user, url) => mailer.send("verifyEmail", user.email, { name: user.name, url }) : undefined,
+  sendResetPassword: mailer
+    ? (user, url) => mailer.send("resetPassword", user.email, { name: user.name, url })
+    : undefined,
+  // @end
 })
 
 const adminId = await ensureAdmin(db, auth, env.ADMIN_EMAIL, env.ADMIN_PASSWORD)
@@ -47,6 +58,9 @@ const fetch = createServer(
       secretAccessKey: env.S3_SECRET_ACCESS_KEY,
       prefix: env.DEPLOY_ENV.startsWith("pr-") ? `${env.DEPLOY_ENV}/` : "",
     }),
+    // @end
+    // @findplate:email
+    mailer,
     // @end
     // @findplate:ai
     model: resolveModel(env.AI_MODEL, env),

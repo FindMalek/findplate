@@ -12,7 +12,12 @@ export interface AuthConfig {
   trustedOrigins: string[]
   github?: { clientId: string; clientSecret: string }
   secureCookies: boolean
+  /** Called with the link to email; unset means those flows stay off. */
+  sendVerification?: (user: { email: string; name: string }, url: string) => Promise<unknown>
+  sendResetPassword?: (user: { email: string; name: string }, url: string) => Promise<unknown>
 }
+
+const quiet = (task: Promise<unknown> | undefined) => task?.catch((error) => console.error("[auth] email failed", error))
 
 export function createAuth(config: AuthConfig) {
   return betterAuth({
@@ -20,7 +25,16 @@ export function createAuth(config: AuthConfig) {
     secret: config.secret,
     trustedOrigins: config.trustedOrigins,
     database: drizzleAdapter(config.db, { provider: "pg", schema }),
-    emailAndPassword: { enabled: true, minPasswordLength: 10 },
+    emailAndPassword: {
+      enabled: true,
+      minPasswordLength: 10,
+      sendResetPassword: config.sendResetPassword
+        ? async ({ user, url }) => void quiet(config.sendResetPassword?.(user, url))
+        : undefined,
+    },
+    emailVerification: config.sendVerification
+      ? { sendOnSignUp: true, sendVerificationEmail: async ({ user, url }) => void quiet(config.sendVerification?.(user, url)) }
+      : undefined,
     socialProviders: config.github ? { github: config.github } : undefined,
     plugins: [admin()],
     advanced: { useSecureCookies: config.secureCookies },

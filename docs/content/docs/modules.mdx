@@ -5,7 +5,7 @@ description: Optional packages the cli switches on or off.
 
 A module is a package plus the code and env keys that depend on it. Turn one off and the cli deletes its package, its env block and every line between the `@findplate:<module>` and `@end` markers in the template.
 
-Select modules with `--modules storage,ai`, or in the prompt.
+Select modules with `--modules storage,ai,email`, or in the prompt.
 
 ## Available
 
@@ -13,6 +13,7 @@ Select modules with `--modules storage,ai`, or in the prompt.
 | --- | --- | --- |
 | `storage` | on | `packages/storage`. Uploads to any S3 API: Garage, R2, AWS, MinIO |
 | `ai` | on | `packages/ai`. Vercel AI SDK with Groq, OpenAI or Anthropic |
+| `email` | off | `packages/email`. react-email templates sent through email-sdk and Resend. [Details](/docs/email) |
 
 ### storage
 
@@ -39,7 +40,6 @@ ANTHROPIC_API_KEY=
 
 ## Coming
 
-- email with email-sdk and resend ([#11](https://github.com/FindMalek/findplate/issues/11))
 - telegram bot ([#12](https://github.com/FindMalek/findplate/issues/12)) and whatsapp via kapso ([#13](https://github.com/FindMalek/findplate/issues/13))
 - waitlist, roadmap and status pages ([#14](https://github.com/FindMalek/findplate/issues/14))
 - analytics with databuddy ([#15](https://github.com/FindMalek/findplate/issues/15))
