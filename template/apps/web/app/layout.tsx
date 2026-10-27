@@ -5,14 +5,16 @@ import type { Metadata } from "next"
 import { Analytics } from "@/components/analytics" // @findplate:databuddy
 import { ThemeProvider } from "@/components/theme-provider"
 import { Umami } from "@/components/umami" // @findplate:umami
+import { siteUrl } from "@/lib/seo"
 import { SITE } from "@/lib/site"
 import { fontVariables } from "./fonts"
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.WEB_URL ?? "http://localhost:3000"),
-  title: SITE.name,
+  metadataBase: new URL(siteUrl()),
+  title: { default: SITE.name, template: `%s | ${SITE.name}` },
   description: SITE.tagline,
-  openGraph: { title: SITE.name, description: SITE.tagline, type: "website" },
+  alternates: { canonical: "./" },
+  openGraph: { title: SITE.name, description: SITE.tagline, type: "website", siteName: SITE.name, url: "./" },
   twitter: { card: "summary_large_image" },
 }
 
