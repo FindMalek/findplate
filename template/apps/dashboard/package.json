@@ -10,6 +10,7 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@acme/common": "workspace:*",
     "@acme/env": "workspace:*",
     "@acme/orpc": "workspace:*",
     "@acme/ui": "workspace:*",

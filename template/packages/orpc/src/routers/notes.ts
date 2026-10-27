@@ -1,24 +1,10 @@
+import { noteInputSchema, noteSchema, noteStatsSchema, noteUpdateSchema } from "@acme/common/schemas"
 import { notes } from "@acme/db"
 import { ORPCError } from "@orpc/server"
 import { generateText } from "ai" // @findplate:ai
 import { and, count, desc, eq } from "drizzle-orm"
 import { z } from "zod"
 import { protectedProcedure } from "../procedures"
-
-export const noteSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  body: z.string(),
-  pinned: z.boolean(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-})
-
-const noteInput = z.object({
-  title: z.string().trim().min(1).max(120),
-  body: z.string().max(10_000).default(""),
-  pinned: z.boolean().default(false),
-})
 
 const mine = (userId: string, id: string) => and(eq(notes.userId, userId), eq(notes.id, id))
 
@@ -36,7 +22,7 @@ export const notesRouter = {
 
   stats: protectedProcedure
     .route({ method: "GET", path: "/notes/stats", summary: "Counts for the overview", tags: ["notes"] })
-    .output(z.object({ total: z.number(), pinned: z.number() }))
+    .output(noteStatsSchema)
     .handler(async ({ context }) => {
       const [all] = await context.db.select({ n: count() }).from(notes).where(eq(notes.userId, context.user.id))
       const [pinned] = await context.db
@@ -48,7 +34,7 @@ export const notesRouter = {
 
   create: protectedProcedure
     .route({ method: "POST", path: "/notes", summary: "Create a note", tags: ["notes"] })
-    .input(noteInput)
+    .input(noteInputSchema)
     .output(noteSchema)
     .handler(async ({ context, input }) => {
       const [row] = await context.db
@@ -60,7 +46,7 @@ export const notesRouter = {
 
   update: protectedProcedure
     .route({ method: "PATCH", path: "/notes/{id}", summary: "Update a note", tags: ["notes"] })
-    .input(noteInput.partial().extend({ id: z.uuid() }))
+    .input(noteUpdateSchema)
     .output(noteSchema)
     .handler(async ({ context, input: { id, ...patch } }) => {
       const [row] = await context.db

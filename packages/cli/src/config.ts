@@ -8,6 +8,7 @@ export const CONFIG_KEYS = {
   s3Endpoint: "S3 endpoint",
   turboCache: "Turborepo remote cache URL",
   githubOwner: "GitHub user or org for new repos",
+  githubProjectTemplate: "GitHub project to copy as the board (owner/number)",
 } as const
 
 export type ConfigKey = keyof typeof CONFIG_KEYS

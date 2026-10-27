@@ -1,0 +1,50 @@
+---
+title: Previews on Dokploy
+description: Production on Vercel, every pull request preview on your own Dokploy server.
+---
+
+Production deploys from `main` on Vercel. Every pull request gets its own preview per app on a [Dokploy](https://dokploy.com) server you host, with a sticky comment on the PR and a github deployment per app.
+
+The workflows are `preview.yml` and `preview-cleanup.yml`, the logic lives in `.github/scripts/preview*.mjs` (plain node, no dependencies).
+
+## What a PR gets
+
+- One Dokploy application per app (`web`, `api`, `dashboard`, plus `docs` when `docs/Dockerfile` exists), built from the PR commit with the app's `Dockerfile`.
+- A domain `pr-<number>-<app>.<PREVIEW_DOMAIN>`.
+- A github deployment per app in the environment `preview-<number>`, so the PR shows **View deployment**.
+- One comment, updated in place on every push: app, status (Building, Ready, Failed), preview link, inspect link to the Dokploy deployment, and a short error excerpt when a build fails.
+
+When the PR closes, `preview-cleanup.yml` deletes the Dokploy apps and marks the deployments inactive.
+
+## Set up Dokploy
+
+1. Install Dokploy on a server, see the [install guide](https://docs.dokploy.com/docs/core/installation).
+2. Create a project and an environment for previews. Copy the environment id from the url of the environment page.
+3. Profile settings, API/CLI: generate an API key. It is sent as the `x-api-key` header.
+4. Point a wildcard DNS record at the server: `*.preview.example.com A <server ip>`.
+
+## Repo settings
+
+| Name | Kind | Value |
+| --- | --- | --- |
+| `DOKPLOY_URL` | variable | `https://dokploy.example.com` |
+| `DOKPLOY_TOKEN` | secret | the API key |
+| `DOKPLOY_ENVIRONMENT_ID` | variable | environment id from step 2 |
+| `PREVIEW_DOMAIN` | variable | `preview.example.com` |
+| `PREVIEW_GIT_TOKEN` | secret, optional | token with read access, needed to clone a private repo |
+| `PREVIEW_APP_ENV` | secret, optional | extra `KEY=value` lines for every preview app (database url, auth secret) |
+| `PREVIEW_HTTPS` | variable, optional | `false` to skip Let's Encrypt |
+
+Without `DOKPLOY_URL`, `DOKPLOY_TOKEN`, `DOKPLOY_ENVIRONMENT_ID` and `PREVIEW_DOMAIN` the workflow exits green and says what is missing in the run summary. Previews are skipped for draft pull requests and forks, since forks cannot read secrets.
+
+Each preview app gets `WEB_URL`, `DASHBOARD_URL` and `API_PUBLIC_URL` pointing at the other preview urls. A database is not created for you, set `DATABASE_URL` through `PREVIEW_APP_ENV`.
+
+## Vercel stays production only
+
+This repo ships a `vercel.json` with `git.deploymentEnabled` so Vercel only builds `main`. Do the same in each Vercel project of a generated app:
+
+```json
+{
+  "git": { "deploymentEnabled": { "main": true, "*": false } }
+}
+```

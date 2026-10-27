@@ -5,9 +5,15 @@
     "project-structure",
     "cli",
     "modules",
+    "whatsapp",
+    "telegram",
+    "email",
     "presets",
     "theming",
     "deploy",
+    "github",
+    "provision",
+    "previews",
     "agents",
     "ci"
   ]

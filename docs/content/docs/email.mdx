@@ -1,0 +1,45 @@
+---
+title: Email
+description: React email templates sent through email-sdk and Resend.
+---
+
+The `email` module adds `packages/email`. Templates are React components, rendered to html and text and sent through [email-sdk](https://email-sdk.dev) with its Resend adapter. It is off by default.
+
+```bash
+findplate create my-app --modules email
+```
+
+## Env
+
+```bash
+RESEND_API_KEY=
+EMAIL_FROM=Acme <onboarding@resend.dev>
+```
+
+Without `RESEND_API_KEY` the mailer is `null` and nothing is sent. `onboarding@resend.dev` only delivers to your own Resend account, so add a domain before sending to anyone else.
+
+## Add your domain
+
+```bash
+RESEND_API_KEY=re_... pnpm --filter @acme/email domain example.com
+```
+
+This adds the domain to Resend, or finds it if it exists, and prints the dns records to create. Once they propagate, run it again with `--verify`, then set `EMAIL_FROM` to an address on that domain.
+
+## Sending
+
+Mail goes out from the api only. The mailer is part of the oRPC services, so procedures use `context.mailer`:
+
+```ts
+await context.mailer?.send("magicLink", user.email, { url })
+```
+
+Templates live in `packages/email/src/templates/index.tsx`. Add an entry with a subject and a `render` function and `send` is typed for it. Included: `verifyEmail`, `resetPassword` and `magicLink`.
+
+## Auth
+
+With a key set, better-auth sends the verification email on sign up and the reset password email through the mailer. Without one those flows stay off. `magicLink` is there for the better-auth `magicLink` plugin: pass `mailer.send("magicLink", email, { url })` as its `sendMagicLink`.
+
+## Test it
+
+`POST /v1/email/test` with `{ "to": "you@example.com" }` as an admin sends a test message.
