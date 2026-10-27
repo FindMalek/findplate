@@ -28,6 +28,11 @@ const definition = TemplateDefinition.buildTemplateDefinition({
   ],
 })
 
-await client.templates.create({ businessAccountId: WHATSAPP_BUSINESS_ACCOUNT_ID, ...definition })
+try {
+  await client.templates.create({ businessAccountId: WHATSAPP_BUSINESS_ACCOUNT_ID, ...definition })
+} catch (error) {
+  console.error(`Could not create "${name}": ${error instanceof Error ? error.message : error}`)
+  process.exit(1)
+}
 console.info(`Submitted template "${name}" (${language}). Meta reviews it, which can take a few minutes.`)
 console.info("Once it is approved, notify() can send it to WHATSAPP_NOTIFY_TO.")

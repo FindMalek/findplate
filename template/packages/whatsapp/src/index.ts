@@ -35,7 +35,7 @@ export function createWhatsApp(config: WhatsAppConfig): WhatsApp | null {
         template: buildTemplateSendPayload({
           name: config.templateName,
           language: config.templateLanguage,
-          body: [{ type: "text", text, parameterName: NOTIFY_PARAM }],
+          body: [{ type: "text", text: text.replace(/\s+/g, " ").trim(), parameterName: NOTIFY_PARAM }],
         }),
       })
       return { id: response.messages?.[0]?.id }
