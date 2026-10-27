@@ -1,0 +1,10 @@
+{
+  "label": "Monochrome",
+  "description": "Black and white, square corners, IBM Plex + JetBrains Mono. Quiet and technical.",
+  "shadcn": { "style": "base-lyra", "baseColor": "neutral" },
+  "fonts": {
+    "sans": { "family": "IBM_Plex_Sans", "weight": ["400", "500", "600", "700"] },
+    "mono": { "family": "JetBrains_Mono" },
+    "heading": { "family": "IBM_Plex_Sans", "weight": ["600", "700"] }
+  }
+}

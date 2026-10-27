@@ -1,0 +1,30 @@
+{
+  "$comment": "Read by the findplate cli: what each optional module owns. Code inside `@findplate:<module>` ... `@end` markers is removed when the module is off.",
+  "name": "acme",
+  "scope": "@acme",
+  "modules": {
+    "storage": {
+      "label": "File storage",
+      "hint": "uploads to any S3 API (Garage, R2, AWS, MinIO)",
+      "default": true,
+      "paths": ["packages/storage"],
+      "packages": ["@acme/storage"]
+    },
+    "ai": {
+      "label": "AI",
+      "hint": "Vercel AI SDK with Groq, OpenAI or Anthropic",
+      "default": true,
+      "paths": ["packages/ai"],
+      "packages": ["@acme/ai", "ai", "@ai-sdk/anthropic", "@ai-sdk/groq", "@ai-sdk/openai"],
+      "keys": [
+        { "env": "GROQ_API_KEY", "label": "Groq API key", "url": "https://console.groq.com/keys" },
+        { "env": "OPENAI_API_KEY", "label": "OpenAI API key", "url": "https://platform.openai.com/api-keys" },
+        {
+          "env": "ANTHROPIC_API_KEY",
+          "label": "Anthropic API key",
+          "url": "https://console.anthropic.com/settings/keys"
+        }
+      ]
+    }
+  }
+}

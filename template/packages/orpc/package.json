@@ -1,0 +1,39 @@
+{
+  "name": "@acme/orpc",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts",
+    "./errors": "./src/errors.ts",
+    "./react": "./src/react.tsx",
+    "./server": "./src/server-client.ts",
+    "./proxy": "./src/proxy.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@acme/auth": "workspace:*",
+    "@acme/db": "workspace:*",
+    "@orpc/client": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/tanstack-query": "catalog:",
+    "@tanstack/react-query": "catalog:",
+    "drizzle-orm": "catalog:",
+    "zod": "catalog:",
+    "@acme/storage": "workspace:*",
+    "ai": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "catalog:"
+  },
+  "devDependencies": {
+    "@acme/config": "workspace:*",
+    "@types/bun": "catalog:",
+    "@types/react": "catalog:",
+    "typescript": "catalog:"
+  }
+}

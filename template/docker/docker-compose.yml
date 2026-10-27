@@ -1,0 +1,15 @@
+# Local development database: pnpm db:up
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: acme
+      POSTGRES_PASSWORD: acme
+      POSTGRES_DB: acme
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - acme-pg:/var/lib/postgresql/data
+
+volumes:
+  acme-pg:

@@ -1,0 +1,28 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch --env-file=../../.env src/index.ts",
+    "start": "bun src/index.ts",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@acme/ai": "workspace:*",
+    "@acme/auth": "workspace:*",
+    "@acme/db": "workspace:*",
+    "@acme/env": "workspace:*",
+    "@acme/orpc": "workspace:*",
+    "@acme/storage": "workspace:*",
+    "@orpc/openapi": "catalog:",
+    "@orpc/server": "catalog:",
+    "@orpc/zod": "catalog:",
+    "drizzle-orm": "catalog:"
+  },
+  "devDependencies": {
+    "@acme/config": "workspace:*",
+    "@types/bun": "catalog:",
+    "typescript": "catalog:"
+  }
+}
