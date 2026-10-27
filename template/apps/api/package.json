@@ -12,6 +12,7 @@
     "@acme/ai": "workspace:*",
     "@acme/auth": "workspace:*",
     "@acme/db": "workspace:*",
+    "@acme/email": "workspace:*",
     "@acme/env": "workspace:*",
     "@acme/orpc": "workspace:*",
     "@acme/storage": "workspace:*",

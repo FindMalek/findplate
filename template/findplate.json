@@ -21,6 +21,14 @@
       "paths": ["packages/storage"],
       "packages": ["@acme/storage"]
     },
+    "email": {
+      "label": "Email",
+      "hint": "react-email templates sent through email-sdk and Resend",
+      "default": false,
+      "paths": ["packages/email", "packages/orpc/src/routers/email.ts"],
+      "packages": ["@acme/email", "@opencoredev/email-sdk", "@react-email/render"],
+      "keys": [{ "env": "RESEND_API_KEY", "label": "Resend API key", "url": "https://resend.com/api-keys" }]
+    },
     "docs": {
       "label": "Docs site",
       "hint": "fumadocs on Next, with pages about your project",

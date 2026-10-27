@@ -5,6 +5,7 @@
     "project-structure",
     "cli",
     "modules",
+    "email",
     "presets",
     "theming",
     "deploy",
