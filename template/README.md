@@ -24,8 +24,8 @@
 You need node 24, pnpm, bun and docker. The project is already installed and has a `.env` with generated secrets.
 
 ```bash
-pnpm db:up
-pnpm dev
+{{run:db:up}}
+{{run:dev}}
 ```
 
 | App | Url | What it is |

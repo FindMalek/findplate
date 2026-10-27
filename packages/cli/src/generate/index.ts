@@ -19,6 +19,8 @@ export interface GenerateOptions {
   /** Values for .env, on top of generated secrets (provider keys and such). */
   env: Record<string, string>
   postgresPort: number
+  /** Renders a script command for the README quickstart (`npm run dev`); defaults to pnpm. */
+  runner?: (script: string) => string
 }
 
 const SKIP = new Set(["node_modules", ".next", ".turbo", ".env", "findplate.json", "dist", ".findplate"])
@@ -101,6 +103,7 @@ export function generate(opts: GenerateOptions) {
         .replaceAll("{{title_url}}", url(names.title))
         .replaceAll("{{pitch_url}}", url(opts.pitch))
         .replaceAll("{{pitch}}", () => opts.pitch)
+        .replace(/\{\{run:([\w:-]+)\}\}/g, (_, script: string) => (opts.runner ?? ((s) => `pnpm ${s}`))(script))
     }
     if (out !== source) writeFileSync(file, out)
   }
