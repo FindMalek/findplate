@@ -73,7 +73,23 @@ describe("generate", () => {
   }
 
   test("with every module: no template names or markers left, env filled", () => {
-    const { target } = make(["storage", "ai", "whatsapp", "telegram", "docs", "email", "waitlist", "roadmap", "status"])
+    const { target } = make([
+      "storage",
+      "ai",
+      "whatsapp",
+      "telegram",
+      "docs",
+      "email",
+      "waitlist",
+      "roadmap",
+      "status",
+      "umami",
+      "openobserve",
+      "glitchtip",
+      "infisical",
+      "langfuse",
+      "databuddy",
+    ])
     for (const file of files(target)) {
       if (statSync(file).size > 2_000_000 || /\.(ico|png)$/.test(file)) continue
       const text = readFileSync(file, "utf8")
@@ -99,7 +115,32 @@ describe("generate", () => {
     expect(readFileSync(join(target, ".env.example"), "utf8")).not.toContain("S3_BUCKET")
   })
 
-    const { target } = make(["openobserve", "infisical", "utf8", "utf8", "infisical", "waitlist", "docs", "fumadocs"])
+  test("a module's migration leaves the drizzle journal when the module is off", () => {
+    const tags = (modules: string[]) =>
+      JSON.parse(
+        readFileSync(join(make(modules).target, "packages/db/drizzle/meta/_journal.json"), "utf8"),
+      ).entries.map((entry: { tag: string }) => entry.tag)
+    expect(tags(["waitlist"])).toEqual(["0000_init", "0001_waitlist"])
+    expect(tags([])).toEqual(["0000_init"])
+  })
+
+  test("docs module: only with --modules docs, with the preset fonts, pitch and env url", () => {
+    const on = make(["docs"]).target
+    expect(readFileSync(join(on, "apps/docs/lib/site.ts"), "utf8")).toContain('tagline: "Demo pitch"')
+    expect(readFileSync(join(on, "apps/docs/app/fonts.ts"), "utf8")).toContain("IBM_Plex_Sans")
+    expect(readFileSync(join(on, ".env.example"), "utf8")).toContain("DOCS_URL=")
+    const off = make([]).target
+    expect(existsSync(join(off, "apps/docs"))).toBe(false)
+    expect(readFileSync(join(off, "pnpm-workspace.yaml"), "utf8")).not.toContain("fumadocs")
+    expect(readFileSync(join(off, ".env.example"), "utf8")).not.toContain("DOCS_URL")
+  })
+
+  test("a package shared by two modules stays while one is on; module scripts land in the root", () => {
+    const { target } = make(["openobserve", "infisical"])
+    const api = readFileSync(join(target, "apps/api/package.json"), "utf8")
+    expect(api).toContain("@opentelemetry/sdk-node")
+    expect(api).not.toContain("@langfuse/otel")
+    expect(JSON.parse(readFileSync(join(target, "package.json"), "utf8")).scripts["dev:secrets"]).toContain("infisical")
   })
 
   test.each(listPresets().map((p) => p.id))("preset %s: tokens, fonts and theme land, nothing left over", (id) => {
