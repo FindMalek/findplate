@@ -5,7 +5,7 @@ import { NodeSDK } from "@opentelemetry/sdk-node"
 
 /** Sends api traces to OpenObserve's otlp endpoint. Does nothing until `OPENOBSERVE_URL` is set. */
 export function startOpenObserve(env: ApiEnv) {
-  if (!env.OPENOBSERVE_URL) return
+  if (!env.OPENOBSERVE_URL || !env.OPENOBSERVE_USER || !env.OPENOBSERVE_PASSWORD) return
   const token = Buffer.from(`${env.OPENOBSERVE_USER}:${env.OPENOBSERVE_PASSWORD}`).toString("base64")
   new NodeSDK({
     serviceName: "api",
