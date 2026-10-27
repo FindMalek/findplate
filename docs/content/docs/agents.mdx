@@ -27,7 +27,25 @@ pnpm agents
 
 ## Skills
 
-Per-project skills for the workflow around a ticket are coming with [#17](https://github.com/FindMalek/findplate/issues/17).
+The workflow around a ticket ships as project skills in `.ruler/skills`, and ruler copies them into each agent's skills folder:
+
+| Skill | What it does |
+| --- | --- |
+| `dive-ticket` | research an issue before any plan or code |
+| `plan-ticket` | a blocker comment, or a detailed plan |
+| `ship` | merge main, clean, check, push, open the PR, watch CI |
+| `review-ticket` | review a PR and draft comments, never posts |
+| `triage-reviews` | check review comments against the code, draft replies |
+| `check-touched` | lint, types and tests for the touched workspaces only |
+| `clean-pr` | strip restating comments from the branch diff |
+
+They work with GitHub issues and the Project board, and only commit or push when you invoke `ship`.
+
+### Public skills
+
+`findplate create` also installs recommended public skills with the [skills cli](https://skills.sh), listed in the `skills` field of the template's `findplate.json`: `vercel-react-best-practices`, `vercel-composition-patterns`, `web-design-guidelines`, `shadcn`, `next-best-practices`, `turborepo`, `better-auth-best-practices`, `find-skills`, and `ai-sdk` when the AI module is on. They land in `.agents/skills` and `.claude/skills` with a `skills-lock.json`.
+
+Offline or a repo moved? That pack is skipped with a note and the rest still install. Skip all of it with `--no-skills`.
 
 ## Today
 

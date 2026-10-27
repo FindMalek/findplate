@@ -1,7 +1,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 
-export const STEPS = ["generate", "agents", "install", "format", "git"] as const
+export const STEPS = ["generate", "agents", "skills", "install", "format", "git"] as const
 export type Step = (typeof STEPS)[number]
 
 export interface ProjectState {

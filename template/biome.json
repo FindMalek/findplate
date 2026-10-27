@@ -15,7 +15,10 @@
       "!.mcp.json",
       "!opencode.json",
       "!.cursor",
-      "!.zed"
+      "!.zed",
+      "!.agents",
+      "!.claude",
+      "!skills-lock.json"
     ]
   },
   "formatter": {

@@ -17,7 +17,7 @@ test("config is saved private, and unset removes the key", () => {
 
 test("re-running create in an interrupted project resumes from its saved answers", async () => {
   const target = join(mkdtempSync(join(tmpdir(), "fp-resume-")), "demo")
-  const flags = { dir: target, install: false, git: false, agents: false, yes: true }
+  const flags = { dir: target, install: false, git: false, agents: false, skills: false, yes: true }
   await create({ ...flags, name: "demo", pitch: "first pitch", modules: "ai" })
   const first = loadState(target)
   expect(first?.done).toEqual(["generate"])
@@ -35,7 +35,16 @@ test("re-running create in an interrupted project resumes from its saved answers
 
 test("a resume keeps the api keys already in .env", async () => {
   const target = join(mkdtempSync(join(tmpdir(), "fp-keys-")), "demo")
-  const flags = { dir: target, install: false, git: false, agents: false, yes: true, name: "demo", modules: "ai" }
+  const flags = {
+    dir: target,
+    install: false,
+    git: false,
+    agents: false,
+    skills: false,
+    yes: true,
+    name: "demo",
+    modules: "ai",
+  }
   await create(flags)
   const envFile = join(target, ".env")
   writeFileSync(envFile, readFileSync(envFile, "utf8").replace(/^GROQ_API_KEY=.*$/m, "GROQ_API_KEY=gsk_test"))
