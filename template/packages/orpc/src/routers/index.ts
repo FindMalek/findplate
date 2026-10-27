@@ -1,6 +1,8 @@
 import type { RouterClient } from "@orpc/server"
 import { adminRouter, meRouter } from "./account"
 import { emailRouter } from "./email" // @findplate:email
+import { notesRouter } from "./notes"
+import { publicRouter } from "./public"
 import { roadmapRouter } from "./roadmap" // @findplate:roadmap
 import { statusRouter } from "./status" // @findplate:status
 import { telegramRouter } from "./telegram" // @findplate:telegram
