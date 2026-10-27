@@ -13,6 +13,7 @@ import { freePort, has, run } from "../run"
 import { installSkills, SKILLS_PACKAGE, skillPacks } from "../skills"
 import { loadState, markDone, type ProjectState, type Step, saveState } from "../state"
 import { accent, bold, brand, dim } from "../ui"
+import { TEMPLATE_VERSION } from "../version"
 import { ghLogin, provision } from "./github"
 
 export interface CreateFlags {
@@ -160,6 +161,7 @@ export async function create(flags: CreateFlags) {
   let admin = { adminEmail: previous?.answers.adminEmail ?? "", adminPassword: "" }
   const state: ProjectState = previous ?? {
     version: 1,
+    templateVersion: TEMPLATE_VERSION,
     answers: { name: names.slug, pitch, preset: preset.id, modules, postgresPort, adminEmail: "" },
     done: [],
   }

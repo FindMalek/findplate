@@ -1,0 +1,52 @@
+---
+title: Add and doctor
+description: Turn on a module in an existing project, and check that the project is healthy.
+---
+
+## findplate add
+
+```bash
+findplate add ai
+findplate add storage,whatsapp ./my-app
+```
+
+Run it inside a project made by `findplate create`, or pass the project folder. It reads `.findplate/state.json` (name, preset, pitch, enabled modules), regenerates the template with and without the module, and applies only the difference:
+
+- new files and folders of the module, including its drizzle migration
+- changes in shared files (`package.json` scripts and dependencies, the pnpm catalog, `.env.example`, files with `@findplate:<module>` markers), but only where you haven't edited them
+- missing keys appended to `.env` (asked for when you are in a terminal)
+- modules the new one `requires` are switched on too
+
+Files you changed are never overwritten. They are listed so you can merge by hand, or pass `--force` to take the template version. Run `pnpm install` afterwards, or let `add` do it (skip with `--no-install`).
+
+It is idempotent: adding a module that is already on does nothing. The git tree must be clean (`.findplate/` aside), otherwise it exits with code `3`, unless you pass `--force`.
+
+| Flag | Description |
+| --- | --- |
+| `--force` | allow a dirty git tree and overwrite files you edited |
+| `--no-install` | skip `pnpm install` |
+| `-y`, `--yes` | don't ask for api keys |
+
+The project was generated from template version `templateVersion` in `.findplate/state.json`. Adding a module with a newer cli also pulls the newer template for the files you haven't edited.
+
+## findplate doctor
+
+```bash
+findplate doctor [dir] [--json]
+```
+
+Prints a table of checks, each `PASS`, `WARN`, `FAIL` or `SKIP`:
+
+| Check | Fails when |
+| --- | --- |
+| project | no `.findplate/state.json` |
+| `.env` keys | warns when `.env.example` has keys `.env` lacks |
+| env schema | a variable the zod schema requires (no `.optional()` or `.default()`) is empty |
+| database | `DATABASE_URL` doesn't accept a connection |
+| compose port | `POSTGRES_PORT` differs from the port in `DATABASE_URL` |
+| git, gh auth | git is missing (fail), `gh` isn't logged in (warn) |
+| node, pnpm, bun | node older than `engines`, pnpm missing (fail), bun missing (warn) |
+| dns | the urls in `.env` don't resolve, only once `provision dns` ran |
+| dokploy, vercel | the configured dokploy url is unreachable (warn); vercel is only reported as linked or not |
+
+The exit code is `1` when any check fails, `0` otherwise. `--json` prints `{ "ok": boolean, "results": [...] }` for scripts and agents.
