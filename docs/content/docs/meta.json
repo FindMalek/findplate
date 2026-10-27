@@ -9,6 +9,7 @@
     "theming",
     "deploy",
     "provision",
+    "previews",
     "agents",
     "ci"
   ]
