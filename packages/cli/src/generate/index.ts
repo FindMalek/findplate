@@ -87,7 +87,7 @@ export function generate(opts: GenerateOptions) {
       out = out
         .replaceAll("{{title_url}}", url(names.title))
         .replaceAll("{{pitch_url}}", url(opts.pitch))
-        .replaceAll("{{pitch}}", opts.pitch)
+        .replaceAll("{{pitch}}", () => opts.pitch)
     }
     if (out !== source) writeFileSync(file, out)
   }
@@ -104,17 +104,18 @@ export function generate(opts: GenerateOptions) {
     if (!source.includes('defaultTheme="dark"')) throw new Error("theme-provider.tsx has no defaultTheme to set")
     writeFileSync(provider, source.replace('defaultTheme="dark"', `defaultTheme="${opts.preset.defaultTheme}"`))
   }
+  const ogEntryText = ogEntry(
+    ogColors(presetTheme(opts.preset.id), opts.preset.defaultTheme === "light" ? "light" : "dark"),
+  )
+  const tagline = `tagline: ${JSON.stringify(opts.pitch)},`
   for (const app of apps) {
     const site = join(target, `apps/${app}/lib/site.ts`)
     if (!existsSync(site)) continue
-    const entry = ogEntry(
-      ogColors(presetTheme(opts.preset.id), opts.preset.defaultTheme === "light" ? "light" : "dark"),
-    )
     writeFileSync(
       site,
       readFileSync(site, "utf8")
-        .replace(/tagline: ".*",/, `tagline: ${JSON.stringify(opts.pitch)},`)
-        .replace(/og: \{[^}]*\},/, entry),
+        .replace(/tagline: ".*",/, () => tagline)
+        .replace(/og: \{[^}]*\},/, () => ogEntryText),
     )
   }
 
