@@ -1,5 +1,5 @@
-import { existsSync, readdirSync } from "node:fs"
-import { resolve } from "node:path"
+import { existsSync, readdirSync, readFileSync, rmSync } from "node:fs"
+import { join, resolve } from "node:path"
 import * as p from "@clack/prompts"
 import { generate } from "../generate"
 import { isValidSlug, toNames } from "../generate/rename"
@@ -7,6 +7,7 @@ import { loadManifest } from "../manifest"
 import { templateDir } from "../paths"
 import { listPresets } from "../presets"
 import { freePort, has, run } from "../run"
+import { loadState, markDone, type ProjectState, type Step, saveState } from "../state"
 import { accent, bold, brand, dim } from "../ui"
 
 export interface CreateFlags {
@@ -32,13 +33,13 @@ function answered<T>(value: T): Exclude<T, symbol> {
 export async function create(flags: CreateFlags) {
   const manifest = loadManifest()
   const presets = listPresets()
-  const interactive = !flags.yes && process.stdin.isTTY
+  const canPrompt = !flags.yes && process.stdin.isTTY
 
   p.intro(`${brand("findplate")} ${dim("a full-stack project, set up in one go")}`)
 
   let name = flags.name ?? flags.dir
   if (!name) {
-    if (!interactive) throw new Error("--name is required with --yes")
+    if (!canPrompt) throw new Error("--name is required with --yes")
     const answer = answered(
       await p.text({
         message: "Project name",
@@ -51,9 +52,14 @@ export async function create(flags: CreateFlags) {
   const names = toNames(name ?? "")
   if (!isValidSlug(names.slug)) throw new Error(`"${name}" isn't a usable project name`)
   const target = resolve(flags.dir ?? names.slug)
-  if (existsSync(target) && readdirSync(target).length) throw new Error(`${target} already exists and isn't empty`)
+  const previous = existsSync(target) ? loadState(target) : undefined
+  if (existsSync(target) && readdirSync(target).length && !previous) {
+    throw new Error(`${target} already exists and isn't empty`)
+  }
+  const interactive = canPrompt && !previous
+  if (previous) p.log.info(`Resuming ${bold(names.slug)}, finished steps are skipped`)
 
-  let pitch = flags.pitch
+  let pitch = previous?.answers.pitch ?? flags.pitch
   if (!pitch && interactive) {
     const answer = answered(
       await p.text({
@@ -66,7 +72,7 @@ export async function create(flags: CreateFlags) {
   }
   pitch ??= `${names.title}: the one-line pitch goes here.`
 
-  let presetId = flags.preset
+  let presetId = previous?.answers.preset ?? flags.preset
   if (!presetId && interactive) {
     const answer = answered(
       await p.select({
@@ -80,7 +86,9 @@ export async function create(flags: CreateFlags) {
   if (!preset) throw new Error(`Unknown preset "${presetId}". Available: ${presets.map((x) => x.id).join(", ")}`)
 
   let modules: string[]
-  if (flags.modules !== undefined) {
+  if (previous) {
+    modules = previous.answers.modules
+  } else if (flags.modules !== undefined) {
     modules = flags.modules
       .split(",")
       .map((m) => m.trim())
@@ -124,40 +132,68 @@ export async function create(flags: CreateFlags) {
     }
   }
 
-  const postgresPort = await freePort(5432)
+  const postgresPort = previous?.answers.postgresPort ?? (await freePort(5432))
   const canInstall = flags.install && (await has("pnpm"))
-  let admin = { adminEmail: "", adminPassword: "" }
+  let admin = { adminEmail: previous?.answers.adminEmail ?? "", adminPassword: "" }
+  const state: ProjectState = previous ?? {
+    version: 1,
+    answers: { name: names.slug, pitch, preset: preset.id, modules, postgresPort, adminEmail: "" },
+    done: [],
+  }
+  const step = (id: Step, title: string, task: () => Promise<string> | string): p.Task[] =>
+    state.done.includes(id)
+      ? []
+      : [
+          {
+            title,
+            task: async () => {
+              const message = await task()
+              markDone(target, state, id)
+              return message
+            },
+          },
+        ]
+  saveState(target, state)
   const steps: p.Task[] = [
-    {
-      title: "Copying the template",
-      task: () => {
-        admin = generate({
-          templateDir: templateDir(),
-          target,
-          names,
-          pitch,
-          preset,
-          modules: new Set(modules),
-          env,
-          postgresPort,
-        })
-        return `Created ${bold(names.slug)} with the ${preset.label.toLowerCase()} preset`
-      },
-    },
+    ...step("generate", "Copying the template", () => {
+      if (existsSync(join(target, ".env"))) {
+        const old = readFileSync(join(target, ".env"), "utf8")
+        for (const key of modules.flatMap((id) => manifest.modules[id]?.keys ?? [])) {
+          const value = old.match(new RegExp(`^${key.env}=(.+)$`, "m"))?.[1]
+          if (value) env[key.env] = value
+        }
+      }
+      if (existsSync(target)) {
+        for (const entry of readdirSync(target))
+          if (entry !== ".findplate") rmSync(resolve(target, entry), { recursive: true, force: true })
+      }
+      admin = generate({
+        templateDir: templateDir(),
+        target,
+        names,
+        pitch,
+        preset,
+        modules: new Set(modules),
+        env,
+        postgresPort,
+      })
+      state.answers.adminEmail = admin.adminEmail
+      return `Created ${bold(names.slug)} with the ${preset.label.toLowerCase()} preset`
+    }),
   ]
   if (canInstall) {
     steps.push(
-      {
-        title: "Installing dependencies",
-        task: async () => (await run("pnpm", ["install"], target), "Dependencies installed"),
-      },
-      { title: "Formatting", task: async () => (await run("pnpm", ["check"], target), "Formatted with biome") },
+      ...step(
+        "install",
+        "Installing dependencies",
+        async () => (await run("pnpm", ["install"], target), "Dependencies installed"),
+      ),
+      ...step("format", "Formatting", async () => (await run("pnpm", ["check"], target), "Formatted with biome")),
     )
   }
   if (flags.git) {
-    steps.push({
-      title: "Creating the git repository",
-      task: async () => {
+    steps.push(
+      ...step("git", "Creating the git repository", async () => {
         await run("git", ["init", "-q", "-b", "main"], target)
         await run("git", ["add", "-A"], target)
         try {
@@ -166,8 +202,8 @@ export async function create(flags: CreateFlags) {
           return "Git repository created (set user.name and user.email to make the first commit)"
         }
         return "First commit on main"
-      },
-    })
+      }),
+    )
   }
   await p.tasks(steps)
 

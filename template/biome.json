@@ -6,7 +6,7 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!**/drizzle/meta", "!**/next-env.d.ts", "!packages/ui/src/components"]
+    "includes": ["**", "!**/drizzle/meta", "!**/next-env.d.ts", "!.findplate", "!packages/ui/src/components"]
   },
   "formatter": {
     "indentStyle": "space",

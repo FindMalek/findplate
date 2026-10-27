@@ -2,6 +2,7 @@
 import { parseArgs } from "node:util"
 import * as p from "@clack/prompts"
 import pkg from "../package.json"
+import { configCommand } from "./commands/config"
 import { create } from "./commands/create"
 
 const VERSION = pkg.version
@@ -9,7 +10,8 @@ const VERSION = pkg.version
 const HELP = `findplate: create a production-ready full-stack project
 
 Usage
-  findplate create [dir] [options]
+  findplate create [dir] [options]   re-run in an unfinished project to resume it
+  findplate config [list|get|set|unset|path] [key] [value]
 
 Options
   --name <name>        project name (defaults to dir)
@@ -41,6 +43,7 @@ async function main() {
   if (values.version) return console.info(VERSION)
   const [command = "create", dir] = positionals
   if (values.help) return console.info(HELP)
+  if (command === "config") return configCommand(positionals.slice(1))
   if (command !== "create") {
     console.error(`Unknown command "${command}"\n\n${HELP}`)
     process.exit(1)
