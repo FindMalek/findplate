@@ -26,6 +26,7 @@ test("an unreachable registry never throws", async () => {
     throw new Error("offline")
   }
   expect(await checkForUpdate({ current: "0.1.0", file, fetchLatest })).toBeUndefined()
+  expect(await checkForUpdate({ current: "0.1.0", file, fetchLatest: async () => "9.0.0" })).toBeUndefined()
 })
 
 test("versions compare numerically and ci, non-tty and opt-outs skip the check", () => {

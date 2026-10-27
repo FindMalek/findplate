@@ -69,9 +69,8 @@ export async function checkForUpdate(opts: CheckOptions): Promise<string | undef
   try {
     let cache = readCache(file)
     if (!cache || isExpired(cache.checkedAt, now)) {
-      const latest = await (opts.fetchLatest ?? fetchLatest)()
-      if (!latest) return undefined
-      cache = { checkedAt: now, latest }
+      const latest = await (opts.fetchLatest ?? fetchLatest)().catch(() => undefined)
+      cache = { checkedAt: now, latest: latest ?? cache?.latest ?? current }
       mkdirSync(dirname(file), { recursive: true })
       writeFileSync(file, `${JSON.stringify(cache)}\n`)
     }
