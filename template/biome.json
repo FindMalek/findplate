@@ -6,7 +6,17 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["**", "!**/drizzle/meta", "!**/next-env.d.ts", "!.findplate", "!packages/ui/src/components"]
+    "includes": [
+      "**",
+      "!**/drizzle/meta",
+      "!**/next-env.d.ts",
+      "!.findplate",
+      "!packages/ui/src/components",
+      "!.mcp.json",
+      "!opencode.json",
+      "!.cursor",
+      "!.zed"
+    ]
   },
   "formatter": {
     "indentStyle": "space",
