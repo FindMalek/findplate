@@ -2,6 +2,9 @@ import type { RouterClient } from "@orpc/server"
 import { adminRouter, meRouter } from "./account"
 import { notesRouter } from "./notes"
 import { publicRouter } from "./public"
+import { roadmapRouter } from "./roadmap" // @findplate:roadmap
+import { statusRouter } from "./status" // @findplate:status
+import { waitlistRouter } from "./waitlist" // @findplate:waitlist
 
 /** One router, namespaced: `public` needs no session, everything else does (and `admin` needs the admin role). */
 export const appRouter = {
@@ -9,6 +12,9 @@ export const appRouter = {
   me: meRouter,
   notes: notesRouter,
   admin: adminRouter,
+  roadmap: roadmapRouter, // @findplate:roadmap
+  status: statusRouter, // @findplate:status
+  waitlist: waitlistRouter, // @findplate:waitlist
 }
 
 export type AppRouter = typeof appRouter

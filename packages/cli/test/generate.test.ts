@@ -81,6 +81,15 @@ describe("generate", () => {
     expect(readFileSync(join(target, ".env.example"), "utf8")).not.toContain("S3_BUCKET")
   })
 
+  test("a module's migration leaves the drizzle journal when the module is off", () => {
+    const tags = (modules: string[]) =>
+      JSON.parse(
+        readFileSync(join(make(modules).target, "packages/db/drizzle/meta/_journal.json"), "utf8"),
+      ).entries.map((entry: { tag: string }) => entry.tag)
+    expect(tags(["waitlist"])).toEqual(["0000_init", "0001_waitlist"])
+    expect(tags([])).toEqual(["0000_init"])
+  })
+
   test.each(listPresets().map((p) => p.id))("preset %s: tokens, fonts and theme land, nothing left over", (id) => {
     const preset = listPresets().find((p) => p.id === id)!
     const { target } = make([], preset)

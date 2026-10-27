@@ -8,7 +8,14 @@ export interface Services {
   db: Db
   auth: Auth
   now: () => Date
-  config: { deployEnv: string; githubAuth: boolean; githubRepo?: string; githubToken?: string }
+  config: {
+    deployEnv: string
+    githubAuth: boolean
+    githubRepo?: string
+    githubToken?: string
+    webUrl: string // @findplate:status
+    dashboardUrl: string // @findplate:status
+  }
   // @findplate:storage
   storage: Storage | null
   // @end

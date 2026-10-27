@@ -37,6 +37,8 @@ const fetch = createServer(
       githubAuth: Boolean(env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET),
       githubRepo: env.GITHUB_REPO,
       githubToken: env.GITHUB_TOKEN,
+      webUrl: env.WEB_URL, // @findplate:status
+      dashboardUrl: env.DASHBOARD_URL, // @findplate:status
     },
     // @findplate:storage
     storage: createStorage({

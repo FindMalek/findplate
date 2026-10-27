@@ -59,6 +59,12 @@ export function generate(opts: GenerateOptions) {
   const disabled = Object.entries(manifest.modules).filter(([id]) => !opts.modules.has(id))
   for (const [, spec] of disabled)
     for (const path of spec.paths) rmSync(join(target, path), { recursive: true, force: true })
+  const journal = join(target, "packages/db/drizzle/meta/_journal.json")
+  if (existsSync(journal)) {
+    const data = JSON.parse(readFileSync(journal, "utf8")) as { entries: { tag: string }[] }
+    data.entries = data.entries.filter((entry) => existsSync(join(target, `packages/db/drizzle/${entry.tag}.sql`)))
+    writeFileSync(journal, `${JSON.stringify(data, null, 2)}\n`)
+  }
   const dropped = new Set(disabled.flatMap(([, spec]) => spec.packages))
 
   for (const file of walk(target)) {

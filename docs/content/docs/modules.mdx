@@ -13,6 +13,9 @@ Select modules with `--modules storage,ai`, or in the prompt.
 | --- | --- | --- |
 | `storage` | on | `packages/storage`. Uploads to any S3 API: Garage, R2, AWS, MinIO |
 | `ai` | on | `packages/ai`. Vercel AI SDK with Groq, OpenAI or Anthropic |
+| `waitlist` | off | email signup on the landing page, signups listed in the dashboard |
+| `roadmap` | off | public `/roadmap` from the repo's GitHub milestones |
+| `status` | off | public `/status` with live checks of api, database, web and dashboard |
 
 ### storage
 
@@ -37,10 +40,21 @@ OPENAI_API_KEY=
 ANTHROPIC_API_KEY=
 ```
 
+### waitlist
+
+The hero gets an email form that posts to `waitlist.join`. Duplicates are ignored. Admins see the signups under Waitlist in the dashboard. It adds the `waitlist` table through the `0001_waitlist` migration, which is dropped with the module.
+
+### roadmap
+
+`/roadmap` lists the milestones of `GITHUB_REPO` with their progress, cached for 10 minutes. Set `GITHUB_TOKEN` for private repos or a higher rate limit.
+
+### status
+
+`/status` calls `status.services`, which checks the database and pings `WEB_URL` and `DASHBOARD_URL` with a 3 s timeout.
+
 ## Coming
 
 - email with email-sdk and resend ([#11](https://github.com/FindMalek/findplate/issues/11))
 - telegram bot ([#12](https://github.com/FindMalek/findplate/issues/12)) and whatsapp via kapso ([#13](https://github.com/FindMalek/findplate/issues/13))
-- waitlist, roadmap and status pages ([#14](https://github.com/FindMalek/findplate/issues/14))
 - analytics with databuddy ([#15](https://github.com/FindMalek/findplate/issues/15))
 - umami, openobserve, glitchtip, infisical and langfuse ([#20](https://github.com/FindMalek/findplate/issues/20))
