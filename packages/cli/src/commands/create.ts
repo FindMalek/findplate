@@ -237,11 +237,14 @@ export async function create(flags: CreateFlags) {
     )
   }
   if (flags.git) {
-    steps.push(...step("git", "Creating the git repository", () => initRepo(target)))
+    steps.push(
+      ...step("git", "Creating the git repository", () => initRepo(target, () => markDone(target, state, "git"))),
+    )
   }
   if (wantGithub && flags.git) {
     steps.push(
       ...step("github", "Setting up GitHub", async () => {
+        if (!existsSync(join(target, ".git"))) return "Skipped GitHub, no git repository was created here"
         const outcomes = await provision(target, state, {
           dir: target,
           owner: flags.owner,
