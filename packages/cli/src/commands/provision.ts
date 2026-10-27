@@ -3,6 +3,7 @@ import { parseArgs } from "node:util"
 import * as p from "@clack/prompts"
 import { loadConfig } from "../config"
 import { planBackup } from "../provision/backup"
+import { planBrowsers } from "../provision/browsers"
 import { planDns } from "../provision/dns"
 import { planDokploy } from "../provision/dokploy"
 import { planS3 } from "../provision/s3"
@@ -17,11 +18,12 @@ const PLANNERS: Record<string, (ctx: Ctx) => Task[]> = {
   dns: planDns,
   turbo: planTurbo,
   backup: planBackup,
+  browsers: planBrowsers,
 }
 const ALL = ["dokploy", "s3", "dns", "turbo", "backup"]
 
 export const PROVISION_HELP = `Usage
-  findplate provision <${ALL.join("|")}|all> [options]
+  findplate provision <${ALL.join("|")}|all|browsers> [options]
 
 Options
   --dry-run           print the plan, change nothing
