@@ -1,0 +1,32 @@
+---
+title: SEO
+description: Sitemap, robots, canonical urls and json-ld for the landing page.
+---
+
+`apps/web` ships with the basics, built on Next's metadata routes. Nothing to turn on, and nothing breaks when optional modules are off.
+
+| File | What it does |
+| --- | --- |
+| `app/sitemap.ts` | `/sitemap.xml` with `/`, plus `/roadmap` and `/status` when those modules are on |
+| `app/robots.ts` | `/robots.txt`, allows everything and points at the sitemaps |
+| `app/layout.tsx` | title template, `siteName` and a self-referencing canonical url, resolved against `WEB_URL` |
+| `components/json-ld.tsx` | `JsonLd`, renders a `<script type="application/ld+json">` |
+| `lib/seo.ts` | `siteUrl()`, `isIndexable()` and `websiteJsonLd()` |
+
+The name and tagline come from `SITE` in `apps/web/lib/site.ts`, the origin from `WEB_URL`. Both are read per request, so the same build works in every environment.
+
+## Previews stay out of search
+
+`robots.txt` disallows everything when `WEB_URL` points at localhost or `DEPLOY_ENV` starts with `pr-`.
+
+## The docs module
+
+With `docs` on, `apps/docs` has its own `sitemap.xml` (every page from the content folder) and `robots.txt`, and the web `robots.txt` lists it as a second sitemap using `DOCS_URL`. With `docs` off that line is gone.
+
+## More structured data
+
+Pass any schema.org object to `JsonLd`:
+
+```tsx
+<JsonLd data={{ "@context": "https://schema.org", "@type": "SoftwareApplication", name: SITE.name }} />
+```

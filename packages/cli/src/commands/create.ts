@@ -14,6 +14,7 @@ import { listPresets } from "../presets"
 import { freePort, has, run } from "../run"
 import { installSkills, SKILLS_PACKAGE, skillPacks } from "../skills"
 import { loadState, markDone, type ProjectState, type Step, saveState } from "../state"
+import { runTasks } from "../tasks"
 import { accent, bold, brand, dim } from "../ui"
 import { TEMPLATE_VERSION } from "../version"
 import { ghLogin, provision } from "./github"
@@ -270,7 +271,7 @@ export async function create(flags: CreateFlags) {
       }),
     )
   }
-  await p.tasks(steps)
+  await runTasks(steps)
 
   p.note(
     [
