@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 import { parseArgs } from "node:util"
 import * as p from "@clack/prompts"
+import pkg from "../package.json"
 import { create } from "./commands/create"
+
+const VERSION = pkg.version
 
 const HELP = `findplate: create a production-ready full-stack project
 
@@ -35,9 +38,13 @@ async function main() {
       version: { type: "boolean", short: "v", default: false },
     },
   })
-  if (values.version) return console.info("0.1.0")
+  if (values.version) return console.info(VERSION)
   const [command = "create", dir] = positionals
-  if (values.help || command !== "create") return console.info(HELP)
+  if (values.help) return console.info(HELP)
+  if (command !== "create") {
+    console.error(`Unknown command "${command}"\n\n${HELP}`)
+    process.exit(1)
+  }
   await create({
     dir,
     name: values.name,

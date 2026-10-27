@@ -126,11 +126,12 @@ export async function create(flags: CreateFlags) {
 
   const postgresPort = await freePort(5432)
   const canInstall = flags.install && (await has("pnpm"))
+  let admin = { adminEmail: "", adminPassword: "" }
   const steps: p.Task[] = [
     {
       title: "Copying the template",
       task: () => {
-        const result = generate({
+        admin = generate({
           templateDir: templateDir(),
           target,
           names,
@@ -140,12 +141,10 @@ export async function create(flags: CreateFlags) {
           env,
           postgresPort,
         })
-        Object.assign(admin, result)
         return `Created ${bold(names.slug)} with the ${preset.label.toLowerCase()} preset`
       },
     },
   ]
-  const admin = { adminEmail: "", adminPassword: "" }
   if (canInstall) {
     steps.push(
       {
@@ -161,7 +160,11 @@ export async function create(flags: CreateFlags) {
       task: async () => {
         await run("git", ["init", "-q", "-b", "main"], target)
         await run("git", ["add", "-A"], target)
-        await run("git", ["commit", "-q", "-m", "chore(repo): start from findplate"], target)
+        try {
+          await run("git", ["commit", "-q", "-m", "chore(repo): start from findplate"], target)
+        } catch {
+          return "Git repository created (set user.name and user.email to make the first commit)"
+        }
         return "First commit on main"
       },
     })
@@ -175,7 +178,7 @@ export async function create(flags: CreateFlags) {
       `${accent("pnpm")} db:up      ${dim(`postgres on :${postgresPort}`)}`,
       `${accent("pnpm")} dev        ${dim("web :3000 · api :3001 · dashboard :3002")}`,
       "",
-      `dashboard admin  ${bold(admin.adminEmail.replace(/^admin@.*$/, "see ADMIN_EMAIL in .env"))}`,
+      `dashboard admin  ${bold(admin.adminEmail)}`,
       `password         ${dim("ADMIN_PASSWORD in .env")}`,
     ].join("\n"),
     "Next",
