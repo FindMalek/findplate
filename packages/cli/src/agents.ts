@@ -11,7 +11,7 @@ export async function applyAgents(dir: string): Promise<AgentsResult> {
     else await run("npx", ["--yes", RULER_PACKAGE, "apply"], dir)
     return { ok: true }
   } catch (error) {
-    const reason = error instanceof Error ? (error.message.split("\n")[0] ?? "unknown error") : "unknown error"
-    return { ok: false, reason }
+    const lines = error instanceof Error ? error.message.split("\n").filter((line) => line.trim()) : []
+    return { ok: false, reason: lines.at(-1)?.trim() ?? "unknown error" }
   }
 }

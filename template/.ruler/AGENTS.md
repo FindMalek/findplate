@@ -31,7 +31,7 @@ Single source for every coding agent. Edit this file, then run `pnpm agents` to 
 - oRPC: procedures live in `packages/orpc/src/routers`, built from `publicProcedure` or `protectedProcedure`. Validate input and output with zod. Throw `ORPCError`, never raw errors
 - drizzle: schema in `packages/db/src/schema`. Change the schema, then run `pnpm db:generate`. Never hand-write a migration folder or a timestamp
 - better-auth: configured once in `packages/auth`. Sessions are cookies, signed-in calls send `x-csrf-token: orpc`
-- env: every variable goes through `packages/env` and `.env.example`. No `process.env` reads elsewhere. No secrets in diffs
+- env: every variable goes through `packages/env` and `.env.example`. App code reads env through `packages/env`, not `process.env`. No secrets in diffs
 - UI: reuse shadcn components from `@acme/ui` and theme tokens. No hard-coded colors
 
 ## Code

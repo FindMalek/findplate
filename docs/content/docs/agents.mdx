@@ -15,7 +15,7 @@ Every project has one source of rules in `.ruler/AGENTS.md`: the stack, structur
 | Zed | `AGENTS.md`, `.zed/settings.json` |
 | oh-my-pi | `AGENTS.md` |
 
-`.ruler/ruler.toml` lists the agents and the MCP servers every one of them gets: context7, shadcn and vercel. The generated files are committed, so a fresh clone works without ruler.
+`.ruler/ruler.toml` lists the agents and the MCP servers every one of them gets: context7, shadcn and vercel. The generated files are committed, so a fresh clone works without ruler. Keep the `*.ruler-generated` marker files next to them, ruler uses those to know what it owns.
 
 `findplate create` runs `ruler apply` at the end. If ruler can't be fetched (offline), it skips with a note. Skip it on purpose with `--no-agents`.
 
