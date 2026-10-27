@@ -2,8 +2,10 @@
 import { parseArgs } from "node:util"
 import * as p from "@clack/prompts"
 import pkg from "../package.json"
+import { addCommand } from "./commands/add"
 import { configCommand } from "./commands/config"
 import { create } from "./commands/create"
+import { doctorCommand } from "./commands/doctor"
 import { github } from "./commands/github"
 import { provisionCommand } from "./commands/provision"
 import { CliError, EXIT } from "./errors"
@@ -15,6 +17,8 @@ const HELP = `findplate: create a production-ready full-stack project
 Usage
   findplate create [dir] [options]   re-run in an unfinished project to resume it
   findplate github [dir] [options]   create the repo, board, labels and rules on GitHub (idempotent)
+  findplate add <module...> [dir] [--force]   add modules to an existing project
+  findplate doctor [dir] [--json]    check env, database, tools, dns and deploys
   findplate config [list|get|set|unset|path] [key] [value]
   findplate provision <dokploy|s3|dns|turbo|backup|all> [--dry-run]   see provision --help
 
@@ -63,6 +67,8 @@ async function main() {
       project: { type: "boolean", default: true },
       "project-token": { type: "boolean", default: false },
       "project-template": { type: "string" },
+      force: { type: "boolean", default: false },
+      json: { type: "boolean", default: false },
       "dry-run": { type: "boolean", default: false },
       yes: { type: "boolean", short: "y", default: false },
       help: { type: "boolean", short: "h", default: false },
@@ -72,6 +78,18 @@ async function main() {
   if (values.version) return console.info(VERSION)
   const [command = "create", dir] = positionals
   if (values.help) return console.info(HELP)
+  if (command === "doctor") return doctorCommand({ dir, json: values.json })
+  if (command === "add") {
+    const args = positionals.slice(1)
+    const dirArg = args.find((arg) => arg.includes("/") || arg === ".")
+    return addCommand({
+      dir: dirArg,
+      modules: args.filter((arg) => arg !== dirArg).flatMap((arg) => arg.split(",")),
+      install: values.install,
+      force: values.force,
+      yes: values.yes,
+    })
+  }
   if (command === "config") return configCommand(positionals.slice(1))
   if (command === "github") {
     return github({

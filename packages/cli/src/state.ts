@@ -21,6 +21,8 @@ export interface ProjectState {
     adminEmail: string
   }
   done: Step[]
+  /** Template version the project was generated from, updated by `findplate add`. Absent in older projects. */
+  templateVersion?: string
   github?: GithubState
 }
 
