@@ -35,8 +35,9 @@ export const COMMIT_RE = new RegExp(`^(?:${COMMIT_TYPES.join("|")})\\([\\w./@-]+
 export const MAX_SUBJECT_WORDS = 5
 
 /** `closes #12`, `fixes owner/repo#12` or a full issue url. */
-export const ISSUE_LINK_RE =
-  /\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s+(?:[\w.-]+\/[\w.-]+)?#\d+|\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s*:?\s+https:\/\/github\.com\/[\w.-]+\/[\w.-]+\/issues\/\d+/i
+const CLOSING = "(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)"
+const ISSUE_REF = "(?:[\\w.-]+/[\\w.-]+)?#\\d+|https://github\\.com/[\\w.-]+/[\\w.-]+/issues/\\d+"
+export const ISSUE_LINK_RE = new RegExp(`\\b${CLOSING}\\s*:?\\s+(?:${ISSUE_REF})`, "i")
 
 /** Bot accounts (dependabot, renovate) write their own commit messages and PR bodies. */
 export const isBot = (login) => /\[bot\]$/i.test(login ?? "")

@@ -7,11 +7,11 @@ const { BASE_SHA, HEAD_SHA, PR_TITLE = "", PR_BODY = "", PR_AUTHOR = "" } = proc
 const problems = []
 const fail = (message) => problems.push(message)
 
-export function aiTextProblems(text) {
+function aiTextProblems(text) {
   return AI_TEXT_PATTERNS.filter(({ re }) => re.test(text)).map(({ name }) => name)
 }
 
-export function subjectProblem(subject) {
+function subjectProblem(subject) {
   const match = COMMIT_RE.exec(subject)
   if (!match) return "expected `type(scope): subject`"
   const words = match[1].trim().split(/\s+/)

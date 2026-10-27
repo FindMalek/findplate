@@ -111,7 +111,6 @@ jobs:
         run: pnpm --filter web build
       - name: Audit the landing page
         working-directory: ${{ env.PROJECT }}
-        continue-on-error: true
         run: npx --yes @lhci/cli@0.15.1 autorun --config="$GITHUB_WORKSPACE/.github/lighthouserc.json"
       - uses: actions/upload-artifact@v7
         if: always()

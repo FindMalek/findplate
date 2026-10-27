@@ -15,7 +15,9 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    if: >
+      github.event.pull_request.head.repo.full_name == github.repository
+      && (github.event.action != 'closed' || github.event.pull_request.merged)
     env:
       PROJECT_NUMBER: ${{ vars.PROJECT_NUMBER }}
       GH_TOKEN: ${{ secrets.PROJECT_TOKEN }}
@@ -40,8 +42,4 @@ jobs:
           STATUS_FIELD: ${{ vars.PROJECT_STATUS_FIELD || 'Status' }}
           STATUS: ${{ github.event.pull_request.merged && (vars.PROJECT_STATUS_DONE || 'Done') || (vars.PROJECT_STATUS_REVIEW || 'In review') }}
         run: |
-          if [ "${{ github.event.action }}" = "closed" ] && [ "${{ github.event.pull_request.merged }}" != "true" ]; then
-            echo "closed without merging, leaving the board alone"
-            exit 0
-          fi
           node .github/scripts/project-status.mjs
