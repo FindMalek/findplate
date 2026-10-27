@@ -1,4 +1,5 @@
 import { expect, test } from "bun:test"
+import { readFileSync } from "node:fs"
 import { dockerPort, parseStatePayload, prAppName, previewHost, renderComment, tail, toStatus } from "./preview-lib.mjs"
 
 test("pr names and domains", () => {
@@ -30,6 +31,14 @@ test("comment renders table, failure excerpt and round-trips state", () => {
   expect(body).toContain("boom")
   expect(body).toContain("`abcdef1`")
   expect(parseStatePayload(body)).toEqual({ web: "id1" })
+})
+
+test("template scripts match the repo scripts", () => {
+  for (const f of ["preview-lib", "preview-api", "preview", "preview-cleanup"]) {
+    const a = readFileSync(new URL(`./${f}.mjs`, import.meta.url), "utf8")
+    const b = readFileSync(new URL(`../../template/.github/scripts/${f}.mjs`, import.meta.url), "utf8")
+    expect(b).toBe(a)
+  }
 })
 
 test("tail and status mapping", () => {

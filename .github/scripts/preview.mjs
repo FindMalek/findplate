@@ -96,19 +96,28 @@ async function ensureApplication({ app, dockerfile }) {
   return id
 }
 
-async function waitForDeployment(applicationId, after) {
+async function waitForDeployment(applicationId, known) {
   const deadline = Date.now() + timeoutMs
   while (Date.now() < deadline) {
-    const d = pickLatest(await listDeployments(applicationId))
-    if (d && new Date(d.createdAt) >= after && toStatus(d) !== "building") return d
+    const d = pickLatest((await listDeployments(applicationId)).filter((x) => !known.has(x.deploymentId)))
+    if (d && toStatus(d) !== "building") return d
     await new Promise((r) => setTimeout(r, 10_000))
   }
   return null
 }
 
+const pending = new Set()
+process.on("SIGINT", async () => {
+  await Promise.allSettled(
+    [...pending].map((id) => setDeploymentStatus(repo, id, "failure", { description: "run cancelled" })),
+  )
+  process.exit(130)
+})
+
 async function runApp({ app, dockerfile }) {
   const row = rows.find((r) => r.app === app)
   const ghDeployment = await createGithubDeployment(repo, sha, `preview-${pr}`, `${app} preview for #${pr}`)
+  pending.add(ghDeployment)
   const status = (st, extra) => setDeploymentStatus(repo, ghDeployment, st, { auto_inactive: false, ...extra })
   try {
     const id = await ensureApplication({ app, dockerfile })
@@ -138,9 +147,9 @@ async function runApp({ app, dockerfile }) {
       buildSecrets: null,
       createEnvFile: true,
     })
-    const startedAt = new Date(Date.now() - 5000)
+    const known = new Set((await listDeployments(id)).map((x) => x.deploymentId))
     await deployApplication(id, `PR #${pr} ${sha.slice(0, 7)}`)
-    const done = await waitForDeployment(id, startedAt)
+    const done = await waitForDeployment(id, known)
     row.status = done ? toStatus(done) : "failed"
     if (row.status === "failed") row.error = done ? failureExcerpt(done) : "timed out waiting for the build"
   } catch (e) {
@@ -148,6 +157,7 @@ async function runApp({ app, dockerfile }) {
     row.error = String(e.message ?? e)
   }
   row.updatedAt = now()
+  pending.delete(ghDeployment)
   await status(row.status === "ready" ? "success" : "failure", {
     log_url: row.inspectUrl ?? env.RUN_URL,
     environment_url: row.url,
