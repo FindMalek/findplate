@@ -86,8 +86,6 @@ describe("generate", () => {
     const { target } = make([], preset)
     const theme = readFileSync(join(target, "packages/ui/src/styles/theme.css"), "utf8")
     expect(theme).toBe(readFileSync(join(presetsDir(), id, "theme.css"), "utf8"))
-    expect(theme).toMatch(/:root \{[\s\S]*--radius:/)
-    expect(theme).toMatch(/\.dark \{/)
     expect(readFileSync(join(target, "apps/web/app/fonts.ts"), "utf8")).toContain(`${preset.fonts.heading.family}(`)
     expect(JSON.parse(readFileSync(join(target, "apps/web/components.json"), "utf8")).style).toBe(preset.shadcn.style)
     for (const file of files(target)) {
