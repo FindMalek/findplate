@@ -1,0 +1,31 @@
+---
+title: Introduction
+description: What findplate generates and how the docs are laid out.
+---
+
+findplate is a generator. One command creates a working turborepo with a landing page, a dashboard with login, and an api, wired to a database, auth and typed rpc. You pick a design preset and the optional modules you want, and you get a project you own from the first commit.
+
+```bash
+bunx findplate create
+```
+
+## What you get
+
+- `apps/web`: a hero landing page, only talks to the api
+- `apps/dashboard`: better-auth login and an app shell, only talks to the api
+- `apps/api`: orpc on bun. The only app that touches the database, auth, storage and providers
+- `packages/*`: `ui` (shadcn), `orpc`, `db` (drizzle and a seed scenario), `auth`, `env`, plus the optional modules
+- biome for format and lint, oxlint for `@shadcn/lint`, security headers, one root `.env`
+
+## Where to go next
+
+<Cards>
+  <Card title="Quickstart" href="/docs/quickstart">Generate a project and run it locally.</Card>
+  <Card title="CLI reference" href="/docs/cli">Every flag, and the agent mode.</Card>
+  <Card title="Presets" href="/docs/presets">The design starting points.</Card>
+  <Card title="Deploy" href="/docs/deploy">Vercel or your own server.</Card>
+</Cards>
+
+## Status
+
+findplate is built in the open and tracked as [GitHub issues](https://github.com/FindMalek/findplate/issues). Anything on these pages marked **coming** is planned but not shipped yet.

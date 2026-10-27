@@ -1,0 +1,34 @@
+---
+title: Customizing the theme
+description: Use shadcn create to design any theme and drop it into your project.
+---
+
+Presets are a starting point. Any theme you can build on [ui.shadcn.com/create](https://ui.shadcn.com/create) works, because a preset is the same thing that page produces.
+
+## How a preset maps to shadcn create
+
+| shadcn create | preset folder |
+| --- | --- |
+| style (for example `lyra`) | `preset.json` `shadcn.style` |
+| base color | `preset.json` `shadcn.baseColor` |
+| fonts | `preset.json` `fonts` |
+| radius and color variables | `theme.css`, the `--radius` and color tokens |
+
+## Apply a theme to a generated project
+
+1. Open [ui.shadcn.com/create](https://ui.shadcn.com/create) and design the theme.
+2. Copy the `:root` and `.dark` blocks it gives you.
+3. Paste them into `packages/ui/src/styles/theme.css`, replacing the existing tokens.
+4. If you changed fonts, edit `apps/web/app/fonts.ts` and `apps/dashboard/app/fonts.ts`. The style and base color live in the `components.json` files.
+
+All components read the tokens, so the landing page and the dashboard change together. The dev server hot reloads, no rebuild needed.
+
+## Make it a preset
+
+To reuse a theme across projects, or contribute one:
+
+1. Create `presets/<id>/`.
+2. Put the pasted tokens in `theme.css`.
+3. Add a `preset.json` with `label`, `description`, `shadcn` and `fonts`, like [the monochrome one](/docs/presets#anatomy).
+
+The cli picks the folder up on the next run, so `--preset <id>` works with no code change.

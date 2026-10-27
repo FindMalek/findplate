@@ -1,0 +1,64 @@
+---
+title: CLI reference
+description: Every flag of findplate create, and the mode for scripts and coding agents.
+---
+
+```bash
+findplate create [dir] [options]
+```
+
+`create` is the default command, so `findplate [dir]` works too.
+
+## Flags
+
+| Flag | Description |
+| --- | --- |
+| `[dir]` | target directory. Also the project name when `--name` is not set |
+| `--name <name>` | project name. Becomes the package scope, titles and database name |
+| `--pitch <text>` | one-line pitch shown on the generated landing page |
+| `--preset <id>` | design preset, see [presets](/docs/presets). Default `monochrome` |
+| `--modules <a,b>` | optional modules to include, see [modules](/docs/modules). Pass an empty value for none |
+| `--no-install` | skip `pnpm install` |
+| `--no-git` | skip `git init` and the first commit |
+| `-y`, `--yes` | no prompts, use defaults |
+| `-h`, `--help` | show help |
+| `-v`, `--version` | show the version |
+
+Project names are lowercase letters, digits and dashes, 3 to 40 characters. The target directory must be missing or empty.
+
+## Interactive mode
+
+Without `-y`, in a terminal, the cli asks for the name, pitch, preset and modules, then for the api keys of the modules you picked. Keys are optional, and you can fill `.env` later. Ctrl+C at any prompt cancels without creating anything.
+
+## Agent mode
+
+Coding agents and scripts have no tty. Pass `-y` and everything you want as flags, and nothing is ever prompted:
+
+```bash
+bunx findplate create my-app \
+  --pitch "Invoices for freelancers" \
+  --preset monochrome \
+  --modules storage,ai \
+  -y
+```
+
+- `--name` or `[dir]` is required with `-y`
+- without `--modules`, `-y` includes the modules that default to on
+- `--modules ""` generates a project with no optional modules
+- unknown presets or modules fail with the list of valid ids
+
+Add `--no-install --no-git` when the agent will run those steps itself.
+
+## What it does
+
+1. validates the name and target
+2. copies the template, renames `acme` to your project, removes the modules you turned off
+3. replaces the theme tokens with the preset's `theme.css`
+4. writes `.env` with generated secrets and an admin password
+5. `pnpm install`, `pnpm check`, then `git init` with a first commit on `main`
+
+## Coming
+
+- `findplate add` and `findplate doctor` ([#19](https://github.com/FindMalek/findplate/issues/19))
+- per-user config and resumable state ([#6](https://github.com/FindMalek/findplate/issues/6))
+- github, dokploy and dns provisioning ([#7](https://github.com/FindMalek/findplate/issues/7), [#8](https://github.com/FindMalek/findplate/issues/8))

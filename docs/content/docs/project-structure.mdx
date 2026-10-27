@@ -1,0 +1,47 @@
+---
+title: Project structure
+description: The turborepo the cli generates.
+---
+
+```text
+my-app/
+├─ apps/
+│  ├─ web/          hero landing, next
+│  ├─ dashboard/    better-auth login and app shell, next
+│  └─ api/          orpc on bun
+├─ packages/
+│  ├─ ui/           shadcn components and theme tokens
+│  ├─ orpc/         shared contracts and clients
+│  ├─ db/           drizzle schema, migrations, seed scenario
+│  ├─ auth/         better-auth setup
+│  ├─ env/          zod-validated env, one root .env
+│  ├─ config/       shared config
+│  ├─ storage/      optional module
+│  └─ ai/           optional module
+├─ docker/          local postgres compose file
+├─ .env             generated, with secrets filled in
+└─ turbo.json
+```
+
+## One rule for the apps
+
+`apps/api` is the only app that touches the database, auth, storage and providers. `web` and `dashboard` only call the api, so secrets and data access live in one place and the two frontends stay thin.
+
+## Commands
+
+| Command | What it does |
+| --- | --- |
+| `pnpm dev` | all apps |
+| `pnpm dev:web` | web and api |
+| `pnpm dev:dashboard` | dashboard and api |
+| `pnpm build` | build everything with turbo |
+| `pnpm check` | biome format and fix |
+| `pnpm lint` | biome and oxlint, no fixes |
+| `pnpm check-types` | typescript across the repo |
+| `pnpm db:up` / `db:down` | local postgres |
+| `pnpm db:generate` / `db:migrate` / `db:seed` / `db:studio` | drizzle |
+| `pnpm ui:add <component>` | add a shadcn component to `packages/ui` |
+
+## Environment
+
+One `.env` at the root feeds every app, validated by `packages/env`. The cli generates it from `.env.example` with secrets filled in. Keys for modules you turned off are removed.

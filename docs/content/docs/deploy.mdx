@@ -1,0 +1,60 @@
+---
+title: Deploy
+description: Ship a generated project on Vercel or your own server.
+---
+
+A generated project is three deployable apps (`web`, `dashboard`, `api`) and a Postgres database. All apps read the same env keys, set them on every service.
+
+## Environment
+
+The urls matter most:
+
+```bash
+API_URL=            # how the Next servers reach the api (internal url on docker)
+API_PUBLIC_URL=     # the api url the browser can reach
+WEB_URL=
+DASHBOARD_URL=
+DATABASE_URL=
+BETTER_AUTH_SECRET= # openssl rand -base64 32
+ADMIN_EMAIL=
+ADMIN_PASSWORD=
+```
+
+## Vercel
+
+Deploy `web` and `dashboard` as two Vercel projects from the same repo.
+
+1. Import the repo, set the root directory to `apps/web`, repeat for `apps/dashboard`.
+2. Add the env keys above to both.
+3. Host the `api` somewhere that runs bun or docker, see below, and point `API_URL` and `API_PUBLIC_URL` at it.
+
+## Self-host with docker
+
+Every app has a `Dockerfile` in `apps/<app>/`. The build context is the repo root, and turbo prunes the workspace to what the app needs:
+
+```bash
+docker build -f apps/web/Dockerfile -t my-app-web .
+docker build -f apps/dashboard/Dockerfile -t my-app-dashboard .
+docker build -f apps/api/Dockerfile -t my-app-api .
+```
+
+Next apps are built with `output: "standalone"` and run on port 3000 with a healthcheck. Pass the env at run time: the web app reads its urls per request, so one image works for every environment.
+
+## Dokploy
+
+[Dokploy](https://dokploy.com) runs the same images.
+
+1. Create a project with a Postgres database.
+2. Add three applications from your repo, build type Dockerfile, with paths `apps/web/Dockerfile`, `apps/dashboard/Dockerfile` and `apps/api/Dockerfile`, and `.` as the context.
+3. Set the env keys on each application. Use the api service's internal address for `API_URL`.
+4. Attach your domains.
+
+## Coming
+
+- automated dokploy, s3, dns and turbo cache setup ([#8](https://github.com/FindMalek/findplate/issues/8))
+- preview comments and github deployments ([#9](https://github.com/FindMalek/findplate/issues/9))
+- db and s3 browsers for previews ([#10](https://github.com/FindMalek/findplate/issues/10))
+
+## Hosting these docs
+
+This site ships a `Dockerfile` too, see `docs/README.md` in the findplate repo.
