@@ -47,7 +47,7 @@ jobs:
       matrix:
         include:
           - name: all modules
-            modules: storage,ai,telegram
+            modules: storage,ai,telegram,docs,email
           - name: minimum
             modules: ""
     env:

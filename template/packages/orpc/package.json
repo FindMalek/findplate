@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@acme/auth": "workspace:*",
+    "@acme/common": "workspace:*",
     "@acme/db": "workspace:*",
     "@orpc/client": "catalog:",
     "@orpc/server": "catalog:",
@@ -24,6 +25,7 @@
     "@tanstack/react-query": "catalog:",
     "drizzle-orm": "catalog:",
     "zod": "catalog:",
+    "@acme/email": "workspace:*",
     "@acme/storage": "workspace:*",
     "@acme/telegram": "workspace:*",
     "ai": "catalog:"

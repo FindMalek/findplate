@@ -1,5 +1,6 @@
 import type { RouterClient } from "@orpc/server"
 import { adminRouter, meRouter } from "./account"
+import { emailRouter } from "./email" // @findplate:email
 import { notesRouter } from "./notes"
 import { publicRouter } from "./public"
 import { telegramRouter } from "./telegram" // @findplate:telegram
@@ -12,6 +13,9 @@ export const appRouter = {
   admin: adminRouter,
   // @findplate:telegram
   telegram: telegramRouter,
+  // @end
+  // @findplate:email
+  email: emailRouter,
   // @end
 }
 

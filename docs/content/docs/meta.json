@@ -6,9 +6,12 @@
     "cli",
     "modules",
     "telegram",
+    "email",
     "presets",
     "theming",
     "deploy",
+    "github",
+    "provision",
     "previews",
     "agents",
     "ci"

@@ -11,6 +11,7 @@
     "test": "turbo test",
     "lint": "biome ci . && oxlint",
     "check": "biome check --write .",
+    "agents": "npx --yes @intellectronica/ruler@0.3.46 apply",
     "db:up": "docker compose --env-file .env -f docker/docker-compose.yml up -d",
     "db:down": "docker compose --env-file .env -f docker/docker-compose.yml down",
     "db:generate": "turbo db:generate -F @acme/db",

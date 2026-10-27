@@ -1,3 +1,5 @@
+import { ADMIN_LIST_LIMIT } from "@acme/common/constants"
+import { adminUserSchema, meSchema, okSchema, profileInputSchema } from "@acme/common/schemas"
 import { user } from "@acme/db"
 import { ORPCError } from "@orpc/server" // @findplate:storage
 import { count, desc, eq } from "drizzle-orm"
@@ -11,15 +13,7 @@ const IMAGE_TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": 
 export const meRouter = {
   get: protectedProcedure
     .route({ method: "GET", path: "/me", summary: "The signed-in user", tags: ["account"] })
-    .output(
-      z.object({
-        id: z.string(),
-        name: z.string(),
-        email: z.string(),
-        image: z.string().nullable(),
-        role: z.string().nullable(),
-      }),
-    )
+    .output(meSchema)
     .handler(({ context }) => ({
       id: context.user.id,
       name: context.user.name,
@@ -30,8 +24,8 @@ export const meRouter = {
 
   update: protectedProcedure
     .route({ method: "PATCH", path: "/me", summary: "Update your profile", tags: ["account"] })
-    .input(z.object({ name: z.string().trim().min(1).max(80) }))
-    .output(z.object({ ok: z.literal(true) }))
+    .input(profileInputSchema)
+    .output(okSchema)
     .handler(async ({ context, input }) => {
       await context.db
         .update(user)
@@ -65,15 +59,7 @@ export const adminRouter = {
     .output(
       z.object({
         total: z.number(),
-        users: z.array(
-          z.object({
-            id: z.string(),
-            name: z.string(),
-            email: z.string(),
-            role: z.string().nullable(),
-            createdAt: z.date(),
-          }),
-        ),
+        users: z.array(adminUserSchema),
       }),
     )
     .handler(async ({ context }) => {
@@ -82,7 +68,7 @@ export const adminRouter = {
         .select({ id: user.id, name: user.name, email: user.email, role: user.role, createdAt: user.createdAt })
         .from(user)
         .orderBy(desc(user.createdAt))
-        .limit(100)
+        .limit(ADMIN_LIST_LIMIT)
       return { total: total?.n ?? 0, users }
     }),
 }

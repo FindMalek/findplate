@@ -40,6 +40,10 @@ const schema = z.object({
   TELEGRAM_CHAT_ID: optional,
   TELEGRAM_WEBHOOK_SECRET: optional,
   // @end
+  // @findplate:email
+  RESEND_API_KEY: optional,
+  EMAIL_FROM: z.string().default("Acme <onboarding@resend.dev>"),
+  // @end
 
   // @findplate:ai
   AI_MODEL: z.string().default("groq:openai/gpt-oss-120b"),
