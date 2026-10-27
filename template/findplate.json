@@ -165,6 +165,13 @@
       "keys": [
         { "env": "NEXT_PUBLIC_DATABUDDY_CLIENT_ID", "label": "Databuddy client id", "url": "https://app.databuddy.cc" }
       ]
+    },
+    "rate-limit": {
+      "label": "Rate limiting",
+      "hint": "per route and ip limits on the api, in memory or on Upstash Redis",
+      "default": true,
+      "paths": ["apps/api/src/rate-limit.ts", "packages/orpc/src/lib/rate-limit.ts", "packages/orpc/src/lib/rate-limit.test.ts"],
+      "packages": []
     }
   }
 }

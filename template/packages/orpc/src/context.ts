@@ -5,6 +5,7 @@ import type { Storage } from "@acme/storage" // @findplate:storage
 import type { Telegram } from "@acme/telegram" // @findplate:telegram
 import type { WhatsApp } from "@acme/whatsapp" // @findplate:whatsapp
 import type { LanguageModel } from "ai" // @findplate:ai
+import type { RateLimiter } from "./lib/rate-limit" // @findplate:rate-limit
 
 /** Everything procedures need, built once by the api at startup (and by tests with their own). */
 export interface Services {
@@ -19,6 +20,7 @@ export interface Services {
     webUrl: string // @findplate:status
     dashboardUrl: string // @findplate:status
   }
+  rateLimiter: RateLimiter // @findplate:rate-limit
   // @findplate:storage
   storage: Storage | null
   // @end

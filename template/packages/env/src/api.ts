@@ -27,6 +27,12 @@ const schema = z.object({
   GITHUB_REPO: optional,
   GITHUB_TOKEN: optional,
 
+  // @findplate:rate-limit
+  /** Shared counters across api replicas; without them limits are kept in memory per process. */
+  UPSTASH_REDIS_REST_URL: z.url().optional(),
+  UPSTASH_REDIS_REST_TOKEN: optional,
+  // @end
+
   // @findplate:storage
   S3_ENDPOINT: optional,
   S3_REGION: z.string().default("auto"),

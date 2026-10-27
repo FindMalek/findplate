@@ -1,0 +1,33 @@
+---
+title: Rate limiting
+description: Per route and per caller limits on the api, in memory or on Upstash Redis.
+---
+
+The `rate-limit` module caps how often one caller can hit the api. It is on by default and has no dependencies.
+
+```bash
+findplate create my-app --modules rate-limit
+```
+
+## What is limited
+
+| Where | Rule | Key |
+| --- | --- | --- |
+| every oRPC procedure | 120 per minute | route + user id (signed in) or ip |
+| `waitlist.join` | 5 per 10 minutes | route + ip |
+| `POST /auth/*` (sign in, sign up) | 10 per minute | ip |
+
+Over the limit an oRPC call answers `TOO_MANY_REQUESTS` (429) with `retryAfterMs` in `data`, and the auth route answers 429 with a `retry-after` header. The rules live in `RATE_LIMITS` in `packages/orpc/src/lib/rate-limit.ts`. To limit one procedure harder, call `enforceRateLimit(context, "route.name", rule)` at the top of its handler.
+
+The ip is the first hop of `x-forwarded-for`, so run the api behind a proxy that sets it (Dokploy, Vercel, Cloudflare do).
+
+## Backends
+
+By default the counters live in memory as a sliding window. That is per process, fine for one api container. With several replicas share the counters through [Upstash Redis](https://upstash.com) (a fixed window counter):
+
+```bash
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
+```
+
+If Upstash is unreachable the request goes through and the error is logged.
