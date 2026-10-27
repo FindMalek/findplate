@@ -49,3 +49,11 @@ The webhook route rejects calls without the secret in `X-Telegram-Bot-Api-Secret
 ## Test it
 
 `POST /v1/telegram/test` with `{ "text": "hello" }` as an admin sends a message to the configured chat.
+
+## Remove
+
+Generate without it: leave `telegram` out of `--modules`. In an existing project delete `packages/telegram` and `packages/orpc/src/routers/telegram.ts`, drop `@acme/telegram`, remove the Telegram block from `.env` and fix what `pnpm check-types` reports.
+
+## Swap
+
+`notify()` has the same shape as the [WhatsApp](/docs/whatsapp) one, so you can run both or switch the channel a procedure uses by calling the other one on the context.

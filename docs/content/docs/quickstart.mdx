@@ -12,9 +12,36 @@ description: From zero to a running project in a few minutes.
 
 ## Create a project
 
+<Tabs groupId="pm" persist items={["bun", "pnpm", "npm", "yarn"]}>
+  <Tab value="bun">
+
 ```bash
 bunx findplate create
 ```
+
+  </Tab>
+  <Tab value="pnpm">
+
+```bash
+pnpm dlx findplate create
+```
+
+  </Tab>
+  <Tab value="npm">
+
+```bash
+npx findplate create
+```
+
+  </Tab>
+  <Tab value="yarn">
+
+```bash
+yarn dlx findplate create
+```
+
+  </Tab>
+</Tabs>
 
 The prompts ask for a project name, a one-line pitch, a design preset and the modules to include. Every answer has a flag, see the [CLI reference](/docs/cli).
 
