@@ -55,7 +55,7 @@ describe("generate", () => {
   }
 
   test("with every module: no template names or markers left, env filled", () => {
-    const { target } = make(["storage", "ai"])
+    const { target } = make(["storage", "ai", "docs"])
     for (const file of files(target)) {
       if (statSync(file).size > 2_000_000 || /\.(ico|png)$/.test(file)) continue
       const text = readFileSync(file, "utf8")
@@ -79,6 +79,17 @@ describe("generate", () => {
     expect(readFileSync(join(target, "apps/api/src/index.ts"), "utf8")).not.toContain("resolveModel")
     expect(readFileSync(join(target, "pnpm-workspace.yaml"), "utf8")).not.toMatch(/ai-sdk|^\s+ai:/m)
     expect(readFileSync(join(target, ".env.example"), "utf8")).not.toContain("S3_BUCKET")
+  })
+
+  test("docs module: only with --modules docs, with the preset fonts, pitch and env url", () => {
+    const on = make(["docs"]).target
+    expect(readFileSync(join(on, "apps/docs/lib/site.ts"), "utf8")).toContain('tagline: "Demo pitch"')
+    expect(readFileSync(join(on, "apps/docs/app/fonts.ts"), "utf8")).toContain("IBM_Plex_Sans")
+    expect(readFileSync(join(on, ".env.example"), "utf8")).toContain("DOCS_URL=")
+    const off = make([]).target
+    expect(existsSync(join(off, "apps/docs"))).toBe(false)
+    expect(readFileSync(join(off, "pnpm-workspace.yaml"), "utf8")).not.toContain("fumadocs")
+    expect(readFileSync(join(off, ".env.example"), "utf8")).not.toContain("DOCS_URL")
   })
 
   test.each(listPresets().map((p) => p.id))("preset %s: tokens, fonts and theme land, nothing left over", (id) => {

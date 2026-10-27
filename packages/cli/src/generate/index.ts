@@ -85,8 +85,8 @@ export function generate(opts: GenerateOptions) {
   }
 
   writeFileSync(join(target, "packages/ui/src/styles/theme.css"), presetTheme(opts.preset.id))
-  for (const app of ["web", "dashboard"])
-    writeFileSync(join(target, `apps/${app}/app/fonts.ts`), fontsModule(opts.preset))
+  const apps = ["web", "dashboard", ...(opts.modules.has("docs") ? ["docs"] : [])]
+  for (const app of apps) writeFileSync(join(target, `apps/${app}/app/fonts.ts`), fontsModule(opts.preset))
   for (const file of ["packages/ui/components.json", "apps/web/components.json", "apps/dashboard/components.json"]) {
     setComponentsStyle(join(target, file), opts.preset)
   }
@@ -96,8 +96,11 @@ export function generate(opts: GenerateOptions) {
     if (!source.includes('defaultTheme="dark"')) throw new Error("theme-provider.tsx has no defaultTheme to set")
     writeFileSync(provider, source.replace('defaultTheme="dark"', `defaultTheme="${opts.preset.defaultTheme}"`))
   }
-  const site = join(target, "apps/web/lib/site.ts")
-  writeFileSync(site, readFileSync(site, "utf8").replace(/tagline: ".*",/, `tagline: ${JSON.stringify(opts.pitch)},`))
+  for (const app of apps) {
+    const site = join(target, `apps/${app}/lib/site.ts`)
+    if (!existsSync(site)) continue
+    writeFileSync(site, readFileSync(site, "utf8").replace(/tagline: ".*",/, `tagline: ${JSON.stringify(opts.pitch)},`))
+  }
 
   const adminPassword = randomBytes(12).toString("base64url")
   const example = readFileSync(join(target, ".env.example"), "utf8")
