@@ -1,3 +1,4 @@
+import { statusSchema } from "@acme/common/schemas"
 import { sql } from "drizzle-orm"
 import { z } from "zod"
 import { repoInfo } from "../lib/github"
@@ -6,14 +7,7 @@ import { publicProcedure } from "../procedures"
 export const publicRouter = {
   status: publicProcedure
     .route({ method: "GET", path: "/public/status", summary: "Live api and database health", tags: ["public"] })
-    .output(
-      z.object({
-        api: z.literal("ok"),
-        database: z.enum(["ok", "down"]),
-        databaseMs: z.number().nullable(),
-        env: z.string(),
-      }),
-    )
+    .output(statusSchema)
     .handler(async ({ context }) => {
       const started = performance.now()
       const up = await context.db

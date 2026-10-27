@@ -1,5 +1,6 @@
 "use client"
 
+import { PROFILE_NAME_MAX } from "@acme/common/constants"
 import { errorMessage } from "@acme/orpc/errors"
 import { orpc } from "@acme/orpc/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@acme/ui/components/avatar"
@@ -66,7 +67,7 @@ export function ProfileForm({ me }: { me: { name: string; email: string; image: 
             </div>
             <Field>
               <FieldLabel htmlFor="name">Name</FieldLabel>
-              <Input id="name" name="name" defaultValue={me.name} required maxLength={80} />
+              <Input id="name" name="name" defaultValue={me.name} required maxLength={PROFILE_NAME_MAX} />
             </Field>
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>

@@ -28,7 +28,7 @@ S3_SECRET_ACCESS_KEY=
 
 ### ai
 
-Pick the model with `AI_MODEL` as `provider:model`, where provider is `groq`, `openai` or `anthropic`, and set the matching key:
+Pick the model with `AI_MODEL` as `provider:model`, where provider is `groq`, `openai` or `anthropic`, and set the matching key. `packages/ai` registers the providers that have a key in an AI SDK provider registry and resolves the id to a model, so a missing key turns the feature off instead of crashing:
 
 ```bash
 AI_MODEL=groq:openai/gpt-oss-120b
