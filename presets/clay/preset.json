@@ -1,0 +1,11 @@
+{
+  "label": "Clay",
+  "description": "Warm terracotta and sand, rounded corners, Fraunces headings. Earthy and friendly.",
+  "shadcn": { "style": "base-vega", "baseColor": "stone" },
+  "defaultTheme": "light",
+  "fonts": {
+    "sans": { "family": "DM_Sans" },
+    "mono": { "family": "DM_Mono", "weight": ["400", "500"] },
+    "heading": { "family": "Fraunces" }
+  }
+}
