@@ -45,3 +45,64 @@
   background-position: center;
   mask-image: radial-gradient(ellipse at center, black 30%, transparent 75%);
 }
+
+/* landing: terminal replay. Everything shows without js and under reduced motion. */
+.term[data-state="idle"] .term-row {
+  opacity: 0;
+}
+.term[data-state="play"] .term-row {
+  animation: term-in 0.01s linear var(--d) both;
+}
+.term[data-state="play"] .term-type {
+  animation: term-type calc(var(--n) * 0.04s) steps(var(--n)) var(--td) both;
+}
+.term-spin {
+  opacity: 0;
+}
+.term[data-state="play"] .term-spin {
+  animation: term-out 0.01s linear calc(var(--d) + 0.45s) both;
+}
+.term[data-state="play"] .term-done {
+  animation: term-in 0.01s linear calc(var(--d) + 0.45s) both;
+}
+@keyframes term-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes term-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes term-type {
+  from {
+    width: 0;
+  }
+  to {
+    width: calc(var(--n) * 1ch);
+  }
+}
+
+/* landing: scroll reveal */
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

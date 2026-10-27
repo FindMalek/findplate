@@ -9,6 +9,9 @@ COPY docs/package.json docs/package.json
 COPY packages/cli/package.json packages/cli/package.json
 RUN pnpm install --frozen-lockfile --filter findplate-docs...
 COPY docs docs
+COPY template/findplate.json template/findplate.json
+COPY template/.ruler/skills template/.ruler/skills
+COPY presets presets
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm --filter findplate-docs build
 
