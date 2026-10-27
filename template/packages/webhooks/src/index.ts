@@ -1,5 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto"
 
+const DEFAULT_TOLERANCE_SECONDS = 300
+
 /** Compares without leaking the length or the first differing byte. */
 export function safeEqual(a: string, b: string): boolean {
   const left = createHmac("sha256", "compare").update(a).digest()
@@ -42,7 +44,7 @@ export interface TimestampedPayload extends SignedPayload {
 /** Signs `<timestamp>.<body>`, so a captured request can't be replayed later. */
 export function verifyTimestamped({
   timestamp,
-  toleranceSeconds = 300,
+  toleranceSeconds = DEFAULT_TOLERANCE_SECONDS,
   now = () => new Date(),
   ...rest
 }: TimestampedPayload): boolean {
@@ -66,7 +68,7 @@ export function verifySvix({
   secret,
   headers,
   body,
-  toleranceSeconds = 300,
+  toleranceSeconds = DEFAULT_TOLERANCE_SECONDS,
   now = () => new Date(),
 }: SvixOptions): boolean {
   const id = headers.get("svix-id")

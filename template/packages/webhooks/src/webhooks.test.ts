@@ -35,4 +35,6 @@ test("svix signatures verify with any listed v1 entry", () => {
   })
   expect(verifySvix({ secret, headers, body: "{}", now })).toBe(true)
   expect(verifySvix({ secret, headers, body: "{ }", now })).toBe(false)
+  const later = () => new Date(NOW.getTime() + 10 * 60 * 1000)
+  expect(verifySvix({ secret, headers, body: "{}", now: later })).toBe(false)
 })
