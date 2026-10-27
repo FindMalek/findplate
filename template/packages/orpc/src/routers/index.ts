@@ -1,12 +1,10 @@
 import type { RouterClient } from "@orpc/server"
 import { adminRouter, meRouter } from "./account"
 import { emailRouter } from "./email" // @findplate:email
-import { notesRouter } from "./notes"
-import { publicRouter } from "./public"
 import { roadmapRouter } from "./roadmap" // @findplate:roadmap
 import { statusRouter } from "./status" // @findplate:status
-import { waitlistRouter } from "./waitlist" // @findplate:waitlist
 import { telegramRouter } from "./telegram" // @findplate:telegram
+import { waitlistRouter } from "./waitlist" // @findplate:waitlist
 import { whatsappRouter } from "./whatsapp" // @findplate:whatsapp
 
 /** One router, namespaced: `public` needs no session, everything else does (and `admin` needs the admin role). */
