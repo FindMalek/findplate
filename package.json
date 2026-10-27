@@ -1,0 +1,18 @@
+{
+  "name": "findplate-repo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun packages/cli/src/index.ts",
+    "build": "pnpm --filter findplate build",
+    "check-types": "pnpm --filter findplate check-types",
+    "test": "pnpm --filter findplate test",
+    "lint": "biome ci .",
+    "check": "biome check --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "pnpm@10.33.4"
+}
