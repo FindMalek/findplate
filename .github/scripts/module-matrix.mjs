@@ -1,4 +1,5 @@
 import { appendFileSync, readFileSync } from "node:fs"
+import { fileURLToPath } from "node:url"
 
 export function resolveModules(modules, id, seen = new Set()) {
   if (seen.has(id)) return []
@@ -24,7 +25,7 @@ export function buildMatrix(manifest, { fullBuild }) {
   }
 }
 
-if (import.meta.main) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const manifest = JSON.parse(readFileSync(process.argv[2] ?? "template/findplate.json", "utf8"))
   const fullBuild = process.env.EVENT_NAME !== "pull_request"
   const matrix = JSON.stringify(buildMatrix(manifest, { fullBuild }))
