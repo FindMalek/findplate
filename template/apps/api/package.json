@@ -6,14 +6,15 @@
   "scripts": {
     "dev": "bun --watch --env-file=../../.env src/index.ts",
     "start": "bun src/index.ts",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "test": "bun test"
   },
   "dependencies": {
     "@acme/ai": "workspace:*",
     "@acme/auth": "workspace:*",
     "@acme/db": "workspace:*",
-    "@acme/email": "workspace:*",
     "@acme/env": "workspace:*",
+    "@acme/notification": "workspace:*",
     "@acme/orpc": "workspace:*",
     "@acme/storage": "workspace:*",
     "@langfuse/otel": "catalog:",
@@ -21,8 +22,6 @@
     "@opentelemetry/api": "catalog:",
     "@opentelemetry/exporter-trace-otlp-http": "catalog:",
     "@opentelemetry/sdk-node": "catalog:",
-    "@acme/whatsapp": "workspace:*",
-    "@acme/telegram": "workspace:*",
     "@orpc/openapi": "catalog:",
     "@orpc/server": "catalog:",
     "@orpc/zod": "catalog:",

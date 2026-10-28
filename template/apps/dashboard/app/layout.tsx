@@ -8,10 +8,18 @@ import { getLocale } from "next-intl/server" // @findplate:i18n
 import { Analytics } from "@/components/analytics" // @findplate:databuddy
 import { ThemeProvider } from "@/components/theme-provider"
 import { Umami } from "@/components/umami" // @findplate:umami
+import { dashboardUrl, SITE } from "@/lib/site"
 import { fontVariables } from "./fonts"
 
+// Prerendered pages would bake the build-time DASHBOARD_URL into `metadataBase`.
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
+  metadataBase: new URL(dashboardUrl()),
   title: { default: "Dashboard", template: "%s · acme" },
+  description: SITE.tagline,
+  openGraph: { title: `${SITE.name} dashboard`, description: SITE.tagline, siteName: SITE.name },
+  twitter: { card: "summary_large_image" },
   robots: { index: false, follow: false },
 }
 

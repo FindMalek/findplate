@@ -46,9 +46,7 @@ Each module has a page with what it adds, its env keys, how to remove it and how
 
 | Module | Profiles | What it adds |
 | --- | --- | --- |
-| [`whatsapp`](/docs/whatsapp) | everything | `packages/whatsapp`. `notify()` through Kapso template messages |
-| [`telegram`](/docs/telegram) | everything | `packages/telegram`. Bot with `notify()`, a webhook route and a setup command |
-| [`email`](/docs/email) | everything | `packages/email`. react-email templates sent through email-sdk and Resend |
+| [`notification`](/docs/notification) | everything | `packages/notification` and `apps/email`. Email, Telegram and WhatsApp behind one notifier, branded react-email templates and a preview app |
 
 ### Analytics
 
@@ -73,15 +71,13 @@ The cli lists this before it asks for keys, and `findplate doctor` warns about a
 | Module | Needs |
 | --- | --- |
 | `ai` | one of [Groq](https://console.groq.com/keys), [OpenAI](https://platform.openai.com/api-keys) or [Anthropic](https://console.anthropic.com/settings/keys) |
-| `email` | a [Resend API key](https://resend.com/api-keys) |
-| `telegram` | a bot token from [@BotFather](https://t.me/BotFather) |
-| `whatsapp` | a [Kapso API key](https://app.kapso.ai) |
+| `notification` | any of a [Resend API key](https://resend.com/api-keys), a bot token from [@BotFather](https://t.me/BotFather) and a [Kapso API key](https://app.kapso.ai); each channel turns on with its keys |
 | `databuddy` | a [Databuddy client id](https://app.databuddy.cc) |
 | `umami`, `glitchtip`, `langfuse` | a self-hosted server, plus a website id, DSN or key pair from it |
 | `openobserve`, `infisical` | a self-hosted server |
 
 ## Dependencies between modules
 
-`langfuse` requires `ai`, and `telegram` requires `webhooks`. The cli turns required modules on for you and says so in the prompt, so `--modules langfuse` generates `ai,langfuse`.
+`langfuse` requires `ai`, and `notification` requires `webhooks`. The cli turns required modules on for you and says so in the prompt, so `--modules langfuse` generates `ai,langfuse`.
 
 The self-hosted ones also have a compose snippet each in [self-hosted tools](/docs/self-hosted).

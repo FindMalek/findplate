@@ -8,6 +8,7 @@
 <p align="center">
   <a href="https://github.com/FindMalek/findplate/actions/workflows/ci.yml"><img alt="build" src="https://shieldcn.dev/github/ci/FindMalek/findplate.svg?variant=secondary" /></a>
   <a href="https://www.npmjs.com/package/findplate"><img alt="npm version" src="https://shieldcn.dev/npm/findplate.svg?variant=secondary" /></a>
+  <a href="https://github.com/FindMalek/findplate/blob/main/LICENSE"><img alt="license" src="https://shieldcn.dev/github/license/FindMalek/findplate.svg?variant=secondary" /></a>
   <a href="https://github.com/FindMalek/findplate/stargazers"><img alt="GitHub stars" src="https://shieldcn.dev/github/stars/FindMalek/findplate.svg?variant=secondary" /></a>
   <img alt="Next.js" src="https://shieldcn.dev/badge/Next.js-16-black.svg?logo=nextdotjs&variant=secondary" />
   <img alt="TypeScript" src="https://shieldcn.dev/badge/TypeScript-5-black.svg?logo=typescript&variant=secondary" />
