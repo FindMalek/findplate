@@ -64,11 +64,9 @@ export function createServer(services: Services & { auth: Auth }, opts: { public
         .catch(() => false)
       return Response.json({ ok: db, db, env: services.config.deployEnv }, { status: db ? 200 : 503 })
     }
-    // @findplate:telegram
+    // @findplate:notification
     if (pathname === "/telegram/webhook" && request.method === "POST") {
-      return services.telegram
-        ? services.telegram.handleWebhook(request)
-        : Response.json({ message: "Telegram is not configured." }, { status: 404 })
+      return services.notification.handleTelegramWebhook(request)
     }
     // @end
     // @findplate:storage

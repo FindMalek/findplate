@@ -8,6 +8,7 @@ import { create } from "./commands/create"
 import { doctorCommand } from "./commands/doctor"
 import { github } from "./commands/github"
 import { provisionCommand } from "./commands/provision"
+import { removeCommand } from "./commands/remove"
 import { update } from "./commands/update"
 import { CliError, EXIT } from "./errors"
 import { accent, dim } from "./ui"
@@ -22,6 +23,7 @@ Usage
   findplate github [dir] [options]   create the repo, board, labels and rules on GitHub (idempotent)
   findplate update [dir] [options]   merge the newest template into an existing project
   findplate add <module...> [dir] [--force]   add modules to an existing project
+  findplate remove <module...> [dir] [--force] [--dry-run]   remove modules from a project
   findplate doctor [dir] [--json]    check env, database, tools, dns and deploys
   findplate config [list|get|set|unset|path] [key] [value]
   findplate provision <dokploy|s3|dns|turbo|backup|all> [--dry-run]   see provision --help
@@ -41,6 +43,11 @@ Options
   -y, --yes            no prompts, use defaults (for scripts and coding agents)
   -h, --help           show this help
   -v, --version        show the version
+
+Remove options (findplate remove)
+  --dry-run            print what would change, touch nothing
+  --force              remove with uncommitted changes and delete module files you edited
+  --drop-migrations    also delete the module's drizzle migration (only if it never ran)
 
 Update options (findplate update)
   --dry-run            print what would change, touch nothing
@@ -84,6 +91,7 @@ async function main() {
       json: { type: "boolean", default: false },
       "dry-run": { type: "boolean", default: false },
       "base-template": { type: "string" },
+      "drop-migrations": { type: "boolean", default: false },
       yes: { type: "boolean", short: "y", default: false },
       help: { type: "boolean", short: "h", default: false },
       version: { type: "boolean", short: "v", default: false },
@@ -116,6 +124,17 @@ async function main() {
       install: values.install,
       force: values.force,
       yes: values.yes,
+    })
+  }
+  if (command === "remove") {
+    const args = positionals.slice(1)
+    const dirArg = args.find((arg) => arg.includes("/") || arg === ".")
+    return removeCommand({
+      dir: dirArg,
+      modules: args.filter((arg) => arg !== dirArg).flatMap((arg) => arg.split(",")),
+      force: values.force,
+      dryRun: values["dry-run"],
+      dropMigrations: values["drop-migrations"],
     })
   }
   if (command === "config") return configCommand(positionals.slice(1))

@@ -27,7 +27,9 @@ Both keys are inlined at `next build`, so pass them as build args on Docker and 
 
 ## Remove
 
-Generate without it: leave `umami` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
+Run `findplate remove umami` in the project, see [add and doctor](/docs/add-doctor#findplate-remove). It deletes the files the module owns, strips its code from shared files and drops its packages, only where you haven't edited them.
+
+If you'd rather do it by hand: for a new project leave `umami` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
 
 ## Swap
 
