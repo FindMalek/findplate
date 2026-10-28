@@ -126,7 +126,10 @@ describe("generate", () => {
   test("notification module: email brand follows the preset's colors and radius", () => {
     const brand = (id: string) =>
       readFileSync(
-        join(make(["webhooks", "notification"], listPresets().find((p) => p.id === id)!).target, "packages/notification/src/brand.ts"),
+        join(
+          make(["webhooks", "notification"], listPresets().find((p) => p.id === id)!).target,
+          "packages/notification/src/brand.ts",
+        ),
         "utf8",
       )
     const mono = brand("monochrome")
