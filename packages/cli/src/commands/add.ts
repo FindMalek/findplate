@@ -37,7 +37,7 @@ const IGNORED = new Set([
   "pnpm-lock.yaml",
 ])
 
-function readTree(root: string): Tree {
+export function readTree(root: string): Tree {
   const tree = new Map<string, string>()
   const walk = (dir: string) => {
     for (const entry of readdirSync(dir, { withFileTypes: true })) {
