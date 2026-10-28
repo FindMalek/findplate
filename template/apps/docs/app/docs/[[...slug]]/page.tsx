@@ -1,6 +1,9 @@
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
+import { PageActions } from "@/components/page-actions"
+import { markdownPath } from "@/lib/llms"
+import { SITE } from "@/lib/site"
 import { source } from "@/lib/source"
 import { getMDXComponents } from "@/mdx-components"
 
@@ -15,6 +18,7 @@ export default async function Page(props: Props) {
     <DocsPage toc={page.data.toc}>
       <DocsTitle>{page.data.title}</DocsTitle>
       <DocsDescription>{page.data.description}</DocsDescription>
+      <PageActions markdownPath={markdownPath(page.url)} markdownUrl={`${SITE.url}${markdownPath(page.url)}`} />
       <DocsBody>
         <MDX components={getMDXComponents()} />
       </DocsBody>
@@ -34,6 +38,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   return {
     title: page.data.title,
     description: page.data.description,
+    alternates: { types: { "text/markdown": markdownPath(page.url) } },
     openGraph: { images: [{ url: image, width: 1200, height: 630 }] },
   }
 }
