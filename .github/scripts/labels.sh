@@ -6,6 +6,11 @@ label() {
   gh label create "$1" --color "$2" --description "$3" --force
 }
 
+# github's defaults, replaced by feature and docs
+for legacy in enhancement documentation; do
+  gh label delete "$legacy" --yes 2>/dev/null || true
+done
+
 label bug "d73a4a" "something is broken"
 label feature "a2eeef" "new capability"
 label module "5319e7" "optional template module"
