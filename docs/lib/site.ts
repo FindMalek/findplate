@@ -1,6 +1,8 @@
 export const SITE = {
   name: "findplate",
   pitch: "A production-ready full-stack project, generated in one command.",
+  /** Public origin, no trailing slash. Set DOCS_URL on preview deploys. */
+  url: (process.env.DOCS_URL ?? "https://plate.findmalek.engineer").replace(/\/$/, ""),
   github: "https://github.com/FindMalek/findplate",
   shadcnCreate: "https://ui.shadcn.com/create",
   /** Colors of the social card (opengraph-image). Any hex works. */
