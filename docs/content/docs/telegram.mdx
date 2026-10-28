@@ -52,7 +52,9 @@ The webhook route rejects calls without the secret in `X-Telegram-Bot-Api-Secret
 
 ## Remove
 
-Generate without it: leave `telegram` out of `--modules`. In an existing project delete `packages/telegram` and `packages/orpc/src/routers/telegram.ts`, drop `@acme/telegram`, remove the Telegram block from `.env` and fix what `pnpm check-types` reports.
+Run `findplate remove telegram` in the project, see [add and doctor](/docs/add-doctor#findplate-remove). It deletes the files the module owns, strips its code from shared files and drops its packages, only where you haven't edited them.
+
+If you'd rather do it by hand: for a new project leave `telegram` out of `--modules`. In an existing project delete `packages/telegram` and `packages/orpc/src/routers/telegram.ts`, drop `@acme/telegram`, remove the Telegram block from `.env` and fix what `pnpm check-types` reports.
 
 ## Swap
 

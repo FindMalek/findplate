@@ -9,7 +9,7 @@ Yes. Run `findplate add <module>` in the project. It applies only that module's 
 
 ## Can I remove a module later?
 
-Yes. Each module page has a Remove section. Delete the paths it lists, drop its packages, remove its env block and fix what the type check reports.
+Yes. Run `findplate remove <module>` in the project. It deletes the files the module owns, strips its code from shared files and drops its packages, but only where you haven't edited them. Edited files are listed and left alone, `.env` is never touched and the database migration is kept by default. See [add and doctor](/docs/add-doctor#findplate-remove). Each module page also has the manual steps.
 
 ## Does the project depend on findplate?
 
