@@ -17,3 +17,7 @@ docker run -p 3000:3000 findplate-docs
 ```
 
 The build context is the repo root. On Vercel, set the root directory to `docs`.
+
+## LLM output
+
+`/llms.txt`, `/llms-full.txt`, `/docs.json` and `<page-url>.md` are prerendered at build. Markdown comes from `includeProcessedMarkdown` in `lib/source.ts`, MDX components get their markdown form in `components/docs/markdown.tsx` (add one there when you add a component to `mdx-components.tsx`). `proxy.ts` answers `Accept: text/markdown`. After `pnpm build`, `bun test tests` also checks the build output.
