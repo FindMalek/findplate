@@ -48,6 +48,12 @@ Single source for every coding agent. Edit this file, then run `pnpm agents` to 
 - Smallest inline fixture, reuse existing helpers. Test through the public function or endpoint
 - Mock only external boundaries (network, time, third-party APIs), never your own modules
 
+<!-- @findplate:docs -->
+## LLM entry points
+
+The docs site serves itself to agents: `/llms.txt` (index, start here), `/llms-full.txt` (every page) and `<page-url>.md` (one page as markdown, or send `Accept: text/markdown`). Read those instead of scraping html.
+
+<!-- @end -->
 ## Git and GitHub
 
 - Work is tracked as GitHub issues, usually on a GitHub Project board

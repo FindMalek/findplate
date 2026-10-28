@@ -30,6 +30,8 @@ DOCS_URL=http://localhost:3003
 
 The pages are mdx in `apps/docs/content/docs`: setup, environment, structure, scripts and deploy, written for the generated project. Edit them like any other file. It has its own `Dockerfile`.
 
+It is readable by agents out of the box: `/llms.txt`, `/llms-full.txt` and every page as markdown at `<page-url>.md`, plus a copy button on each page. See [For LLMs and agents](/docs/llm).
+
 ## Remove
 
 Generate without it: leave `docs` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
