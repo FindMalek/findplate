@@ -146,5 +146,8 @@ jobs:
         if: always()
         with:
           name: lighthouse
-          path: ${{ env.PROJECT }}/.lighthouseci
+          path: |
+            ${{ env.PROJECT }}/.lighthouseci
+            ${{ env.PROJECT }}/web.log
+            ${{ env.PROJECT }}/dashboard.log
           if-no-files-found: ignore
