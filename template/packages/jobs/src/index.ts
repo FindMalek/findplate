@@ -109,7 +109,7 @@ export function createJobs(options: JobsOptions): JobsRunner {
         if (job.cron) await boss.schedule(job.name, job.cron, job.scheduleData ?? {}, retryOptions(job.retry))
       }
     },
-    stop: (timeoutMs = 20_000) => boss.stop({ graceful: true, timeout: timeoutMs }),
+    stop: (timeoutMs = 8_000) => boss.stop({ graceful: true, timeout: timeoutMs }),
   }
 }
 

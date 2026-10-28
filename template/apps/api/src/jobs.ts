@@ -13,7 +13,7 @@ export async function startJobs(env: ApiEnv, db: Db, options: { worker: boolean 
   return jobs
 }
 
-/** On SIGTERM or SIGINT: stop taking requests, let running jobs finish (up to 20s), then exit. */
+/** On SIGTERM or SIGINT: stop taking requests, let running jobs finish (up to 8s), then exit. */
 export function shutdownOnSignal(jobs: JobsRunner, server?: { stop(): unknown }) {
   let stopping = false
   const stop = async (signal: string) => {

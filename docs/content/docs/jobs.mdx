@@ -43,7 +43,7 @@ Add `cron` and `scheduleData` to a definition and the worker registers the sched
 defineJob({ name: "digest", cron: "0 8 * * 1", scheduleData: {}, ... })
 ```
 
-The sample `cleanup-sessions` job runs every night at 03:00 and deletes expired sessions. `echo` has a payload and no side effect, handy to see the worker run. Removing a job from the code does not remove its schedule from the database, call `boss.unschedule(name)` once.
+The sample `cleanup-sessions` job runs every night at 03:00 and deletes expired sessions. `echo` has a payload and no side effect, handy to see the worker run. Removing a job from the code does not remove its schedule from the database, run `delete from pgboss.schedule where name = '<job>'` once.
 
 ## Admin procedures
 
@@ -71,7 +71,7 @@ Run as many workers as you like, pg-boss hands each job to one of them and runs 
 
 ## Graceful shutdown
 
-On `SIGTERM` or `SIGINT` the api stops accepting requests, waits up to 20 seconds for running jobs to finish and exits. Jobs still running after that are failed and retried by another worker. Docker waits 10 seconds by default before it kills a container, so set `stop_grace_period: 30s` (Dokploy: the stop grace period) when your jobs are long.
+On `SIGTERM` or `SIGINT` the api stops accepting requests, waits up to 8 seconds for running jobs to finish and exits, which fits the 10 seconds Docker gives a container. Jobs still running after that are failed and retried by another worker, so write handlers that are safe to run twice.
 
 ## Env keys
 
