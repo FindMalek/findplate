@@ -67,6 +67,14 @@ test("whatsapp sends the template as one line through kapso", async () => {
   expect(JSON.stringify(calls[0]?.body)).toContain("Test message.")
 })
 
+test("telegram links keep a closing paren and whatsapp titles dont get a double stop", async () => {
+  const { toTelegram, toWhatsApp } = await import("./render")
+  const summary = { title: "Done!", lines: [], link: { label: "Open", url: "https://a.test/x_(1)" } }
+
+  expect(toTelegram(summary)).toContain("(https://a.test/x_(1%29)")
+  expect(toWhatsApp(summary)).toStartWith("Done! https://")
+})
+
 test("the telegram webhook rejects calls without the secret and answers 404 when off", async () => {
   const on = createNotifier({ TELEGRAM_BOT_TOKEN: "123:abc", TELEGRAM_WEBHOOK_SECRET: "s3cret" })
   const off = createNotifier({})
