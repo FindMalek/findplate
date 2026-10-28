@@ -25,6 +25,15 @@ const skeleton = (dir: string): ProjectState => ({
 })
 
 /** Whether gh is installed and logged in, with the login name to use as the default owner. */
+async function ghProtocol(exec: Exec, cwd: string): Promise<"ssh" | "https"> {
+  try {
+    const result = await exec("gh", ["config", "get", "git_protocol"], cwd)
+    return result.code === 0 && result.stdout.trim() === "ssh" ? "ssh" : "https"
+  } catch {
+    return "https"
+  }
+}
+
 export async function ghLogin(exec: Exec = realExec, cwd = process.cwd()): Promise<string | undefined> {
   try {
     const result = await exec("gh", ["api", "user", "--jq", ".login"], cwd)
@@ -44,6 +53,7 @@ export async function planFor(dir: string, state: ProjectState, flags: GithubFla
     description: state.answers.pitch || state.answers.name,
     homepage: flags.homepage,
     visibility: flags.public ? "public" : "private",
+    protocol: await ghProtocol(exec, dir),
     project: flags.project,
     projectToken: flags.projectToken,
     projectTemplate: flags.projectTemplate ?? loadConfig().githubProjectTemplate,

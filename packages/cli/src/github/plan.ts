@@ -38,6 +38,8 @@ export interface PlanInput {
   description: string
   homepage?: string
   visibility: "private" | "public"
+  /** `gh config get git_protocol`; decides the remote url so pushes use the credentials the user has. */
+  protocol?: "ssh" | "https"
   project: boolean
   /** Store your gh token as PROJECT_TOKEN. Off by default: it carries every scope you logged in with. */
   projectToken?: boolean
@@ -114,6 +116,9 @@ export function rulesetBody(): string {
     ],
   })
 }
+
+export const remoteUrl = (slug: string, protocol: PlanInput["protocol"] = "https") =>
+  protocol === "ssh" ? `git@github.com:${slug}.git` : `https://github.com/${slug}.git`
 
 const gh = (args: string[], extra: Partial<RunCommand> = {}): RunCommand => ({ kind: "run", cmd: "gh", args, ...extra })
 const git = (args: string[], extra: Partial<RunCommand> = {}): RunCommand => ({
@@ -221,7 +226,7 @@ export function buildPlan(input: PlanInput): PlanStep[] {
           ],
           { okIf: /already exists/i },
         ),
-        git(["remote", "add", "origin", `https://github.com/${slug}.git`], { okIf: /already exists/i }),
+        git(["remote", "add", "origin", remoteUrl(slug, input.protocol)], { okIf: /already exists/i }),
         gh([
           "repo",
           "edit",

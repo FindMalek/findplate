@@ -3,7 +3,7 @@ import { mkdtempSync, readFileSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { type Exec, runPlan } from "../src/github/exec"
-import { buildPlan, classifyEnv, formatPlan, type PlanInput, STATUSES } from "../src/github/plan"
+import { buildPlan, classifyEnv, formatPlan, type PlanInput, remoteUrl, STATUSES } from "../src/github/plan"
 import type { ProjectState } from "../src/state"
 
 const input: PlanInput = {
@@ -88,4 +88,9 @@ test("an existing repo or label counts as done", async () => {
       : { code: 0, stdout: "", stderr: "" }
   const outcomes = await runPlan(buildPlan({ ...input, project: false, envKeys: [] }), { dir, state: newState(), exec })
   expect(outcomes.every((outcome) => outcome.status === "done")).toBe(true)
+})
+
+test("the remote follows the gh git protocol", () => {
+  expect(remoteUrl("acme/app", "ssh")).toBe("git@github.com:acme/app.git")
+  expect(remoteUrl("acme/app")).toBe("https://github.com/acme/app.git")
 })
