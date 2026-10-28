@@ -7,3 +7,4 @@ const api = createServerClient()
 export const getRepo = () => api.public.repo().catch(() => null)
 export const getRoadmap = () => api.roadmap.list().catch(() => []) // @findplate:roadmap
 export const getServices = () => api.status.services().catch(() => null) // @findplate:status
+export const getFlags = () => api.flags.all().catch(() => null) // @findplate:flags

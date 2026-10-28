@@ -37,6 +37,10 @@ const schema = z.object({
   UPSTASH_REDIS_REST_TOKEN: optional,
   // @end
 
+  // @findplate:flags
+  /** Overrides that beat the database, e.g. `betaBanner=on,otherFlag=25`. */
+  FLAGS_OVERRIDE: optional,
+  // @end
   // @findplate:jobs
   /** Run the job worker inside the api. Turn off when it runs in its own container (apps/api/Dockerfile, target worker). */
   JOBS_WORKER: z.stringbool().default(true),

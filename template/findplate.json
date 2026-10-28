@@ -98,7 +98,13 @@
       "server": { "label": "a self-hosted Umami server", "url": "https://umami.is/docs/install" },
       "paths": ["apps/web/components/umami.tsx", "apps/dashboard/components/umami.tsx"],
       "packages": [],
-      "keys": [{ "env": "NEXT_PUBLIC_UMAMI_WEBSITE_ID", "label": "Umami website id", "url": "https://umami.is/docs/add-a-website" }]
+      "keys": [
+        {
+          "env": "NEXT_PUBLIC_UMAMI_WEBSITE_ID",
+          "label": "Umami website id",
+          "url": "https://umami.is/docs/add-a-website"
+        }
+      ]
     },
     "openobserve": {
       "label": "OpenObserve",
@@ -117,14 +123,19 @@
       "server": { "label": "a self-hosted GlitchTip server", "url": "https://glitchtip.com/documentation/install" },
       "paths": ["apps/web/instrumentation-client.ts", "apps/dashboard/instrumentation-client.ts"],
       "packages": ["@sentry/bun", "@sentry/nextjs"],
-      "keys": [{ "env": "GLITCHTIP_DSN", "label": "GlitchTip DSN", "url": "https://glitchtip.com/documentation/install" }]
+      "keys": [
+        { "env": "GLITCHTIP_DSN", "label": "GlitchTip DSN", "url": "https://glitchtip.com/documentation/install" }
+      ]
     },
     "infisical": {
       "label": "Infisical",
       "hint": "self-hosted secrets, dev scripts run through the infisical cli",
       "group": "ops",
       "profiles": [],
-      "server": { "label": "a self-hosted Infisical server", "url": "https://infisical.com/docs/self-hosting/overview" },
+      "server": {
+        "label": "a self-hosted Infisical server",
+        "url": "https://infisical.com/docs/self-hosting/overview"
+      },
       "paths": [".infisical.json"],
       "packages": [],
       "scripts": { "dev:secrets": "infisical run --env=dev -- turbo dev" }
@@ -139,7 +150,11 @@
       "paths": ["apps/api/src/langfuse.ts"],
       "packages": ["@langfuse/otel", "@langfuse/vercel-ai-sdk", "@opentelemetry/sdk-node"],
       "keys": [
-        { "env": "LANGFUSE_PUBLIC_KEY", "label": "Langfuse public key", "url": "https://langfuse.com/docs/get-started" },
+        {
+          "env": "LANGFUSE_PUBLIC_KEY",
+          "label": "Langfuse public key",
+          "url": "https://langfuse.com/docs/get-started"
+        },
         { "env": "LANGFUSE_SECRET_KEY", "label": "Langfuse secret key", "url": "https://langfuse.com/docs/get-started" }
       ]
     },
@@ -195,8 +210,32 @@
       "hint": "per route and ip limits on the api, in memory or on Upstash Redis",
       "group": "platform",
       "profiles": ["standard", "everything"],
-      "paths": ["apps/api/src/rate-limit.ts", "packages/orpc/src/lib/rate-limit.ts", "packages/orpc/src/lib/rate-limit.test.ts"],
+      "paths": [
+        "apps/api/src/rate-limit.ts",
+        "packages/orpc/src/lib/rate-limit.ts",
+        "packages/orpc/src/lib/rate-limit.test.ts"
+      ],
       "packages": []
+    },
+    "flags": {
+      "label": "Feature flags",
+      "hint": "typed flags with code defaults, env overrides and dashboard rollouts per user",
+      "group": "platform",
+      "profiles": ["everything"],
+      "paths": [
+        "packages/flags",
+        "packages/db/src/schema/flags.ts",
+        "packages/db/drizzle/0002_flags.sql",
+        "packages/db/drizzle/meta/0002_snapshot.json",
+        "packages/orpc/src/routers/flags.ts",
+        "packages/orpc/src/flags.tsx",
+        "apps/web/lib/flags.ts",
+        "apps/dashboard/lib/flags.ts",
+        "apps/dashboard/components/beta-banner.tsx",
+        "apps/dashboard/components/flags-board.tsx",
+        "apps/dashboard/app/(app)/flags"
+      ],
+      "packages": ["@acme/flags"]
     },
     "logger": {
       "label": "Logger",

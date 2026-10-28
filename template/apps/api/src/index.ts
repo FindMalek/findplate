@@ -4,6 +4,7 @@ import { createDb } from "@acme/db"
 import { runMigrations } from "@acme/db/migrate"
 import { seedDemo } from "@acme/db/seed"
 import { loadApiEnv } from "@acme/env/api"
+import { createFlags } from "@acme/flags/server" // @findplate:flags
 import { authEmails, createNotifier } from "@acme/notification" // @findplate:notification
 import { createRateLimiter } from "@acme/orpc" // @findplate:rate-limit
 import { createStorage } from "@acme/storage" // @findplate:storage
@@ -57,6 +58,7 @@ const fetch = createServer(
       webUrl: env.WEB_URL, // @findplate:status
       dashboardUrl: env.DASHBOARD_URL, // @findplate:status
     },
+    flags: createFlags({ db, override: env.FLAGS_OVERRIDE }), // @findplate:flags
     jobs, // @findplate:jobs
     // @findplate:rate-limit
     rateLimiter: createRateLimiter({
