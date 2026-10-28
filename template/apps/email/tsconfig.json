@@ -1,0 +1,1 @@
+{ "extends": "@acme/config/react-library.json", "include": ["emails", "lib"] }

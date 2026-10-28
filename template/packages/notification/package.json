@@ -1,0 +1,33 @@
+{
+  "name": "@acme/notification",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./templates": "./src/templates/index.ts",
+    "./brand": "./src/brand.ts"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "bun test --pass-with-no-tests",
+    "domain": "bun src/setup/domain.ts",
+    "telegram:setup": "bun --env-file=../../.env src/setup/telegram.ts",
+    "whatsapp:setup": "bun --env-file=../../.env src/setup/whatsapp.ts"
+  },
+  "dependencies": {
+    "@acme/webhooks": "workspace:*",
+    "@kapso/whatsapp-cloud-api": "catalog:",
+    "@opencoredev/email-sdk": "catalog:",
+    "@react-email/components": "catalog:",
+    "@react-email/render": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@acme/config": "workspace:*",
+    "@types/bun": "catalog:",
+    "@types/react": "catalog:",
+    "typescript": "catalog:"
+  }
+}
