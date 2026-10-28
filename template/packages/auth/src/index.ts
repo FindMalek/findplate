@@ -40,7 +40,9 @@ export function createAuth(config: AuthConfig) {
     socialProviders: config.github ? { github: config.github } : undefined,
     plugins: [
       admin(),
-      ...(sendMagicLink ? [magicLink({ sendMagicLink: async ({ email, url }) => void quiet(sendMagicLink(email, url)) })] : []),
+      ...(sendMagicLink
+        ? [magicLink({ sendMagicLink: async ({ email, url }) => void quiet(sendMagicLink(email, url)) })]
+        : []),
     ],
     advanced: { useSecureCookies: config.secureCookies },
     session: { cookieCache: { enabled: true, maxAge: 5 * 60 } },
