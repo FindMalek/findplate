@@ -1,6 +1,7 @@
 import { fileURLToPath } from "node:url"
 import { loadEnvConfig } from "@next/env"
 import type { NextConfig } from "next"
+import createNextIntlPlugin from "next-intl/plugin" // @findplate:i18n
 
 const root = fileURLToPath(new URL("../../", import.meta.url))
 // One .env at the repo root for every app.
@@ -24,4 +25,8 @@ const nextConfig: NextConfig = {
   headers: async () => [{ source: "/:path*", headers: securityHeaders }],
 }
 
-export default nextConfig
+const plugins: Array<(config: NextConfig) => NextConfig> = []
+plugins.push(createNextIntlPlugin()) // @findplate:i18n
+plugins.push((config) => ({ ...config, transpilePackages: [...(config.transpilePackages ?? []), "@acme/i18n"] })) // @findplate:i18n
+
+export default plugins.reduce((config, plugin) => plugin(config), nextConfig)

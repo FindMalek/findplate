@@ -29,6 +29,7 @@
     "webhooks",
     "email",
     "rate-limiting",
+    "i18n",
     "---Design---",
     "presets",
     "theming",
