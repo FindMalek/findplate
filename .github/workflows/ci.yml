@@ -137,7 +137,7 @@ jobs:
       - uses: actions/checkout@v7
       - name: Pick every module
         id: modules
-        run: echo "modules=$(node .github/scripts/module-matrix.mjs | node -pe 'JSON.parse(require("fs").readFileSync(0, "utf8")).include[0].modules')" >> "$GITHUB_OUTPUT"
+        run: echo "modules=$(node -pe 'Object.keys(require("./template/findplate.json").modules).join(",")')" >> "$GITHUB_OUTPUT"
       - uses: ./.github/actions/generate
         with:
           dir: ${{ env.PROJECT }}
