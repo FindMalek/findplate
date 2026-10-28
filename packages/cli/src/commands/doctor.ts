@@ -18,6 +18,8 @@ import {
 } from "../doctor-plan"
 import { CliError, EXIT } from "../errors"
 import { capture } from "../git"
+import { loadManifest } from "../manifest"
+import { pendingKeys } from "../profiles"
 import { loadDone } from "../provision/state"
 import { loadState } from "../state"
 
@@ -75,6 +77,20 @@ export async function runChecks(dir: string): Promise<CheckResult[]> {
       empty.length
         ? result("env-schema", "env schema", "fail", `required but empty: ${empty.join(", ")}`)
         : result("env-schema", "env schema", "pass", "required variables are set"),
+    )
+  }
+
+  if (state && envText !== undefined) {
+    const pending = pendingKeys(loadManifest(), state.answers.modules, env)
+    out.push(
+      pending.length
+        ? result(
+            "module-keys",
+            "module keys",
+            "warn",
+            pending.map(({ key }) => `${key?.env} (${key?.label}, ${key?.url})`).join("; "),
+          )
+        : result("module-keys", "module keys", "pass", "every module key has a value"),
     )
   }
 

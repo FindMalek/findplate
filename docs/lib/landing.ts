@@ -52,7 +52,7 @@ function readJson<T>(path: string): T {
 }
 
 export function getModules(): ModuleCell[] {
-  const manifest = readJson<{ modules: Record<string, { label: string; hint: string; default: boolean }> }>(
+  const manifest = readJson<{ modules: Record<string, { label: string; hint: string; profiles: string[] }> }>(
     "template/findplate.json",
   )
   return Object.entries(manifest.modules).map(([id, m]) => {
@@ -62,7 +62,7 @@ export function getModules(): ModuleCell[] {
       id,
       label: m.label,
       hint: m.hint,
-      isDefault: m.default,
+      isDefault: m.profiles.includes("standard"),
       href: exists ? `/docs/${slug}` : "/docs/modules",
     }
   })
