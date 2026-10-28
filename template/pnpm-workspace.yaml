@@ -6,6 +6,11 @@ onlyBuiltDependencies:
   - esbuild
   - sharp
 
+overrides:
+  body-parser@<2.4.0: 2.4.0
+  fast-uri@<3.1.9: 3.1.9
+  esbuild@<=0.24.2: 0.25.12
+
 catalog:
   "@ai-sdk/anthropic": 4.0.82
   "@ai-sdk/groq": 4.0.63
