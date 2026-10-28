@@ -11,7 +11,7 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "test": "bun test --pass-with-no-tests"
+    "test": "bun test"
   },
   "dependencies": {
     "zod": "catalog:"
