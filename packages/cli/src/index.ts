@@ -32,7 +32,8 @@ Options
   --name <name>        project name (defaults to dir)
   --pitch <text>       one-line pitch for the landing page
   --preset <id>        design preset (monochrome, …)
-  --modules <a,b>      optional modules to include (storage, ai, docs); empty for none
+  --profile <id>       minimal, standard or everything (default with -y: standard)
+  --modules <a,b>      exact modules to include, wins over --profile; empty for none
   --no-install         skip pnpm install
   --no-git             skip git init
   --no-agents          skip generating agent rules (ruler)
@@ -73,6 +74,7 @@ async function main() {
       pitch: { type: "string" },
       preset: { type: "string" },
       modules: { type: "string" },
+      profile: { type: "string" },
       install: { type: "boolean", default: true },
       git: { type: "boolean", default: true },
       agents: { type: "boolean", default: true },
@@ -158,6 +160,7 @@ async function main() {
     pitch: values.pitch,
     preset: values.preset,
     modules: values.modules,
+    profile: values.profile,
     install: values.install,
     git: values.git,
     agents: values.agents,

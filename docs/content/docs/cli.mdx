@@ -17,7 +17,8 @@ findplate create [dir] [options]
 | `--name <name>` | project name. Becomes the package scope, titles and database name |
 | `--pitch <text>` | one-line pitch shown on the generated landing page |
 | `--preset <id>` | design preset, see [presets](/docs/presets). Default `monochrome` |
-| `--modules <a,b>` | optional modules to include, see [modules](/docs/modules). Pass an empty value for none |
+| `--profile <id>` | `minimal`, `standard` or `everything`, see [profiles](/docs/modules#profiles). Default `standard` with `-y` |
+| `--modules <a,b>` | exact modules to include, see [modules](/docs/modules). Wins over `--profile`. Pass an empty value for none |
 | `--no-install` | skip `pnpm install` |
 | `--no-git` | skip `git init` and the first commit |
 | `--no-agents` | skip generating agent rules, see [agents](/docs/agents) |
@@ -31,7 +32,15 @@ Project names are lowercase letters, digits and dashes, 3 to 40 characters. The 
 
 ## Interactive mode
 
-Without `-y`, in a terminal, the cli asks for the name, pitch, preset and modules, then for the api keys of the modules you picked. Keys are optional, and you can fill `.env` later. Ctrl+C at any prompt cancels without creating anything.
+Without `-y`, in a terminal, the cli asks for:
+
+1. the name, pitch and design preset
+2. a profile: Minimal, Standard, Everything or Custom
+3. a checklist of modules grouped by purpose, pre-ticked from the profile. Space toggles one module or a whole group. A module that needs another one ticks it for you and says so
+4. a short "Keys you will need" note for the modules you kept, each key with the page to get it from
+5. the keys themselves, hidden as you type. Every one is optional
+
+Keys you skip are listed under "Still to set in .env" when the cli finishes, and `findplate doctor` warns about them later. Ctrl+C at any prompt cancels without creating anything. Re-running `create` in an unfinished project resumes with the profile and modules you chose the first time.
 
 ## Agent mode
 
@@ -46,9 +55,10 @@ bunx findplate create my-app \
 ```
 
 - `--name` or `[dir]` is required with `-y`
-- without `--modules`, `-y` includes the modules that default to on
+- without `--profile` or `--modules`, `-y` uses the `standard` profile
+- `--modules` wins when both are given
 - `--modules ""` generates a project with no optional modules
-- unknown presets or modules fail with the list of valid ids
+- unknown presets, profiles or modules fail with the list of valid ids
 
 Add `--no-install --no-git` when the agent will run those steps itself.
 
@@ -70,7 +80,7 @@ The first commit lands on your `init.defaultBranch` (or `main` when unset). The 
 | --- | --- |
 | `0` | done, or you cancelled a prompt |
 | `1` | a step failed, or `doctor` found a failing check |
-| `2` | usage error, such as a missing `--name` without a terminal, an unknown preset or module |
+| `2` | usage error, such as a missing `--name` without a terminal, an unknown preset, profile or module |
 | `3` | `findplate add` or `findplate remove` refused because the git tree has uncommitted changes, see [add and doctor](/docs/add-doctor) |
 
 ## Other commands
