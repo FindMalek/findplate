@@ -39,6 +39,7 @@
     "self-hosted",
     "---Agents and CI---",
     "agents",
+    "llm",
     "ci"
   ]
 }
