@@ -10,6 +10,9 @@ import { Umami } from "@/components/umami" // @findplate:umami
 import { dashboardUrl, SITE } from "@/lib/site"
 import { fontVariables } from "./fonts"
 
+// Prerendered pages would bake the build-time DASHBOARD_URL into `metadataBase`.
+export const dynamic = "force-dynamic"
+
 export const metadata: Metadata = {
   metadataBase: new URL(dashboardUrl()),
   title: { default: "Dashboard", template: "%s · acme" },
