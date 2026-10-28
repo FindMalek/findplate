@@ -12,4 +12,9 @@ test("redirects and json responses get the security headers, hsts only over http
   const json = withSecurityHeaders(Response.json({ ok: true }), { https: true })
   expect(json.headers.get("content-type")).toContain("application/json")
   expect(json.headers.get("strict-transport-security")).toContain("max-age=")
+
+  const own = withSecurityHeaders(new Response("x", { headers: { "content-security-policy": "default-src 'none'" } }), {
+    https: false,
+  })
+  expect(own.headers.get("content-security-policy")).toBe("default-src 'none'")
 })
