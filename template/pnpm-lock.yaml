@@ -214,6 +214,9 @@ importers:
       '@acme/jobs':
         specifier: workspace:*
         version: link:../../packages/jobs
+      '@acme/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
       '@acme/notification':
         specifier: workspace:*
         version: link:../../packages/notification
@@ -278,6 +281,9 @@ importers:
       '@acme/env':
         specifier: workspace:*
         version: link:../../packages/env
+      '@acme/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
       '@acme/orpc':
         specifier: workspace:*
         version: link:../../packages/orpc
@@ -431,6 +437,9 @@ importers:
       '@acme/env':
         specifier: workspace:*
         version: link:../../packages/env
+      '@acme/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
       '@acme/orpc':
         specifier: workspace:*
         version: link:../../packages/orpc
@@ -610,6 +619,18 @@ importers:
       zod:
         specifier: 'catalog:'
         version: 4.6.7
+    devDependencies:
+      '@acme/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/bun':
+        specifier: 'catalog:'
+        version: 1.4.3
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
+  packages/logger:
     devDependencies:
       '@acme/config':
         specifier: workspace:*
