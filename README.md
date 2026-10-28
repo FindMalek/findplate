@@ -27,7 +27,7 @@ pnpm db:up
 pnpm dev
 ```
 
-You need node 24, pnpm, docker and bun. Every prompt has a flag, so coding agents can run it with no prompts:
+You need node 24 for the project (the cli itself runs on 20.19 or newer), pnpm, docker and bun. Linux, macOS and Windows are tested in CI. On Windows, use WSL for the generated project, details in [docs/content/docs/cli.mdx](docs/content/docs/cli.mdx#supported-platforms). Every prompt has a flag, so coding agents can run it with no prompts:
 
 ```bash
 bunx findplate create my-app --name my-app --preset monochrome --modules storage,ai,docs -y

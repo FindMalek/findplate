@@ -64,6 +64,28 @@ Add `--no-install --no-git` when the agent will run those steps itself.
 
 The first commit lands on your `init.defaultBranch` (or `main` when unset). The step is skipped, with a note, when git isn't installed or when the target already sits inside a git repository, so a project generated into a monorepo never commits to the outer repo. The GitHub step needs its own repo, so pass `--no-github` there.
 
+## Supported platforms
+
+CI builds the cli, runs its tests and generates a project with `create` and `doctor` on every pull request:
+
+| | Versions |
+| --- | --- |
+| OS | Linux, macOS, Windows (the `windows-latest` runner) |
+| Node, for the cli itself | 20.19, 22 and 24 (`engines` says `>=20.19`) |
+| Node, for the generated project | 24 or newer, `doctor` fails the node check on older versions |
+
+The cli is tested as the built `dist/index.js` on those Node versions. The generated project itself is only built and tested on Linux in CI.
+
+### Windows notes
+
+The cli works in PowerShell, cmd and Git Bash: paths, CRLF line endings and the `.cmd` shims of pnpm and npm are handled. WSL is not required for the cli. It is recommended for the generated project, because:
+
+- the project is only verified on Linux. Its scripts (`pnpm dev`, `pnpm check-types`, `pnpm db:up`) use only `&&` and cross-platform tools, but nothing runs them on Windows in CI
+- the local Postgres runs in Docker Desktop, which on Windows needs WSL 2 anyway
+- file watching in Next.js is much slower on a Windows drive than in the WSL filesystem
+
+`git` must be on your `PATH`, and `gh` is only needed for `findplate github`. Windows has no unix file modes, so the `0600` mode of the config file doesn't apply there. The config lives in `%USERPROFILE%\.config\findplate` unless `FINDPLATE_CONFIG_DIR` is set.
+
 ## Exit codes
 
 | Code | Meaning |
