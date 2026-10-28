@@ -29,7 +29,7 @@ test("sign up, sign out, sign in, then create and list a note", async ({ page })
   await page.getByRole("button", { name: "Create account" }).click()
   await expect(page.getByText(email)).toBeVisible()
 
-  await page.getByRole("button", { name: new RegExp(email) }).click()
+  await page.getByRole("button", { name: email }).click()
   await expect(page).toHaveURL(/\/sign-in$/)
 
   await page.getByLabel("Email").fill(email)
