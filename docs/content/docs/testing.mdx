@@ -14,7 +14,7 @@ pnpm db:up
 pnpm test
 ```
 
-`createTestDb()` from `@acme/db/testing` connects to `TEST_DATABASE_URL`, or `DATABASE_URL`, creates a fresh database named `test_<uuid>`, applies the drizzle migrations and drops it again on `close()`. Every test file gets its own database, so files run in parallel and never see each other's rows, and your dev data is never touched. If the server is down the error says so.
+`createTestDb()` from `@acme/db/testing` connects to `TEST_DATABASE_URL`, or `DATABASE_URL`, creates a fresh database named `test_<uuid>`, applies the drizzle migrations and drops it again on `close()`. Every test file gets its own database, so files never see each other's rows and your dev data is never touched. Bun runs the files of a package one after the other and turbo runs the packages in parallel. If the server is down the error says so.
 
 In CI the `ci` workflow of the project runs a `postgres:17-alpine` service container and sets `DATABASE_URL` to it.
 
