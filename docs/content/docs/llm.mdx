@@ -1,0 +1,57 @@
+---
+title: For LLMs and agents
+description: Every docs page as markdown, plus llms.txt, so a tool can read findplate without scraping html.
+---
+
+The docs are served in a form a model can read. Everything is prerendered at build time, there is no runtime fetch and no MCP server to run.
+
+## What is served
+
+| Url | What it is |
+| --- | --- |
+| `/llms.txt` | Index in the [llms.txt](https://llmstxt.org) format: a summary, then every page grouped like the sidebar with a one-line description |
+| `/llms-full.txt` | Every page in one markdown file, in sidebar order |
+| `/docs/<page>.md` | One page as markdown. `.mdx` works too. `/docs/index.md` is the docs home |
+| `/docs.json` | Page index for scripts: slug, title, description, group, urls and headings |
+| `/sitemap.xml` | Html and markdown urls of every page |
+
+Callouts, tabs, cards, steps and file trees are turned into plain markdown, so nothing is lost when the html is gone. Internal links point at the `.md` twin of the page. Each page starts with a small header: title, description, canonical url, markdown url and group.
+
+## Ask for markdown
+
+Any docs url returns markdown when the client asks for it:
+
+```bash
+curl -H "Accept: text/markdown" https://plate.findmalek.engineer/docs/quickstart
+curl https://plate.findmalek.engineer/docs/quickstart.md
+```
+
+Browsers still get html. Every page also has `<link rel="alternate" type="text/markdown">`, and the page header has buttons to copy the markdown, view it, or open it in ChatGPT or Claude.
+
+## Feed it to a tool
+
+<Tabs items={["Claude Code", "Any chat", "Script"]}>
+  <Tab value="Claude Code">
+    Point the agent at the index and let it pick pages:
+
+    ```text
+    Read https://plate.findmalek.engineer/llms.txt, then fetch the pages you need.
+    ```
+  </Tab>
+  <Tab value="Any chat">
+    Paste the output of `Copy Markdown` from a page, or attach `llms-full.txt` when the whole manual fits the context window.
+  </Tab>
+  <Tab value="Script">
+    ```bash
+    curl -s https://plate.findmalek.engineer/docs.json | jq -r '.pages[] | "\(.group): \(.title) \(.markdown)"'
+    ```
+  </Tab>
+</Tabs>
+
+## Crawlers
+
+`robots.txt` allows GPTBot, ClaudeBot, anthropic-ai, PerplexityBot, Google-Extended and CCBot on purpose. Pages carry `TechArticle` JSON-LD for search engines.
+
+## In your generated project
+
+The [docs module](/docs/docs-module) ships the same routes: `/llms.txt`, `/llms-full.txt` and `<page>.md`, plus the copy button. The project's agent rules point agents at `/llms.txt` of its own docs.
