@@ -6,6 +6,7 @@ onlyBuiltDependencies:
   - esbuild
   - sharp
 
+# Transitive security fixes (dependabot alerts 270, 274-278). Drop one once its parent depends on a patched version.
 overrides:
   body-parser@<2.4.0: 2.4.0
   fast-uri@<3.1.9: 3.1.9
