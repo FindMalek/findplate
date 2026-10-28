@@ -36,4 +36,5 @@ test("the proxy serves /fr from the same page and sends a returning french visit
 
   const english = localeProxy(new NextRequest("http://localhost:3000/en/roadmap"))
   expect(english.headers.get("location")).toBe("http://localhost:3000/roadmap")
+  expect(english.cookies.get("NEXT_LOCALE")?.value).toBe("en")
 })

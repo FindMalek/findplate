@@ -18,6 +18,8 @@ findplate create my-app --modules i18n
 
 The web app gets its `[locale]` style routing from `apps/web/proxy.ts`. `/fr/roadmap` is rewritten to the existing `/roadmap` page with an `x-locale` header, `/en/roadmap` redirects to `/roadmap`, and a visitor who chose French before is sent from `/roadmap` to `/fr/roadmap`. No page moves into a `[locale]` folder, so existing routes keep working and removing the module is just deleting files.
 
+Reading the language from the request makes every web page rendered per request, `/roadmap` and `/status` included, instead of prerendered at build.
+
 ## Messages
 
 Messages live in `packages/i18n/src/messages/<locale>.json` and are typed from `en.json`: a key that is missing in `fr.json`, or a `t("typo")`, fails `pnpm check-types`.

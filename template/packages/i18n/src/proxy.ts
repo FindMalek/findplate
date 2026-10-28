@@ -17,7 +17,11 @@ export function localeProxy(request: NextRequest): NextResponse {
     response.cookies.set(LOCALE_COOKIE, locale, { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax" })
     return response
   }
-  if (locale === DEFAULT_LOCALE) return NextResponse.redirect(new URL(`${bare}${search}`, request.url))
+  if (locale === DEFAULT_LOCALE) {
+    const response = NextResponse.redirect(new URL(`${bare}${search}`, request.url))
+    response.cookies.set(LOCALE_COOKIE, locale, { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax" })
+    return response
+  }
 
   const preferred = request.cookies.get(LOCALE_COOKIE)?.value
   if (isLocale(preferred) && preferred !== DEFAULT_LOCALE) {
