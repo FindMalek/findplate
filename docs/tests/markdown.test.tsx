@@ -1,8 +1,14 @@
 import { describe, expect, test } from "bun:test"
+import { readFileSync } from "node:fs"
 import { renderToMarkdown } from "fumadocs-core/server"
 import { Callout, Card, Cards, FileTree, Step, Steps, Tab, Tabs } from "../components/docs/markdown"
 
 const render = async (node: React.ReactNode) => (await renderToMarkdown(node)).trim()
+
+test("the docs module copy of the markdown components has not drifted", () => {
+  const read = (path: string) => readFileSync(new URL(path, import.meta.url), "utf8")
+  expect(read("../../template/apps/docs/components/markdown.tsx")).toBe(read("../components/docs/markdown.tsx"))
+})
 
 describe("mdx components as markdown", () => {
   test("Callout becomes a labelled blockquote", async () => {
