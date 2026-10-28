@@ -3,27 +3,31 @@ title: Project structure
 description: The turborepo the cli generates.
 ---
 
-```text
-my-app/
-├─ apps/
-│  ├─ web/          hero landing, next
-│  ├─ dashboard/    better-auth login and app shell, next
-│  ├─ api/          orpc on bun
-│  └─ docs/         optional module, fumadocs on next
-├─ packages/
-│  ├─ ui/           shadcn components and theme tokens
-│  ├─ common/       shared zod schemas, constants and utils
-│  ├─ orpc/         procedures and clients, built on common
-│  ├─ db/           drizzle schema, migrations, seed scenario
-│  ├─ auth/         better-auth setup
-│  ├─ env/          zod-validated env, one root .env
-│  ├─ config/       shared config
-│  ├─ storage/      optional module
-│  └─ ai/           optional module
-├─ docker/          local postgres compose file
-├─ .env             generated, with secrets filled in
-└─ turbo.json
-```
+<FileTree
+  label="my-app/"
+  items={[
+    { name: "apps/", children: [
+      { name: "web/", note: "hero landing, next" },
+      { name: "dashboard/", note: "better-auth login and app shell, next" },
+      { name: "api/", note: "orpc on bun" },
+      { name: "docs/", note: "optional module, fumadocs on next" },
+    ] },
+    { name: "packages/", children: [
+      { name: "ui/", note: "shadcn components and theme tokens" },
+      { name: "common/", note: "shared zod schemas, constants and utils" },
+      { name: "orpc/", note: "procedures and clients, built on common" },
+      { name: "db/", note: "drizzle schema, migrations, seed scenario" },
+      { name: "auth/", note: "better-auth setup" },
+      { name: "env/", note: "zod-validated env, one root .env" },
+      { name: "config/", note: "shared config" },
+      { name: "storage/", note: "optional module" },
+      { name: "ai/", note: "optional module" },
+    ] },
+    { name: "docker/", note: "local postgres compose file" },
+    { name: ".env", note: "generated, with secrets filled in" },
+    { name: "turbo.json" },
+  ]}
+/>
 
 ## One rule for the apps
 

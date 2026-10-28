@@ -15,7 +15,13 @@ export async function GET(_request: Request, { params }: { params: Promise<{ slu
   const page = source.getPage(slug)
   if (!page) notFound()
   return new ImageResponse(
-    <OgCard name={SITE.name} title={page.data.title} description={page.data.description} colors={SITE.og} />,
+    <OgCard
+      name={SITE.name}
+      title={page.data.title}
+      description={page.data.description}
+      stats={["docs"]}
+      colors={SITE.og}
+    />,
     OG_SIZE,
   )
 }

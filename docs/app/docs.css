@@ -1,0 +1,266 @@
+/* docs section: article typography and fumadocs component overrides. Layout lives in the components. */
+
+.docs-prose {
+  font-size: 0.9375rem;
+  line-height: 1.75;
+  overflow-wrap: break-word;
+}
+.docs-prose > :first-child {
+  margin-top: 0;
+}
+.docs-prose p,
+.docs-prose ul,
+.docs-prose ol {
+  margin: 1rem 0;
+  max-width: 42rem;
+}
+.docs-prose ul {
+  list-style: square;
+  padding-left: 1.25rem;
+}
+.docs-prose ol {
+  list-style: decimal;
+  padding-left: 1.25rem;
+}
+.docs-prose li {
+  margin: 0.25rem 0;
+}
+.docs-prose li::marker {
+  color: var(--muted-foreground);
+}
+.docs-prose :where(h2, h3, h4) {
+  scroll-margin-top: 5rem;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.docs-prose h2 {
+  margin: 3rem 0 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+  font-size: 1.5rem;
+}
+.docs-prose > h2:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.docs-prose h3 {
+  margin: 2rem 0 0.75rem;
+  font-size: 1.125rem;
+}
+.docs-prose h4 {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 1rem;
+}
+.docs-prose :where(h2, h3, h4) a {
+  color: inherit;
+  text-decoration: none;
+}
+.docs-prose a {
+  text-decoration: underline;
+  text-decoration-color: var(--border);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.15s;
+}
+.docs-prose a:hover {
+  text-decoration-color: var(--foreground);
+}
+.docs-prose a:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.docs-prose strong {
+  font-weight: 600;
+}
+.docs-prose hr {
+  margin: 2.5rem 0;
+}
+.docs-prose blockquote {
+  margin: 1.5rem 0;
+  border-left: 2px solid var(--foreground);
+  padding-left: 1rem;
+  color: var(--muted-foreground);
+}
+
+/* inline code, not inside a block */
+.docs-prose :not(pre) > code {
+  border: 1px solid var(--border);
+  background: var(--muted);
+  padding: 0.1em 0.35em;
+  font-family: var(--font-mono);
+  font-size: 0.8125em;
+  overflow-wrap: anywhere;
+}
+
+/* tables as boxed grids */
+.docs-table table {
+  width: 100%;
+  min-width: 32rem;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.docs-table th + th,
+.docs-table td + td {
+  border-left: 1px solid var(--border);
+}
+.docs-table th {
+  border-bottom: 1px solid var(--border);
+  background: var(--muted);
+  padding: 0.625rem 1rem;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+.docs-table td {
+  border-top: 1px solid var(--border);
+  padding: 0.625rem 1rem;
+  vertical-align: top;
+}
+.docs-table tr:first-child td {
+  border-top: 0;
+}
+.docs-table td code {
+  white-space: nowrap;
+}
+.docs-table:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+}
+
+.callout-body > :first-child {
+  margin-top: 0;
+}
+.callout-body > :last-child {
+  margin-bottom: 0;
+}
+
+/* steps */
+.docs-steps {
+  counter-reset: step;
+}
+.docs-step {
+  counter-increment: step;
+}
+.docs-step::before {
+  content: counter(step);
+  position: absolute;
+  left: calc(-1.5rem - 0.75rem - 0.5px);
+  top: 0.15rem;
+  display: flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border);
+  background: var(--background);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+
+/* code blocks (fumadocs CodeBlock) */
+.docs-code {
+  background: var(--muted);
+  font-family: var(--font-mono);
+}
+.docs-code pre,
+.docs-code code {
+  font-family: var(--font-mono);
+}
+.docs-code figcaption {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+.docs-code .line.highlighted,
+.docs-code .line.diff.add,
+.docs-code .line.diff.remove {
+  background: color-mix(in oklab, var(--foreground) 8%, transparent);
+  box-shadow: inset 2px 0 0 var(--foreground);
+}
+.docs-code .line.diff.remove {
+  opacity: 0.6;
+}
+.docs-prose figure.shiki:focus-within {
+  outline: 0;
+}
+
+/* fumadocs Tabs */
+.docs-prose [role="tablist"] {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+}
+.docs-prose [role="tab"][data-state="active"] {
+  color: var(--foreground);
+}
+
+/* components that opt out of article typography (file tree, cards) */
+.docs-prose .not-prose ul {
+  margin: 0;
+  max-width: none;
+  list-style: none;
+  padding-left: 0;
+}
+.docs-prose .not-prose ul.tree-nested {
+  padding-left: 1.25rem;
+}
+.docs-prose .not-prose li {
+  margin: 0;
+}
+.docs-prose .not-prose a {
+  text-decoration: none;
+}
+
+/* search dialog */
+[role="dialog"] [role="option"] .prose {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  max-height: 3.2em;
+  overflow: hidden;
+}
+[role="dialog"] [role="option"] .prose > * {
+  margin: 0;
+}
+[role="dialog"] [role="option"] > .inline-flex {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+[role="dialog"] [role="listbox"] [role="option"] {
+  border-radius: 0;
+  border-bottom: 1px solid var(--border);
+}
+[role="dialog"] [role="combobox"] {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+}
+
+/* mobile drawer */
+.docs-drawer:not([open]) {
+  display: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .docs-drawer[open] {
+    animation: drawer-in 0.18s ease-out;
+  }
+  .docs-drawer[open]::backdrop {
+    animation: term-in 0.18s linear;
+  }
+}
+@keyframes drawer-in {
+  from {
+    transform: translateX(-12px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
