@@ -132,13 +132,15 @@ describe("generate", () => {
         ),
         "utf8",
       )
-    const mono = brand("monochrome")
-    const clay = brand("clay")
-    expect(mono).toContain("radius: 0,")
-    expect(clay).toContain("radius: 12,")
-    expect(mono).not.toBe(clay)
-    expect(clay).toMatch(/primary: "#[0-9a-f]{6}"/)
-    expect(clay).toContain("'DM Sans'")
+    const radius = { monochrome: 0, editorial: 2, clay: 12, midnight: 8, soft: 20 }
+    const primaries = new Set<string>()
+    for (const [id, px] of Object.entries(radius)) {
+      const source = brand(id)
+      expect(source).toContain(`radius: ${px},`)
+      primaries.add(source.match(/light: \{[^}]*primary: "(#[0-9a-f]{6})"/)![1]!)
+    }
+    expect(primaries.size).toBe(5)
+    expect(brand("clay")).toContain("'DM Sans'")
   })
 
   test("docs module: only with --modules docs, with the preset fonts, pitch and env url", () => {
