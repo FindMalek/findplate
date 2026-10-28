@@ -4,7 +4,7 @@ import { useSearchContext } from "fumadocs-ui/contexts/search"
 import { MenuIcon, SearchIcon, XIcon } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { SidebarNav } from "@/components/docs/sidebar-nav"
 import { ThemeToggle } from "@/components/theme-toggle"
 import type { NavGroup } from "@/lib/docs-nav"
@@ -15,6 +15,10 @@ const CELL =
 
 function SearchButton() {
   const { setOpenSearch } = useSearchContext()
+  const [key, setKey] = useState<string | null>(null)
+  useEffect(() => {
+    setKey(/mac|iphone|ipad/i.test(navigator.userAgent) ? "⌘K" : "Ctrl K")
+  }, [])
   return (
     <button
       type="button"
@@ -24,7 +28,9 @@ function SearchButton() {
     >
       <SearchIcon className="size-4" />
       <span className="hidden sm:inline">Search</span>
-      <kbd className="hidden border px-1.5 py-0.5 text-[10px] sm:inline">⌘K</kbd>
+      <kbd className={`hidden w-12 border py-0.5 text-center text-[10px] sm:inline-block ${key ? "" : "opacity-0"}`}>
+        {key ?? "⌘K"}
+      </kbd>
     </button>
   )
 }

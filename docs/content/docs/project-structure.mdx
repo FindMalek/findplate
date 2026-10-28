@@ -6,24 +6,24 @@ description: The turborepo the cli generates.
 <FileTree
   label="my-app/"
   items={[
-    { name: "apps", children: [
-      { name: "web", note: "hero landing, next" },
-      { name: "dashboard", note: "better-auth login and app shell, next" },
-      { name: "api", note: "orpc on bun" },
-      { name: "docs", note: "optional module, fumadocs on next" },
+    { name: "apps/", children: [
+      { name: "web/", note: "hero landing, next" },
+      { name: "dashboard/", note: "better-auth login and app shell, next" },
+      { name: "api/", note: "orpc on bun" },
+      { name: "docs/", note: "optional module, fumadocs on next" },
     ] },
-    { name: "packages", children: [
-      { name: "ui", note: "shadcn components and theme tokens" },
-      { name: "common", note: "shared zod schemas, constants and utils" },
-      { name: "orpc", note: "procedures and clients, built on common" },
-      { name: "db", note: "drizzle schema, migrations, seed scenario" },
-      { name: "auth", note: "better-auth setup" },
-      { name: "env", note: "zod-validated env, one root .env" },
-      { name: "config", note: "shared config" },
-      { name: "storage", note: "optional module" },
-      { name: "ai", note: "optional module" },
+    { name: "packages/", children: [
+      { name: "ui/", note: "shadcn components and theme tokens" },
+      { name: "common/", note: "shared zod schemas, constants and utils" },
+      { name: "orpc/", note: "procedures and clients, built on common" },
+      { name: "db/", note: "drizzle schema, migrations, seed scenario" },
+      { name: "auth/", note: "better-auth setup" },
+      { name: "env/", note: "zod-validated env, one root .env" },
+      { name: "config/", note: "shared config" },
+      { name: "storage/", note: "optional module" },
+      { name: "ai/", note: "optional module" },
     ] },
-    { name: "docker", note: "local postgres compose file" },
+    { name: "docker/", note: "local postgres compose file" },
     { name: ".env", note: "generated, with secrets filled in" },
     { name: "turbo.json" },
   ]}

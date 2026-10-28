@@ -107,11 +107,11 @@ export interface TreeNode {
 
 function TreeRows({ nodes, depth }: { nodes: TreeNode[]; depth: number }) {
   return (
-    <ul className={depth > 0 ? "ml-[0.45rem] border-l pl-4" : ""}>
+    <ul className={depth > 0 ? "tree-nested ml-[0.45rem] border-l" : ""}>
       {nodes.map((node) => (
         <li key={node.name} className="py-1">
           <div className="flex items-baseline gap-x-3">
-            {node.children ? (
+            {node.children || node.name.endsWith("/") ? (
               <FolderIcon aria-hidden className="size-3.5 shrink-0 translate-y-0.5 text-muted-foreground" />
             ) : (
               <FileIcon aria-hidden className="size-3.5 shrink-0 translate-y-0.5 text-muted-foreground" />
