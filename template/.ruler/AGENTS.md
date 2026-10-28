@@ -47,6 +47,11 @@ Single source for every coding agent. Edit this file, then run `pnpm agents` to 
 - No happy-path padding, snapshot dumps, or tests of types, getters or the framework
 - Smallest inline fixture, reuse existing helpers. Test through the public function or endpoint
 - Mock only external boundaries (network, time, third-party APIs), never your own modules
+- Tests run against a real Postgres (`pnpm db:up`, then `pnpm test`). `createTestDb()` from `@acme/db/testing` gives a fresh migrated database, and `createTestApp()` from `@acme/orpc/testing` the real services plus `signUp()` for signed-in clients. Only run the files you touched while iterating (`bun test path/to/file.test.ts`)
+- A test for module code lives in that module's paths, so it is removed with it
+<!-- @findplate:e2e -->
+- `pnpm test:e2e` is the Playwright smoke test of web, dashboard and api
+<!-- @end -->
 
 ## Git and GitHub
 
