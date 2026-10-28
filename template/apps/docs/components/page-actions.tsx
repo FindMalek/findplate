@@ -1,13 +1,15 @@
 "use client"
 
 import { CheckIcon, CopyIcon } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 const BUTTON =
   "inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground"
 
 function CopyMarkdown({ markdownPath }: { markdownPath: string }) {
   const [state, setState] = useState<"idle" | "busy" | "copied" | "failed">("idle")
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  useEffect(() => () => clearTimeout(timer.current), [])
 
   async function copy() {
     setState("busy")
@@ -28,7 +30,7 @@ function CopyMarkdown({ markdownPath }: { markdownPath: string }) {
     } catch {
       setState("failed")
     }
-    setTimeout(() => setState("idle"), 2000)
+    timer.current = setTimeout(() => setState("idle"), 2000)
   }
 
   return (
