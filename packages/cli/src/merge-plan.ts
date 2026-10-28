@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process"
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
+import { RM_OPTIONS } from "./platform"
 
 /** One file seen in the recorded template (`base`), the new template (`next`) and the project (`ours`). */
 export interface FileTriple {
@@ -67,6 +68,6 @@ export function mergeFile(triple: Required<Pick<FileTriple, "ours" | "next">> & 
     }
     return { content: result.stdout, conflicts: result.status }
   } finally {
-    rmSync(dir, { recursive: true, force: true })
+    rmSync(dir, RM_OPTIONS)
   }
 }

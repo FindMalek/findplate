@@ -17,6 +17,7 @@ import { generate } from "../generate"
 import { toNames } from "../generate/rename"
 import { type FileTriple, mergeFile, planFile, type UpdateAction } from "../merge-plan"
 import { templateDir } from "../paths"
+import { RM_OPTIONS, toPosix } from "../platform"
 import { listPresets } from "../presets"
 import { run } from "../run"
 import { loadState, type ProjectState, saveState } from "../state"
@@ -38,7 +39,7 @@ function walk(root: string, dir = root): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     if (IGNORED.has(entry.name)) return []
     const path = join(dir, entry.name)
-    return entry.isDirectory() ? walk(root, path) : [relative(root, path)]
+    return entry.isDirectory() ? walk(root, path) : [toPosix(relative(root, path))]
   })
 }
 
@@ -154,6 +155,6 @@ export async function update(flags: UpdateFlags) {
       p.outro(`Updated${from ? ` from ${from}` : ""} to ${flags.version}. Review with git diff, then run pnpm install`)
     }
   } finally {
-    rmSync(work, { recursive: true, force: true })
+    rmSync(work, RM_OPTIONS)
   }
 }

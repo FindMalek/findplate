@@ -1,3 +1,5 @@
+import { toLf } from "../platform"
+
 const START = /^\s*(?:\/\/|#|\{\/\*|<!--)\s*@findplate:([\w-]+)\s*(?:\*\/\}|-->)?\s*$/
 const END = /^\s*(?:\/\/|#|\{\/\*|<!--)\s*@end\s*(?:\*\/\}|-->)?\s*$/
 /** One line owned by a module: `import { x } from "y" // @findplate:ai`. Import sorting keeps these attached. */
@@ -10,6 +12,7 @@ const INLINE = /^(.*\S)\s*\/\/\s*@findplate:([\w-]+)\s*$/
  */
 export function stripModules(source: string, enabled: ReadonlySet<string>): string {
   if (!source.includes("@findplate:")) return source
+  if (source.includes("\r\n")) return stripModules(toLf(source), enabled).replaceAll("\n", "\r\n")
   const out: string[] = []
   let skipping: string | null = null
   let open: string | null = null

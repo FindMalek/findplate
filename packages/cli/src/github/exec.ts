@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process"
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
+import { spawnPlan } from "../platform"
 import { type ProjectState, saveState } from "../state"
 import type { Command, PlanStep, RunCommand, Stdin } from "./plan"
 
@@ -15,7 +16,12 @@ export type Exec = (cmd: string, args: string[], cwd: string, stdin?: string) =>
 
 export const realExec: Exec = (cmd, args, cwd, stdin) =>
   new Promise((resolve, reject) => {
-    const child = spawn(cmd, args, { cwd, env: { ...process.env, GH_PROMPT_DISABLED: "1", FORCE_COLOR: "0" } })
+    const plan = spawnPlan(cmd, args)
+    const child = spawn(plan.cmd, plan.args, {
+      cwd,
+      shell: plan.shell,
+      env: { ...process.env, GH_PROMPT_DISABLED: "1", FORCE_COLOR: "0" },
+    })
     let stdout = ""
     let stderr = ""
     child.stdout.on("data", (chunk) => (stdout += chunk))

@@ -1,11 +1,14 @@
 import { spawn } from "node:child_process"
 import { createServer } from "node:net"
+import { spawnPlan } from "./platform"
 
 /** Runs a command, keeping its output for the error message instead of flooding the prompt UI. */
 export function run(cmd: string, args: string[], cwd: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    const child = spawn(cmd, args, {
+    const plan = spawnPlan(cmd, args)
+    const child = spawn(plan.cmd, plan.args, {
       cwd,
+      shell: plan.shell,
       env: { ...process.env, FORCE_COLOR: "0" },
       stdio: ["ignore", "pipe", "pipe"],
     })

@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto"
 import { cpSync, existsSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs"
 import { basename, join, relative } from "node:path"
 import { loadManifest } from "../manifest"
+import { toPosix } from "../platform"
 import { type Preset, presetTheme } from "../presets"
 import { buildEnv } from "./env"
 import { fontsModule } from "./fonts"
@@ -74,7 +75,7 @@ export function generate(opts: GenerateOptions) {
   const dropped = new Set(disabled.flatMap(([, spec]) => spec.packages).filter((name) => !kept.has(name)))
 
   for (const file of walk(target)) {
-    const rel = relative(target, file)
+    const rel = toPosix(relative(target, file))
     if (!TEXT.test(rel) || statSync(file).size > 2_000_000) continue
     const source = readFileSync(file, "utf8")
     let out = stripModules(source, opts.modules)
