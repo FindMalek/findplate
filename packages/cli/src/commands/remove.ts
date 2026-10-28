@@ -23,9 +23,9 @@ import { templateDir } from "../paths"
 import { listPresets } from "../presets"
 import { isMigration, moduleEnvKeys, planRemoveFile, type RemoveAction, resolveRemoval } from "../remove-plan"
 import { loadState, type ProjectState, saveState } from "../state"
+import { readTree } from "../tree"
 import { bold } from "../ui"
 import { TEMPLATE_VERSION } from "../version"
-import { readTree } from "./add"
 
 export interface RemoveFlags {
   dir?: string
@@ -119,7 +119,9 @@ export async function removeCommand(flags: RemoveFlags) {
     }
     plan.sort((a, b) => a.path.localeCompare(b.path))
 
-    const left: string[] = []
+    const stuck = plan.filter((entry) => entry.action === "edited" || entry.action === "conflict")
+    const left = flags.force ? [] : stuck.map((entry) => entry.path)
+    const forced = flags.force ? stuck.map((entry) => entry.path) : []
     const conflicts: string[] = []
     if (!flags.dryRun) {
       for (const { path, action } of plan) {
@@ -142,11 +144,6 @@ export async function removeCommand(flags: RemoveFlags) {
         }
       }
     }
-    for (const { path, action } of plan) {
-      if (action === "conflict" && flags.force) continue
-      if (action === "edited" && flags.force) continue
-      if (action === "edited" || action === "conflict") left.push(path)
-    }
     if (!flags.dryRun) {
       for (const id of toRemove) for (const path of manifest.modules[id]?.paths ?? []) prune(join(dir, path))
     }
@@ -158,6 +155,11 @@ export async function removeCommand(flags: RemoveFlags) {
     )
     if (flags.dryRun) {
       p.log.info(plan.map((entry) => `  ${entry.action.padEnd(8)} ${entry.path}`).join("\n"))
+    }
+    if (forced.length) {
+      p.log.warn(
+        `--force replaced or deleted ${forced.length} files you edited (git checkout restores them):\n${forced.map((path) => `  ${path}`).join("\n")}`,
+      )
     }
     if (left.length) {
       p.log.warn(
