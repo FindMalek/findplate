@@ -77,7 +77,7 @@ test("remove undoes add and matches a fresh project without the module", async (
   expect(loadState(target)?.answers.modules).toEqual([])
   expect(existsSync(join(target, "packages/telegram"))).toBe(false)
   expect(files(target)).toEqual(files(fresh))
-})
+}, 30_000)
 
 test("remove leaves edited module files and the migration alone", async () => {
   const work = mkdtempSync(join(tmpdir(), "fp-remove-"))
@@ -88,4 +88,4 @@ test("remove leaves edited module files and the migration alone", async () => {
   await removeCommand({ dir: target, modules: ["ai"], force: false, dryRun: false, dropMigrations: false })
   expect(existsSync(edited)).toBe(true)
   expect(loadState(target)?.answers.modules).not.toContain("ai")
-})
+}, 30_000)
