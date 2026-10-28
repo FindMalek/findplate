@@ -116,13 +116,30 @@ jobs:
       PROJECT: /tmp/generated
     steps:
       - uses: actions/checkout@v7
+      - name: Pick every module
+        id: modules
+        run: echo "modules=$(node .github/scripts/module-matrix.mjs | node -pe 'JSON.parse(require("fs").readFileSync(0, "utf8")).include[0].modules')" >> "$GITHUB_OUTPUT"
       - uses: ./.github/actions/generate
         with:
           dir: ${{ env.PROJECT }}
-      - name: Build web
+          modules: ${{ steps.modules.outputs.modules }}
+      - name: Build web and dashboard
         working-directory: ${{ env.PROJECT }}
-        run: pnpm --filter web build
-      - name: Audit the landing page
+        run: pnpm --filter web --filter dashboard build
+      - name: Start web and dashboard
+        working-directory: ${{ env.PROJECT }}
+        # 127.0.0.1 is not "localhost", so the landing pages stay indexable and the seo audit means something
+        env:
+          WEB_URL: http://127.0.0.1:3000
+          DASHBOARD_URL: http://127.0.0.1:3002
+          DEPLOY_ENV: production
+        run: |
+          pnpm --filter web start > web.log 2>&1 &
+          pnpm --filter dashboard start > dashboard.log 2>&1 &
+          for port in 3000 3002; do
+            npx --yes wait-on@9 --timeout 60000 "http-get://127.0.0.1:$port/"
+          done
+      - name: Audit landing, roadmap, status and sign-in
         working-directory: ${{ env.PROJECT }}
         run: npx --yes @lhci/cli@0.15.1 autorun --config="$GITHUB_WORKSPACE/.github/lighthouserc.json"
       - uses: actions/upload-artifact@v7
