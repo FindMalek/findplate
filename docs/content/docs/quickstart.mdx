@@ -44,7 +44,43 @@ yarn dlx findplate create
   </Tab>
 </Tabs>
 
-The prompts ask for a project name, a one-line pitch, a design preset and the modules to include. Every answer has a flag, see the [CLI reference](/docs/cli).
+The prompts ask for a project name, a one-line pitch and a design preset, then offer a profile to start from. Every answer has a flag, see the [CLI reference](/docs/cli).
+
+```text
+◆  Profile
+│  ○ Minimal    (just the core, add modules later with findplate add)
+│  ● Standard   (the usual starting set, nothing to host yourself)
+│  ○ Everything (every module that runs without a server of your own)
+│  ○ Custom     (start from standard and pick by hand)
+
+●  Standard picks storage, docs, ai, rate-limit
+
+◆  Modules (space toggles, enter confirms)
+│  ◻ Product pages
+│  │ ◼ Docs site
+│  │ ◻ Waitlist
+│  └ ◻ Status page
+│  ◻ Platform
+│  │ ◼ File storage
+│  │ ◼ AI
+│  └ ◼ Rate limiting
+│  ◻ Notifications
+│  │ ◻ Telegram bot
+│  └ ◻ Email
+│  ...
+
+●  Telegram bot needs Webhooks, added it
+
+◇  Keys you will need ──────────────────────────────────────────────────╮
+│  TELEGRAM_BOT_TOKEN  Telegram bot token (from @BotFather)             │
+│                      https://t.me/BotFather                           │
+│  GROQ_API_KEY        Groq API key  https://console.groq.com/keys      │
+╰───────────────────────────────────────────────────────────────────────╯
+◆  Telegram bot token (optional, https://t.me/BotFather)
+│  _
+```
+
+Press Enter on any key to skip it. The skipped ones come back as a "Still to set in .env" list when the cli finishes, and `findplate doctor` keeps warning until they are filled. Skip the prompts with `--profile` or `--modules`, see [modules](/docs/modules#profiles).
 
 The cli then copies the template, installs dependencies, formats the result with biome and makes the first git commit on `main`.
 
