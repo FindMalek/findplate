@@ -63,8 +63,10 @@ try {
     }
     const project_ = report.results.find((entry) => entry.id === "project")
     if (project_?.status !== "pass") fail(`doctor ${name}: project check is ${project_?.status}`, doctor)
-    if (!report.results.some((entry) => entry.id === "node" && entry.status === "pass"))
-      fail(`doctor ${name}: node check`, doctor)
+    // Generated projects need node >=24 (their engines), the cli itself only 20.19: doctor must tell the two apart.
+    const wanted = Number.parseInt(process.versions.node, 10) >= 24 ? "pass" : "fail"
+    if (report.results.find((entry) => entry.id === "node")?.status !== wanted)
+      fail(`doctor ${name}: node check should be ${wanted}`, doctor)
   }
 } finally {
   rmSync(work, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 })

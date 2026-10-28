@@ -10,7 +10,8 @@ test("config is saved private, and unset removes the key", () => {
   const file = join(mkdtempSync(join(tmpdir(), "fp-config-")), "findplate", "config.json")
   setConfig("dokployUrl", "https://dokploy.example.com", file)
   setConfig("githubOwner", "acme", file)
-  expect(statSync(file).mode & 0o777).toBe(0o600)
+  // Windows has no posix mode bits
+  if (process.platform !== "win32") expect(statSync(file).mode & 0o777).toBe(0o600)
   setConfig("githubOwner", "", file)
   expect(loadConfig(file)).toEqual({ dokployUrl: "https://dokploy.example.com" })
 })
