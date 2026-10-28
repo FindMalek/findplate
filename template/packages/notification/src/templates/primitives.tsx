@@ -40,7 +40,13 @@ export function Layout({ preview, appUrl, children }: { preview: string; appUrl?
       <Body className="e-bg" style={{ ...base }}>
         <Container
           className="e-bg"
-          style={{ maxWidth: 560, width: "100%", margin: "0 auto", padding: "40px 16px", backgroundColor: light.background }}
+          style={{
+            maxWidth: 560,
+            width: "100%",
+            margin: "0 auto",
+            padding: "40px 16px",
+            backgroundColor: light.background,
+          }}
         >
           <Text
             className="e-fg"
