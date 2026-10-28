@@ -7,10 +7,20 @@ import { CliError, EXIT } from "../errors"
 import { generate } from "../generate"
 import { isValidSlug, toNames } from "../generate/rename"
 import { initRepo } from "../git"
-import { loadManifest } from "../manifest"
+import { loadManifest, type Manifest, PROFILE_IDS, type ProfileId } from "../manifest"
 import { templateDir } from "../paths"
 import { detectPackageManager, installCommand, pnpmHint, scriptCommand } from "../pm"
 import { listPresets } from "../presets"
+import {
+  expandRequires,
+  groupModules,
+  needsFor,
+  PROFILE_INFO,
+  pendingKeys,
+  pickModules,
+  profileModules,
+  renderNeeds,
+} from "../profiles"
 import { freePort, has, run } from "../run"
 import { installSkills, SKILLS_PACKAGE, skillPacks } from "../skills"
 import { loadState, markDone, type ProjectState, type Step, saveState } from "../state"
@@ -25,6 +35,7 @@ export interface CreateFlags {
   pitch?: string
   preset?: string
   modules?: string
+  profile?: string
   install: boolean
   git: boolean
   agents: boolean
@@ -47,6 +58,53 @@ function answered<T>(value: T): Exclude<T, symbol> {
     process.exit(0)
   }
   return value as Exclude<T, symbol>
+}
+
+const sameSet = (a: readonly string[], b: readonly string[]) => a.length === b.length && a.every((x) => b.includes(x))
+
+/** Profile first, then a grouped checklist pre-ticked from it. */
+async function chooseModules(manifest: Manifest, preset?: string): Promise<{ modules: string[]; profile: string }> {
+  let start: string = preset ?? "standard"
+  if (!preset) {
+    start = answered(
+      await p.select({
+        message: "Profile",
+        options: [
+          ...PROFILE_IDS.map((id) => ({
+            value: id,
+            label: PROFILE_INFO[id].label,
+            hint: PROFILE_INFO[id].description,
+          })),
+          { value: "custom", label: "Custom", hint: "start from standard and pick by hand" },
+        ],
+        initialValue: "standard",
+      }),
+    )
+  }
+  const from = start === "custom" ? "standard" : start
+  const base = pickModules(manifest, { profile: from }).modules
+  p.log.info(`${PROFILE_INFO[from as ProfileId].label} picks ${base.join(", ") || "no modules"}`)
+  const picked = answered(
+    await p.groupMultiselect({
+      message: "Modules (space toggles, enter confirms)",
+      options: Object.fromEntries(
+        groupModules(manifest).map((group) => [
+          group.label,
+          group.modules.map((id) => {
+            const spec = manifest.modules[id]!
+            return { value: id, label: spec.label, hint: spec.hint }
+          }),
+        ]),
+      ),
+      initialValues: base,
+      required: false,
+    }),
+  )
+  const { modules, added } = expandRequires(manifest, picked)
+  for (const { id, by } of added)
+    p.log.info(`${manifest.modules[by]?.label} needs ${manifest.modules[id]?.label}, added it`)
+  const profile = PROFILE_IDS.find((id) => sameSet(profileModules(manifest, id), modules)) ?? "custom"
+  return { modules, profile }
 }
 
 export async function create(flags: CreateFlags) {
@@ -105,52 +163,25 @@ export async function create(flags: CreateFlags) {
   if (!preset) throw new Error(`Unknown preset "${presetId}". Available: ${presets.map((x) => x.id).join(", ")}`)
 
   let modules: string[]
+  let profile: string
   if (previous) {
     modules = previous.answers.modules
-  } else if (flags.modules !== undefined) {
-    modules = flags.modules
-      .split(",")
-      .map((m) => m.trim())
-      .filter(Boolean)
-    const unknown = modules.filter((m) => !manifest.modules[m])
-    if (unknown.length) throw new Error(`Unknown module(s): ${unknown.join(", ")}`)
-  } else if (interactive) {
-    const answer = answered(
-      await p.multiselect({
-        message: "Modules",
-        options: Object.entries(manifest.modules).map(([id, spec]) => ({
-          value: id,
-          label: spec.label,
-          hint: spec.hint,
-        })),
-        initialValues: Object.entries(manifest.modules)
-          .filter(([, spec]) => spec.default)
-          .map(([id]) => id),
-        required: false,
-      }),
-    )
-    modules = answer
+    profile = previous.answers.profile ?? "custom"
+  } else if (interactive && flags.modules === undefined) {
+    ;({ modules, profile } = await chooseModules(manifest, flags.profile))
   } else {
-    modules = Object.entries(manifest.modules)
-      .filter(([, spec]) => spec.default)
-      .map(([id]) => id)
+    const picked = pickModules(manifest, flags)
+    ;({ modules, profile } = picked)
   }
 
-  for (const id of modules)
-    for (const required of manifest.modules[id]?.requires ?? []) if (!modules.includes(required)) modules.push(required)
-
   const env: Record<string, string> = {}
+  const needs = needsFor(manifest, modules)
   if (interactive) {
-    for (const id of modules) {
-      for (const key of manifest.modules[id]?.keys ?? []) {
-        const answer = answered(
-          await p.password({
-            message: `${key.label} ${dim(`(optional, ${key.url})`)}`,
-            mask: "•",
-          }),
-        )
-        if (answer) env[key.env] = answer
-      }
+    if (needs.length) p.note(renderNeeds(needs), "Keys you will need")
+    for (const { key } of needs) {
+      if (!key) continue
+      const answer = answered(await p.password({ message: `${key.label} ${dim(`(optional, ${key.url})`)}`, mask: "•" }))
+      if (answer) env[key.env] = answer
     }
   }
 
@@ -168,7 +199,7 @@ export async function create(flags: CreateFlags) {
     version: 1,
     cliVersion: pkg.version,
     templateVersion: TEMPLATE_VERSION,
-    answers: { name: names.slug, pitch, preset: preset.id, modules, postgresPort, adminEmail: "" },
+    answers: { name: names.slug, pitch, preset: preset.id, profile, modules, postgresPort, adminEmail: "" },
     done: [],
   }
   const step = (id: Step, title: string, task: () => Promise<string> | string): p.Task[] =>
@@ -273,6 +304,7 @@ export async function create(flags: CreateFlags) {
   }
   await runTasks(steps)
 
+  const pending = pendingKeys(manifest, modules, env)
   p.note(
     [
       `${accent("cd")} ${names.slug}`,
@@ -285,6 +317,7 @@ export async function create(flags: CreateFlags) {
       "",
       `dashboard admin  ${bold(admin.adminEmail)}`,
       `password         ${dim("ADMIN_PASSWORD in .env")}`,
+      ...(pending.length ? ["", bold("Still to set in .env"), renderNeeds(pending)] : []),
     ].join("\n"),
     "Next",
   )

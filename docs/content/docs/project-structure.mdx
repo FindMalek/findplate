@@ -29,6 +29,10 @@ description: The turborepo the cli generates.
   ]}
 />
 
+## Core and modules
+
+The core is fixed and always generated: the apps `api`, `web` and `dashboard`, and the packages `ui`, `orpc`, `db`, `auth`, `env`, `common` and `config`. Everything else is a [module](/docs/modules): storage, AI, docs, notifications, analytics and so on. Modules are grouped, and the `minimal`, `standard` and `everything` profiles are just named sets of them, so you start from one and tweak.
+
 ## One rule for the apps
 
 `apps/api` is the only app that touches the database, auth, storage and providers. `web` and `dashboard` only call the api, so secrets and data access live in one place and the two frontends stay thin.

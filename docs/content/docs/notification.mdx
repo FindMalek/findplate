@@ -1,0 +1,91 @@
+---
+title: Notification
+description: Email, Telegram and WhatsApp behind one notifier, with branded react-email templates and a preview app.
+---
+
+The `notification` module adds `packages/notification` and `apps/email`. One `createNotifier(env)` covers three channels, and each one turns on when its keys are set. It is in the `everything` profile and needs [webhooks](/docs/webhooks) for the Telegram route.
+
+```bash
+findplate create my-app --modules notification
+```
+
+## Channels
+
+| Channel | Keys | Notes |
+| --- | --- | --- |
+| `email` | `RESEND_API_KEY`, `EMAIL_FROM` | react-email templates sent through [email-sdk](https://email-sdk.dev) and Resend |
+| `telegram` | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`, `TELEGRAM_WEBHOOK_SECRET` | Bot API, a webhook route and a setup command |
+| `whatsapp` | `KAPSO_API_KEY`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_NOTIFY_TO` | Kapso template messages and a setup command |
+
+Every key is optional. A channel without keys is skipped, nothing throws, so features can call the notifier without checking.
+
+## Sending
+
+The notifier is part of the oRPC services, so procedures use `context.notification`:
+
+```ts
+await context.notification.send({
+  channel: "email",
+  to: user.email,
+  template: "welcome",
+  data: { name: user.name, url },
+})
+
+await context.notification.notify("New signup: ada@example.com", { channels: ["telegram"] })
+context.notification.channels // ["email", "telegram"]
+```
+
+`send` renders a template for one channel and returns `{ channel, sent, id? }`, with `sent: false` when the channel is off. `notify` sends plain text to every configured channel, or the ones you list, and reports failures per channel instead of throwing.
+
+## Templates
+
+Templates live in `packages/notification/src/templates`: `verifyEmail`, `resetPassword`, `magicLink`, `welcome`, `waitlistConfirmation`, `adminInvite`, `alert` and `test`. Names and props are typed. Each one has:
+
+- an email component built from the shared `Layout`, `Box`, `Label`, `Title`, `CtaButton` and `CodeBlock` primitives
+- a plain text version, generated from the same component
+- a short summary, which Telegram renders as Markdown and WhatsApp as one line
+
+Add an entry to `templates` in `templates/index.ts` and `send` is typed for it.
+
+## Branding
+
+`packages/notification/src/brand.ts` holds the colors, radius and fonts every email reads. `findplate create` fills it from your preset, light and dark, so each preset gets matching emails. Emails follow the system theme with `prefers-color-scheme` and fall back to the light colors where a client ignores it.
+
+## Preview app
+
+```bash
+pnpm dev:email
+```
+
+Opens react-email's preview on `:3004` with every template and sample props. The pages in `apps/email/emails` import the templates from the package, so there is one source. `pnpm email:export` writes static html to `apps/email/out`.
+
+## Auth
+
+With email configured, better-auth sends the verification and reset password mail through the notifier, and `sendMagicLink` turns the magic link plugin on. Without it those flows stay off. With [waitlist](/docs/waitlist) on, new signups get a confirmation email.
+
+## Set up Telegram
+
+1. In Telegram open [@BotFather](https://t.me/BotFather), send `/newbot` and copy the token into `.env` as `TELEGRAM_BOT_TOKEN`.
+2. Run `pnpm --filter @acme/notification telegram:setup "My App Bot" "Alerts from my app"`.
+
+Setup waits for `/start`, writes `TELEGRAM_CHAT_ID` to `.env` and registers `<API_PUBLIC_URL>/telegram/webhook` with a secret, which it prints as `TELEGRAM_WEBHOOK_SECRET`. The route rejects calls without the secret in `X-Telegram-Bot-Api-Secret-Token`. Telegram only calls https urls, so run setup again against your deployed `API_PUBLIC_URL`.
+
+## Set up WhatsApp
+
+Connect a number in [Kapso](https://app.kapso.ai), set `KAPSO_API_KEY`, `WHATSAPP_PHONE_NUMBER_ID` and `WHATSAPP_BUSINESS_ACCOUNT_ID`, then run `pnpm --filter @acme/notification whatsapp:setup`. It submits the notification template to Meta. Once approved, messages go to `WHATSAPP_NOTIFY_TO`.
+
+## Add your email domain
+
+```bash
+RESEND_API_KEY=re_... pnpm --filter @acme/notification domain example.com
+```
+
+It adds the domain to Resend and prints the dns records. Run it again with `--verify` once they propagate, then set `EMAIL_FROM` to an address on that domain. `onboarding@resend.dev` only delivers to your own Resend account.
+
+## Test it
+
+`POST /v1/admin/notification/test` with `{ "channel": "telegram" }` as an admin sends a test message. Email needs a `to` address.
+
+## Remove
+
+Generate without it: leave `notification` out of `--modules`. In an existing project delete `packages/notification`, `apps/email` and `packages/orpc/src/routers/notification.ts`, drop `@acme/notification` and fix what `pnpm check-types` reports.

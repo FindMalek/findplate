@@ -7,7 +7,7 @@ description: Turn on a module in an existing project, and check that the project
 
 ```bash
 findplate add ai
-findplate add storage,whatsapp ./my-app
+findplate add storage,notification ./my-app
 ```
 
 Run it inside a project made by `findplate create`, or pass the project folder. It reads `.findplate/state.json` (name, preset, pitch, enabled modules), regenerates the template with and without the module, and applies only the difference:
@@ -42,6 +42,7 @@ Prints a table of checks, each `PASS`, `WARN`, `FAIL` or `SKIP`:
 | project | no `.findplate/state.json` |
 | `.env` keys | warns when `.env.example` has keys `.env` lacks |
 | env schema | a variable the zod schema requires (no `.optional()` or `.default()`) is empty |
+| module keys | warns when a key of an enabled module is empty in `.env`, with its name and the page to get it from |
 | database | `DATABASE_URL` doesn't accept a connection |
 | compose port | `POSTGRES_PORT` differs from the port in `DATABASE_URL` |
 | git, gh auth | git is missing (fail), `gh` isn't logged in (warn) |
