@@ -24,6 +24,13 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
   headers: async () => [{ source: "/:path*", headers: securityHeaders }],
+  // `<page>.md` and `<page>.mdx` are served by app/llms.mdx, Accept negotiation lives in proxy.ts
+  async rewrites() {
+    return [
+      { source: "/docs/:path*.md", destination: "/llms.mdx/:path*" },
+      { source: "/docs/:path*.mdx", destination: "/llms.mdx/:path*" },
+    ]
+  },
 }
 
 export default createMDX()(nextConfig)
