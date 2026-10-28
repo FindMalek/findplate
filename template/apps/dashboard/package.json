@@ -13,6 +13,7 @@
     "@acme/common": "workspace:*",
     "@acme/env": "workspace:*",
     "@acme/flags": "workspace:*",
+    "@acme/logger": "workspace:*",
     "@acme/orpc": "workspace:*",
     "@acme/ui": "workspace:*",
     "@databuddy/sdk": "catalog:",

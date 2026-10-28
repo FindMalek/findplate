@@ -1,6 +1,7 @@
 import type { Auth, Session } from "@acme/auth"
 import type { Db } from "@acme/db"
 import type { Flags } from "@acme/flags/server" // @findplate:flags
+import type { Jobs } from "@acme/jobs" // @findplate:jobs
 import type { Notifier } from "@acme/notification" // @findplate:notification
 import type { Storage } from "@acme/storage" // @findplate:storage
 import type { LanguageModel } from "ai" // @findplate:ai
@@ -21,6 +22,7 @@ export interface Services {
   }
   rateLimiter: RateLimiter // @findplate:rate-limit
   flags: Flags // @findplate:flags
+  jobs: Jobs // @findplate:jobs
   // @findplate:storage
   storage: Storage | null
   // @end

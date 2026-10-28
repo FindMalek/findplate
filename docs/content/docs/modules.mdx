@@ -40,6 +40,7 @@ Each module has a page with what it adds, its env keys, how to remove it and how
 | [`ai`](/docs/ai) | standard, everything | `packages/ai`. Vercel AI SDK with Groq, OpenAI or Anthropic |
 | [`rate-limit`](/docs/rate-limiting) | standard, everything | per route and ip limits on the api, in memory or on Upstash Redis |
 | [`flags`](/docs/flags) | everything | `packages/flags`. Typed feature flags: code defaults, env overrides, rollouts edited in the dashboard |
+| [`jobs`](/docs/jobs) | everything | `packages/jobs`. Background jobs and cron on your Postgres with pg-boss, optional separate worker |
 | [`webhooks`](/docs/webhooks) | everything | `packages/webhooks`. Signature checks for inbound webhooks: hmac, svix, secret header |
 
 ### Notifications
@@ -59,6 +60,7 @@ Each module has a page with what it adds, its env keys, how to remove it and how
 
 | Module | Profiles | What it adds |
 | --- | --- | --- |
+| [`logger`](/docs/logger) | everything | `packages/logger`. Json logs with request ids and redaction in api, web and dashboard |
 | [`openobserve`](/docs/openobserve) | custom, needs a server | otel traces from the api to OpenObserve |
 | [`glitchtip`](/docs/glitchtip) | custom, needs a server | sentry sdk in api, web and dashboard, pointed at GlitchTip |
 | [`infisical`](/docs/infisical) | custom, needs a server | `pnpm dev:secrets` runs dev with infisical |

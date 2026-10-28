@@ -121,12 +121,7 @@
       "group": "ops",
       "profiles": [],
       "server": { "label": "a self-hosted GlitchTip server", "url": "https://glitchtip.com/documentation/install" },
-      "paths": [
-        "apps/web/instrumentation.ts",
-        "apps/web/instrumentation-client.ts",
-        "apps/dashboard/instrumentation.ts",
-        "apps/dashboard/instrumentation-client.ts"
-      ],
+      "paths": ["apps/web/instrumentation-client.ts", "apps/dashboard/instrumentation-client.ts"],
       "packages": ["@sentry/bun", "@sentry/nextjs"],
       "keys": [
         { "env": "GLITCHTIP_DSN", "label": "GlitchTip DSN", "url": "https://glitchtip.com/documentation/install" }
@@ -241,6 +236,28 @@
         "apps/dashboard/app/(app)/flags"
       ],
       "packages": ["@acme/flags"]
+    },
+    "logger": {
+      "label": "Logger",
+      "hint": "structured json logs with request ids and redaction in api, web and dashboard",
+      "group": "ops",
+      "profiles": ["everything"],
+      "paths": ["packages/logger", "apps/api/src/logger.ts"],
+      "packages": ["@acme/logger"]
+    },
+    "jobs": {
+      "label": "Background jobs",
+      "hint": "pg-boss queues and cron on your postgres, typed jobs, optional separate worker",
+      "group": "platform",
+      "profiles": ["everything"],
+      "paths": [
+        "packages/jobs",
+        "apps/api/src/jobs.ts",
+        "apps/api/src/worker.ts",
+        "packages/orpc/src/routers/jobs.ts"
+      ],
+      "packages": ["@acme/jobs", "pg-boss"],
+      "scripts": { "dev:worker": "bun --watch --env-file=.env apps/api/src/worker.ts" }
     }
   }
 }

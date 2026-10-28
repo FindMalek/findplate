@@ -28,6 +28,8 @@
     "webhooks",
     "rate-limiting",
     "flags",
+    "jobs",
+    "logger",
     "---Design---",
     "presets",
     "theming",
