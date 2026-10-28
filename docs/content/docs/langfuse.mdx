@@ -33,7 +33,9 @@ LANGFUSE_BASE_URL=https://cloud.langfuse.com
 
 ## Remove
 
-Generate without it: leave `langfuse` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
+Run `findplate remove langfuse` in the project, see [add and doctor](/docs/add-doctor#findplate-remove). It deletes the files the module owns, strips its code from shared files and drops its packages, only where you haven't edited them.
+
+If you'd rather do it by hand: for a new project leave `langfuse` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
 
 ## Swap
 

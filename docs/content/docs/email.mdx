@@ -46,7 +46,9 @@ With a key set, better-auth sends the verification email on sign up and the rese
 
 ## Remove
 
-Generate without it: leave `email` out of `--modules`. In an existing project delete `packages/email` and `packages/orpc/src/routers/email.ts`, drop `@acme/email`, `@opencoredev/email-sdk` and `@react-email/render`, remove the Resend block from `.env` and fix what `pnpm check-types` reports. better-auth then stops sending verification and reset mail.
+Run `findplate remove email` in the project, see [add and doctor](/docs/add-doctor#findplate-remove). It deletes the files the module owns, strips its code from shared files and drops its packages, only where you haven't edited them.
+
+If you'd rather do it by hand: for a new project leave `email` out of `--modules`. In an existing project delete `packages/email` and `packages/orpc/src/routers/email.ts`, drop `@acme/email`, `@opencoredev/email-sdk` and `@react-email/render`, remove the Resend block from `.env` and fix what `pnpm check-types` reports. better-auth then stops sending verification and reset mail.
 
 ## Swap
 
