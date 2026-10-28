@@ -38,7 +38,10 @@ export function createAuth(config: AuthConfig) {
       : undefined,
     socialProviders: config.github ? { github: config.github } : undefined,
     plugins: [admin()],
-    advanced: { useSecureCookies: config.secureCookies },
+    advanced: {
+      useSecureCookies: config.secureCookies,
+      defaultCookieAttributes: { httpOnly: true, sameSite: "lax" },
+    },
     session: { cookieCache: { enabled: true, maxAge: 5 * 60 } },
   })
 }

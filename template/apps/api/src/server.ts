@@ -8,6 +8,7 @@ import { SimpleCsrfProtectionHandlerPlugin } from "@orpc/server/plugins"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
 import * as Sentry from "@sentry/bun" // @findplate:glitchtip
 import { sql } from "drizzle-orm"
+import { withSecurityHeaders } from "./headers"
 import { traceCall } from "./openobserve" // @findplate:openobserve
 import { limitAuth } from "./rate-limit" // @findplate:rate-limit
 
@@ -43,7 +44,7 @@ export function createServer(services: Services & { auth: Auth }, opts: { public
     ],
   })
 
-  return async function fetch(request: Request): Promise<Response> {
+  async function handle(request: Request): Promise<Response> {
     const { pathname } = new URL(request.url)
     if (pathname === "/" || pathname === "/docs") return Response.redirect(new URL("/v1/docs", request.url), 302)
     if (pathname.startsWith("/auth/")) {
@@ -84,5 +85,10 @@ export function createServer(services: Services & { auth: Auth }, opts: { public
     const viaRest = await rest.handle(request, { prefix: "/v1", context })
     if (viaRest.matched) return viaRest.response
     return Response.json({ message: "Not found." }, { status: 404 })
+  }
+
+  const https = opts.publicUrl.startsWith("https://")
+  return async function fetch(request: Request): Promise<Response> {
+    return withSecurityHeaders(await handle(request), { https })
   }
 }
