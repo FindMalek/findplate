@@ -30,9 +30,13 @@ DOCS_URL=http://localhost:3003
 
 The pages are mdx in `apps/docs/content/docs`: setup, environment, structure, scripts and deploy, written for the generated project. Edit them like any other file. It has its own `Dockerfile`.
 
+It is readable by agents out of the box: `/llms.txt`, `/llms-full.txt` and every page as markdown at `<page-url>.md`, plus a copy button on each page. See [For LLMs and agents](/docs/llm).
+
 ## Remove
 
-Generate without it: leave `docs` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
+Run `findplate remove docs` in the project, see [add and doctor](/docs/add-doctor#findplate-remove). It deletes the files the module owns, strips its code from shared files and drops its packages, only where you haven't edited them.
+
+If you'd rather do it by hand: for a new project leave `docs` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from the `package.json` files, remove its env block and fix what `pnpm check-types` reports.
 
 ## Swap
 

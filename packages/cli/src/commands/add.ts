@@ -1,9 +1,8 @@
-import { createHash } from "node:crypto"
-import { appendFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync } from "node:fs"
+import { appendFileSync, cpSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
-import { dirname, join, relative, resolve } from "node:path"
+import { dirname, join, resolve } from "node:path"
 import * as p from "@clack/prompts"
-import { missingEnvLines, planAdd, resolveModules, type Tree } from "../add-plan"
+import { missingEnvLines, planAdd, resolveModules } from "../add-plan"
 import { CliError, EXIT } from "../errors"
 import { generate } from "../generate"
 import { toNames } from "../generate/rename"
@@ -14,6 +13,7 @@ import { RM_OPTIONS, toPosix } from "../platform"
 import { listPresets } from "../presets"
 import { has, run } from "../run"
 import { loadState, type ProjectState, saveState } from "../state"
+import { readTree } from "../tree"
 import { bold, dim } from "../ui"
 import { TEMPLATE_VERSION } from "../version"
 
@@ -23,33 +23,6 @@ export interface AddFlags {
   install: boolean
   force: boolean
   yes: boolean
-}
-
-/** Never copied from the regenerated project: local secrets, state, the lockfile pnpm owns, build output. */
-const IGNORED = new Set([
-  ".env",
-  ".findplate",
-  "node_modules",
-  ".next",
-  ".turbo",
-  "dist",
-  ".git",
-  ".vercel",
-  "pnpm-lock.yaml",
-])
-
-function readTree(root: string): Tree {
-  const tree = new Map<string, string>()
-  const walk = (dir: string) => {
-    for (const entry of readdirSync(dir, { withFileTypes: true })) {
-      if (IGNORED.has(entry.name) || entry.name.endsWith(".tsbuildinfo") || entry.name === "next-env.d.ts") continue
-      const path = join(dir, entry.name)
-      if (entry.isDirectory()) walk(path)
-      else tree.set(toPosix(relative(root, path)), createHash("sha1").update(readFileSync(path)).digest("hex"))
-    }
-  }
-  if (existsSync(root)) walk(root)
-  return tree
 }
 
 export async function addCommand(flags: AddFlags) {

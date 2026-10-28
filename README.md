@@ -87,3 +87,5 @@ CI generates a project with every module and with none, then runs lint, types, t
 ## Docs
 
 Full documentation lives in `docs/`, run it with `pnpm --filter findplate-docs dev`. Name, pitch and social card colors are in `docs/lib/site.ts`.
+
+The docs are readable by LLMs and agents: `/llms.txt`, `/llms-full.txt`, `/docs.json` and every page as markdown at `<page-url>.md` (or `Accept: text/markdown`). See [For LLMs and agents](https://plate.findmalek.engineer/docs/llm).

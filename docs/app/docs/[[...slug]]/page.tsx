@@ -2,8 +2,10 @@ import { ArrowUpRightIcon } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { PageActions } from "@/components/docs/page-actions"
 import { MobileToc, Toc } from "@/components/docs/toc"
 import { getNavNeighbours, type NavItem } from "@/lib/docs-nav"
+import { markdownPath } from "@/lib/llms"
 import { SITE } from "@/lib/site"
 import { source } from "@/lib/source"
 import { getMDXComponents } from "@/mdx-components"
@@ -70,6 +72,18 @@ export default async function Page(props: Props) {
   const isHome = !slug || slug.length === 0
   const { group, prev, next } = getNavNeighbours(page.url)
   const toc = page.data.toc.filter((item) => item.depth <= 3)
+  const mdPath = markdownPath(page.url)
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    headline: page.data.title,
+    description: page.data.description,
+    url: `${SITE.url}${page.url}`,
+    inLanguage: "en",
+    isPartOf: { "@type": "WebSite", name: SITE.name, url: SITE.url },
+    publisher: { "@type": "Organization", name: SITE.name, url: SITE.github },
+    encoding: { "@type": "MediaObject", contentUrl: `${SITE.url}${mdPath}`, encodingFormat: "text/markdown" },
+  }
   const editUrl = `${SITE.github}/edit/main/docs/content/docs/${page.path}`
 
   return (
@@ -93,6 +107,7 @@ export default async function Page(props: Props) {
               {page.data.description}
             </p>
           ) : null}
+          <PageActions markdownPath={mdPath} markdownUrl={`${SITE.url}${mdPath}`} />
         </header>
         {isHome ? <EntryGrid /> : null}
         {toc.length > 0 && !isHome ? <MobileToc items={toc} /> : null}
@@ -109,9 +124,28 @@ export default async function Page(props: Props) {
             Edit on GitHub
             <ArrowUpRightIcon aria-hidden className="size-3.5" />
           </a>
+          <span className="flex items-center gap-4">
+            <a
+              href="/llms.txt"
+              className="py-1 hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+            >
+              llms.txt
+            </a>
+            <a
+              href="/llms-full.txt"
+              className="py-1 hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+            >
+              llms-full.txt
+            </a>
+          </span>
         </div>
         <Pager prev={prev} next={next} />
       </div>
+      <script
+        type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: static JSON-LD built from our own content
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }}
+      />
       {toc.length > 0 && !isHome ? (
         <aside aria-label="On this page" className="hidden lg:block">
           <Toc items={toc} />
@@ -133,6 +167,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   return {
     title: page.data.title,
     description: page.data.description,
+    alternates: { canonical: page.url, types: { "text/markdown": markdownPath(page.url) } },
     openGraph: { images: [{ url: image, width: 1200, height: 630 }] },
   }
 }
