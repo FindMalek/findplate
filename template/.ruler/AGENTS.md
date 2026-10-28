@@ -53,6 +53,12 @@ Single source for every coding agent. Edit this file, then run `pnpm agents` to 
 - `pnpm test:e2e` is the Playwright smoke test of web, dashboard and api
 <!-- @end -->
 
+<!-- @findplate:docs -->
+## LLM entry points
+
+The docs site serves itself to agents: `/llms.txt` (index, start here), `/llms-full.txt` (every page) and `<page-url>.md` (one page as markdown, or send `Accept: text/markdown`). Read those instead of scraping html.
+
+<!-- @end -->
 ## Git and GitHub
 
 - Work is tracked as GitHub issues, usually on a GitHub Project board

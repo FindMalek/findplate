@@ -18,6 +18,8 @@ export interface ProjectState {
     name: string
     pitch: string
     preset: string
+    /** minimal, standard, everything or custom. Absent in older projects. */
+    profile?: string
     modules: string[]
     postgresPort: number
     adminEmail: string

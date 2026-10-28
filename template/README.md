@@ -104,6 +104,10 @@ The Next apps also run on Vercel with the app folder as the root directory. Set 
 ## Agents
 
 The Next apps carry an `AGENTS.md` that points coding agents at the bundled Next docs. Keep shared types in `packages/common` and use the theme tokens instead of raw colors.
+<!-- @findplate:docs -->
+
+The docs site serves `/llms.txt`, `/llms-full.txt` and every page as markdown at `<page-url>.md`, so agents can read the docs without scraping html.
+<!-- @end -->
 
 ---
 
