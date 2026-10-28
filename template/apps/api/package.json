@@ -14,6 +14,7 @@
     "@acme/auth": "workspace:*",
     "@acme/db": "workspace:*",
     "@acme/env": "workspace:*",
+    "@acme/logger": "workspace:*",
     "@acme/notification": "workspace:*",
     "@acme/orpc": "workspace:*",
     "@acme/storage": "workspace:*",

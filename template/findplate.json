@@ -115,12 +115,7 @@
       "group": "ops",
       "profiles": [],
       "server": { "label": "a self-hosted GlitchTip server", "url": "https://glitchtip.com/documentation/install" },
-      "paths": [
-        "apps/web/instrumentation.ts",
-        "apps/web/instrumentation-client.ts",
-        "apps/dashboard/instrumentation.ts",
-        "apps/dashboard/instrumentation-client.ts"
-      ],
+      "paths": ["apps/web/instrumentation-client.ts", "apps/dashboard/instrumentation-client.ts"],
       "packages": ["@sentry/bun", "@sentry/nextjs"],
       "keys": [{ "env": "GLITCHTIP_DSN", "label": "GlitchTip DSN", "url": "https://glitchtip.com/documentation/install" }]
     },
@@ -202,6 +197,14 @@
       "profiles": ["standard", "everything"],
       "paths": ["apps/api/src/rate-limit.ts", "packages/orpc/src/lib/rate-limit.ts", "packages/orpc/src/lib/rate-limit.test.ts"],
       "packages": []
+    },
+    "logger": {
+      "label": "Logger",
+      "hint": "structured json logs with request ids and redaction in api, web and dashboard",
+      "group": "ops",
+      "profiles": ["everything"],
+      "paths": ["packages/logger", "apps/api/src/logger.ts"],
+      "packages": ["@acme/logger"]
     }
   }
 }

@@ -10,10 +10,12 @@ import { createStorage } from "@acme/storage" // @findplate:storage
 import * as Sentry from "@sentry/bun" // @findplate:glitchtip
 import { ensureAdmin } from "./admin"
 import { startLangfuse } from "./langfuse" // @findplate:langfuse
+import { startLogger } from "./logger" // @findplate:logger
 import { startOpenObserve } from "./openobserve" // @findplate:openobserve
 import { createServer } from "./server"
 
 const env = loadApiEnv()
+startLogger(env) // @findplate:logger
 Sentry.init({ dsn: env.GLITCHTIP_DSN, environment: env.DEPLOY_ENV }) // @findplate:glitchtip
 startOpenObserve(env) // @findplate:openobserve
 startLangfuse(env) // @findplate:langfuse
