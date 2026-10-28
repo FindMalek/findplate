@@ -88,4 +88,6 @@ It adds the domain to Resend and prints the dns records. Run it again with `--ve
 
 ## Remove
 
-Generate without it: leave `notification` out of `--modules`. In an existing project delete `packages/notification`, `apps/email` and `packages/orpc/src/routers/notification.ts`, drop `@acme/notification` and fix what `pnpm check-types` reports.
+Run `findplate remove notification` in the project, see [add and doctor](/docs/add-doctor#findplate-remove). It deletes the files the module owns, strips its code from shared files and drops its packages, only where you haven't edited them.
+
+By hand: for a new project leave `notification` out of `--modules`. In an existing project delete `packages/notification`, `apps/email` and `packages/orpc/src/routers/notification.ts`, drop `@acme/notification` and fix what `pnpm check-types` reports.

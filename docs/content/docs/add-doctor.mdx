@@ -29,6 +29,33 @@ It is idempotent: adding a module that is already on does nothing. The git tree 
 
 The project was generated from template version `templateVersion` in `.findplate/state.json`. Adding a module with a newer cli also pulls the newer template for the files you haven't edited.
 
+## findplate remove
+
+```bash
+findplate remove ai
+findplate remove notification,webhooks ./my-app --dry-run
+```
+
+The inverse of `add`. It regenerates the template twice from `.findplate/state.json`, with the module and without it, and applies the difference to your project:
+
+- files the module owns are deleted when you haven't edited them; edited ones are listed and left alone
+- marked code in shared files (`package.json`, the pnpm catalog, `.env.example`, `@findplate:<module>` blocks) is stripped where the file is unmodified; where you edited the file the change is merged and any clash is left as conflict markers (`<<<<<<< yours`) to resolve by hand
+- the module's packages leave every `package.json` and the catalog
+- its env keys leave `.env.example`. `.env` is never edited, the keys still in it are printed so you can remove them
+- `.findplate/state.json` drops the module
+
+It refuses (exit `2`) when another enabled module requires the one you remove, for example `notification` needs `webhooks`; name both to remove them together. Like `add`, a dirty git tree exits with code `3` unless you pass `--force`.
+
+The database is not touched. The drizzle migration and its journal entry stay in the project, because removing a migration that already ran breaks every database that applied it. To drop the tables, add a new migration. If the migration never ran anywhere, pass `--drop-migrations` to delete it too.
+
+| Flag | Description |
+| --- | --- |
+| `--dry-run` | print what would change, touch nothing |
+| `--force` | allow a dirty git tree, delete module files you edited and take the template version of conflicting files |
+| `--drop-migrations` | also delete the module's migration, only if it never ran |
+
+Run `pnpm install` afterwards to prune the lockfile, then `pnpm check-types` for code of yours that still imports the module.
+
 ## findplate doctor
 
 ```bash
