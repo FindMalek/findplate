@@ -27,6 +27,10 @@ const schema = z.object({
   GITHUB_REPO: optional,
   GITHUB_TOKEN: optional,
 
+  // @findplate:logger
+  LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
+  // @end
+
   // @findplate:rate-limit
   /** Shared counters across api replicas; without them limits are kept in memory per process. */
   UPSTASH_REDIS_REST_URL: z.url().optional(),

@@ -29,6 +29,7 @@
     "webhooks",
     "email",
     "rate-limiting",
+    "logger",
     "---Design---",
     "presets",
     "theming",

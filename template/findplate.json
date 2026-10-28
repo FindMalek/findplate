@@ -102,12 +102,7 @@
       "label": "GlitchTip",
       "hint": "self-hosted error tracking (sentry sdk) in api, web and dashboard",
       "default": false,
-      "paths": [
-        "apps/web/instrumentation.ts",
-        "apps/web/instrumentation-client.ts",
-        "apps/dashboard/instrumentation.ts",
-        "apps/dashboard/instrumentation-client.ts"
-      ],
+      "paths": ["apps/web/instrumentation-client.ts", "apps/dashboard/instrumentation-client.ts"],
       "packages": ["@sentry/bun", "@sentry/nextjs"],
       "keys": [{ "env": "GLITCHTIP_DSN", "label": "GlitchTip DSN", "url": "https://glitchtip.com/documentation/install" }]
     },
@@ -180,6 +175,13 @@
       "default": true,
       "paths": ["apps/api/src/rate-limit.ts", "packages/orpc/src/lib/rate-limit.ts", "packages/orpc/src/lib/rate-limit.test.ts"],
       "packages": []
+    },
+    "logger": {
+      "label": "Logger",
+      "hint": "structured json logs with request ids and redaction in api, web and dashboard",
+      "default": false,
+      "paths": ["packages/logger", "apps/api/src/logger.ts"],
+      "packages": ["@acme/logger"]
     }
   }
 }

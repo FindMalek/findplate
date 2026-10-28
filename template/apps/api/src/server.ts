@@ -8,14 +8,17 @@ import { SimpleCsrfProtectionHandlerPlugin } from "@orpc/server/plugins"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
 import * as Sentry from "@sentry/bun" // @findplate:glitchtip
 import { sql } from "drizzle-orm"
+import { withRequestLogging } from "./logger" // @findplate:logger
 import { traceCall } from "./openobserve" // @findplate:openobserve
 import { limitAuth } from "./rate-limit" // @findplate:rate-limit
+
+export type Handler = (request: Request) => Promise<Response>
 
 type Interceptors = NonNullable<NonNullable<ConstructorParameters<typeof RPCHandler>[1]>["interceptors"]>
 
 /**
  * The api is the only app that touches the database, auth, storage and providers. Routes:
- *   /auth/*       better-auth (sign-in posts are rate limited per ip) (the dashboard proxies /api/auth/* here, so cookies stay first-party)
+ *   /auth/*       better-auth (sign-in posts are rate limited per ip; the dashboard proxies /api/auth/* here, so cookies stay first-party)
  *   /rpc/*        oRPC for web + dashboard (needs `x-csrf-token: orpc`)
  *   /v1/*         the same procedures as REST, docs at /v1/docs, spec at /v1/openapi.json
  *   /files/<key>  redirect to a short-lived url for an uploaded file
@@ -26,6 +29,8 @@ export function createServer(services: Services & { auth: Auth }, opts: { public
   const interceptors: Interceptors = []
   interceptors.push(onError((error) => void Sentry.captureException(error))) // @findplate:glitchtip
   interceptors.push(traceCall) // @findplate:openobserve
+  const wrappers: Array<(next: Handler) => Handler> = []
+  wrappers.push(withRequestLogging) // @findplate:logger
   const rpc = new RPCHandler(appRouter, { plugins: [new SimpleCsrfProtectionHandlerPlugin()], interceptors })
   const rest = new OpenAPIHandler(appRouter, {
     interceptors,
@@ -43,7 +48,7 @@ export function createServer(services: Services & { auth: Auth }, opts: { public
     ],
   })
 
-  return async function fetch(request: Request): Promise<Response> {
+  const handle = async (request: Request): Promise<Response> => {
     const { pathname } = new URL(request.url)
     if (pathname === "/" || pathname === "/docs") return Response.redirect(new URL("/v1/docs", request.url), 302)
     if (pathname.startsWith("/auth/")) {
@@ -85,4 +90,5 @@ export function createServer(services: Services & { auth: Auth }, opts: { public
     if (viaRest.matched) return viaRest.response
     return Response.json({ message: "Not found." }, { status: 404 })
   }
+  return wrappers.reduceRight<Handler>((next, wrap) => wrap(next), handle)
 }

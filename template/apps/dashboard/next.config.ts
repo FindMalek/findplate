@@ -15,10 +15,13 @@ const securityHeaders = [
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
 ]
 
+const transpilePackages = ["@acme/ui", "@acme/orpc", "@acme/common"]
+transpilePackages.push("@acme/logger") // @findplate:logger
+
 const nextConfig: NextConfig = {
   output: "standalone",
   outputFileTracingRoot: root,
-  transpilePackages: ["@acme/ui", "@acme/orpc", "@acme/common"],
+  transpilePackages,
   poweredByHeader: false,
   typedRoutes: true,
   headers: async () => [{ source: "/:path*", headers: securityHeaders }],

@@ -1,0 +1,45 @@
+---
+title: Logger
+description: Structured json logs with request ids and secret redaction for the api, web and dashboard.
+---
+
+The `logger` module replaces scattered `console.log` calls with one logger. It is off by default and has no dependencies.
+
+```bash
+findplate create my-app --modules logger
+```
+
+## Why not pino
+
+`packages/logger` is about 150 lines with zero dependencies. pino is great, but its worker thread transports and its bundling quirks cost more in a Bun api and in Next server bundles than they give back for a starter. If you outgrow it, keep the `Logger` interface and swap the body for pino.
+
+## What you get
+
+- one json line per entry in production, one readable colored line in dev
+- `LOG_LEVEL` (`debug`, `info`, `warn`, `error`, default `info`)
+- redaction: any key that looks like `password`, `secret`, `token`, `authorization`, `cookie`, `api key`, `session` or `dsn` is replaced with `[redacted]`, at any depth, headers included
+- a request id on every line, read from the inbound `x-request-id` (when it is short and plain) or generated, and returned as the `x-request-id` response header
+- one `request` line per api call with method, path, status and duration (`/health` only at `debug`)
+
+```ts
+import { logger } from "@acme/logger"
+
+logger.info("order paid", { orderId, token }) // token is redacted
+const log = logger.child({ job: "digest" })
+```
+
+The request id lives in an `AsyncLocalStorage`, so it reaches every line logged while the request runs without passing it around, and `getRequestId()` returns it if you need it. The api also routes `console.*` through the logger, so existing calls (and libraries) get the same format and the request id.
+
+## Web and dashboard
+
+`apps/web/instrumentation.ts` and `apps/dashboard/instrumentation.ts` use the Next instrumentation hook. On the Node runtime they route server `console.*` output through the logger and log every failed render or route handler (`onRequestError`) with its route.
+
+## With glitchtip and openobserve
+
+Both are optional and null safe. With `openobserve` on, lines logged inside a traced request carry `trace_id` and `span_id`. With `glitchtip` on they carry the Sentry ones and the Sentry scope gets a `request_id` tag, so an error report and its log lines can be joined.
+
+## Env keys
+
+```bash
+LOG_LEVEL=info
+```
