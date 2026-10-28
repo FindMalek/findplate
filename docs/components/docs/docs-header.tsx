@@ -48,13 +48,13 @@ function MobileDrawer({ groups }: { groups: NavGroup[] }) {
       >
         <MenuIcon className="size-4" />
       </button>
+      {/* biome-ignore lint/a11y/useKeyWithClickEvents: backdrop click only, Escape closes natively */}
       <dialog
         ref={ref}
         aria-label="Navigation"
         onClick={(e) => {
           if (e.target === ref.current) ref.current?.close()
         }}
-        onKeyDown={undefined}
         className="docs-drawer m-0 h-dvh max-h-none w-[min(20rem,88vw)] max-w-none border-r bg-background p-0 text-foreground backdrop:bg-black/40"
       >
         <div className="flex h-14 items-center justify-between border-b pl-5 font-mono text-sm">

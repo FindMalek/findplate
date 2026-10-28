@@ -56,13 +56,13 @@
   color: inherit;
   text-decoration: none;
 }
-.docs-prose a:not([data-card]) {
+.docs-prose a {
   text-decoration: underline;
   text-decoration-color: var(--border);
   text-underline-offset: 3px;
   transition: text-decoration-color 0.15s;
 }
-.docs-prose a:not([data-card]):hover {
+.docs-prose a:hover {
   text-decoration-color: var(--foreground);
 }
 .docs-prose a:focus-visible {
@@ -100,6 +100,10 @@
   font-size: 0.875rem;
   line-height: 1.5;
 }
+.docs-table th + th,
+.docs-table td + td {
+  border-left: 1px solid var(--border);
+}
 .docs-table th {
   border-bottom: 1px solid var(--border);
   background: var(--muted);
@@ -120,10 +124,6 @@
 }
 .docs-table tr:first-child td {
   border-top: 0;
-}
-.docs-table th + th,
-.docs-table td + td {
-  border-left: 1px solid var(--border);
 }
 .docs-table td code {
   white-space: nowrap;
