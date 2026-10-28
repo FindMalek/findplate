@@ -27,6 +27,7 @@
     "notification",
     "webhooks",
     "rate-limiting",
+    "jobs",
     "logger",
     "---Design---",
     "presets",

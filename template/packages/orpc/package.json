@@ -25,6 +25,7 @@
     "@tanstack/react-query": "catalog:",
     "drizzle-orm": "catalog:",
     "zod": "catalog:",
+    "@acme/jobs": "workspace:*",
     "@acme/notification": "workspace:*",
     "@acme/storage": "workspace:*",
     "ai": "catalog:"

@@ -9,6 +9,7 @@ import { createRateLimiter } from "@acme/orpc" // @findplate:rate-limit
 import { createStorage } from "@acme/storage" // @findplate:storage
 import * as Sentry from "@sentry/bun" // @findplate:glitchtip
 import { ensureAdmin } from "./admin"
+import { shutdownOnSignal, startJobs } from "./jobs" // @findplate:jobs
 import { startLangfuse } from "./langfuse" // @findplate:langfuse
 import { startLogger } from "./logger" // @findplate:logger
 import { startOpenObserve } from "./openobserve" // @findplate:openobserve
@@ -21,6 +22,7 @@ startOpenObserve(env) // @findplate:openobserve
 startLangfuse(env) // @findplate:langfuse
 const db = createDb(env.DATABASE_URL)
 await runMigrations(db)
+const jobs = await startJobs(env, db, { worker: env.JOBS_WORKER }) // @findplate:jobs
 
 // @findplate:notification
 const notification = createNotifier(env, { appUrl: env.DASHBOARD_URL })
@@ -55,6 +57,7 @@ const fetch = createServer(
       webUrl: env.WEB_URL, // @findplate:status
       dashboardUrl: env.DASHBOARD_URL, // @findplate:status
     },
+    jobs, // @findplate:jobs
     // @findplate:rate-limit
     rateLimiter: createRateLimiter({
       upstashUrl: env.UPSTASH_REDIS_REST_URL,
@@ -80,4 +83,5 @@ const fetch = createServer(
 )
 
 const server = Bun.serve({ port: env.PORT, hostname: "0.0.0.0", fetch })
+shutdownOnSignal(jobs, server) // @findplate:jobs
 console.info(`api on :${server.port} (${env.DEPLOY_ENV})`)

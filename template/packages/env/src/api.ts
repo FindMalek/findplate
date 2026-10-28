@@ -37,6 +37,11 @@ const schema = z.object({
   UPSTASH_REDIS_REST_TOKEN: optional,
   // @end
 
+  // @findplate:jobs
+  /** Run the job worker inside the api. Turn off when it runs in its own container (apps/api/Dockerfile, target worker). */
+  JOBS_WORKER: z.stringbool().default(true),
+  // @end
+
   // @findplate:storage
   S3_ENDPOINT: optional,
   S3_REGION: z.string().default("auto"),
