@@ -12,12 +12,20 @@ COPY --from=pruner /app/out/json/ .
 RUN pnpm install --frozen-lockfile --prod
 
 # Bun runs the TypeScript sources directly, there is no build step.
-FROM oven/bun:1.4.2-alpine AS runner
+FROM oven/bun:1.4.2-alpine AS base
 WORKDIR /app
 ENV NODE_ENV=production PORT=3001
 COPY --from=deps --chown=bun:bun /app ./
 COPY --from=pruner --chown=bun:bun /app/out/full/ ./
 USER bun
+
+# @findplate:jobs
+# The job worker alone, no http server: docker build --target worker -f apps/api/Dockerfile .
+FROM base AS worker
+CMD ["bun", "apps/api/src/worker.ts"]
+# @end
+
+FROM base AS runner
 EXPOSE 3001
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s CMD wget -qO- http://127.0.0.1:3001/health >/dev/null || exit 1
 CMD ["bun", "apps/api/src/index.ts"]

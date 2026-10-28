@@ -29,6 +29,7 @@
     "webhooks",
     "email",
     "rate-limiting",
+    "jobs",
     "---Design---",
     "presets",
     "theming",

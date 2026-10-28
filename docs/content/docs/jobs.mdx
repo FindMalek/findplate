@@ -1,0 +1,80 @@
+---
+title: Jobs
+description: Background jobs and cron on your existing Postgres with pg-boss, typed with zod.
+---
+
+The `jobs` module adds `packages/jobs`: queues, retries and cron on top of the Postgres you already run, through [pg-boss](https://github.com/timgit/pg-boss). No Redis. It is off by default.
+
+```bash
+findplate create my-app --modules jobs
+```
+
+pg-boss keeps its own `pgboss` schema in the same database and creates or migrates it when the api starts, so there is no drizzle migration to generate.
+
+## Define a job
+
+A job is a queue name, a zod payload and a handler. Put it in `packages/jobs/src/jobs/` and add it to `JOBS` in `packages/jobs/src/jobs/index.ts`.
+
+```ts
+export const welcome = defineJob({
+  name: "send-welcome",
+  description: "Welcome mail after sign up",
+  payload: z.object({ userId: z.string() }),
+  retry: { limit: 5, delaySeconds: 30, backoff: true },
+  handler: async ({ userId }, { db }) => {
+    // db is the same drizzle instance the api uses
+  },
+})
+```
+
+Enqueue it from the api with the typed `send`, the payload is checked at compile time and again at runtime:
+
+```ts
+await services.jobs.send(welcome, { userId })
+```
+
+`retry` is `limit` extra attempts after the first failure, waiting `delaySeconds`, doubled each time when `backoff` is on. A job that keeps failing stays visible as `failed` in the admin list. The default is 3 retries from 30 seconds with backoff.
+
+## Cron
+
+Add `cron` and `scheduleData` to a definition and the worker registers the schedule on start (cron expressions are evaluated in UTC):
+
+```ts
+defineJob({ name: "digest", cron: "0 8 * * 1", scheduleData: {}, ... })
+```
+
+The sample `cleanup-sessions` job runs every night at 03:00 and deletes expired sessions. `echo` has a payload and no side effect, handy to see the worker run. Removing a job from the code does not remove its schedule from the database, call `boss.unschedule(name)` once.
+
+## Admin procedures
+
+Admins only, also reachable over REST under `/v1`:
+
+| Procedure | What it does |
+| --- | --- |
+| `jobs.list` | every job with its cron and queued, active and failed counts |
+| `jobs.enqueue` | `{ name, payload }`, checks the payload against the job's schema and answers `BAD_REQUEST` when it doesn't fit |
+
+## Running the worker
+
+By default the api process runs the worker and the cron scheduler itself, which is right for one container and for local dev. To scale or isolate them, turn it off on the api and run the worker apart:
+
+```bash
+JOBS_WORKER=false   # on the api, it then only enqueues
+```
+
+- locally: `pnpm dev:worker`
+- anywhere: `bun apps/api/src/worker.ts`
+- Docker: the api Dockerfile has a `worker` target, `docker build --target worker -f apps/api/Dockerfile .`. It is the same image without the http server and the health check.
+- Dokploy: add a second application from the same repo, set the Dockerfile to `apps/api/Dockerfile`, the build target to `worker`, and give it the same env as the api. It exposes no port, so skip the domain.
+
+Run as many workers as you like, pg-boss hands each job to one of them and runs each cron tick once.
+
+## Graceful shutdown
+
+On `SIGTERM` or `SIGINT` the api stops accepting requests, waits up to 20 seconds for running jobs to finish and exits. Jobs still running after that are failed and retried by another worker. Docker waits 10 seconds by default before it kills a container, so set `stop_grace_period: 30s` (Dokploy: the stop grace period) when your jobs are long.
+
+## Env keys
+
+```bash
+JOBS_WORKER=true
+```

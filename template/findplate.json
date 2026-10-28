@@ -209,6 +209,20 @@
       "profiles": ["standard", "everything"],
       "paths": ["apps/api/src/rate-limit.ts", "packages/orpc/src/lib/rate-limit.ts", "packages/orpc/src/lib/rate-limit.test.ts"],
       "packages": []
+    },
+    "jobs": {
+      "label": "Background jobs",
+      "hint": "pg-boss queues and cron on your postgres, typed jobs, optional separate worker",
+      "group": "platform",
+      "profiles": ["everything"],
+      "paths": [
+        "packages/jobs",
+        "apps/api/src/jobs.ts",
+        "apps/api/src/worker.ts",
+        "packages/orpc/src/routers/jobs.ts"
+      ],
+      "packages": ["@acme/jobs", "pg-boss"],
+      "scripts": { "dev:worker": "bun --watch --env-file=.env apps/api/src/worker.ts" }
     }
   }
 }

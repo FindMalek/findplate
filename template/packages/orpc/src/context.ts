@@ -1,6 +1,7 @@
 import type { Auth, Session } from "@acme/auth"
 import type { Db } from "@acme/db"
 import type { Mailer } from "@acme/email" // @findplate:email
+import type { Jobs } from "@acme/jobs" // @findplate:jobs
 import type { Storage } from "@acme/storage" // @findplate:storage
 import type { Telegram } from "@acme/telegram" // @findplate:telegram
 import type { WhatsApp } from "@acme/whatsapp" // @findplate:whatsapp
@@ -21,6 +22,7 @@ export interface Services {
     dashboardUrl: string // @findplate:status
   }
   rateLimiter: RateLimiter // @findplate:rate-limit
+  jobs: Jobs // @findplate:jobs
   // @findplate:storage
   storage: Storage | null
   // @end
