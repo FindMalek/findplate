@@ -38,6 +38,25 @@ jobs:
           --source "template/apps/*/package.json"
           --source "template/packages/*/package.json"
 
+  docs:
+    name: docs site
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter findplate-docs build
+      - name: Markdown output (llms.txt, .md pages)
+        run: pnpm --filter findplate-docs test
+
   plan:
     name: module matrix
     runs-on: ubuntu-latest
