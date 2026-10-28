@@ -44,7 +44,10 @@ export function createAuth(config: AuthConfig) {
         ? [magicLink({ sendMagicLink: async ({ email, url }) => void quiet(sendMagicLink(email, url)) })]
         : []),
     ],
-    advanced: { useSecureCookies: config.secureCookies },
+    advanced: {
+      useSecureCookies: config.secureCookies,
+      defaultCookieAttributes: { httpOnly: true, sameSite: "lax" },
+    },
     session: { cookieCache: { enabled: true, maxAge: 5 * 60 } },
   })
 }

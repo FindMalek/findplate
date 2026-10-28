@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "bun --watch --env-file=../../.env src/index.ts",
     "start": "bun src/index.ts",
-    "check-types": "tsc --noEmit"
+    "check-types": "tsc --noEmit",
+    "test": "bun test"
   },
   "dependencies": {
     "@acme/ai": "workspace:*",
