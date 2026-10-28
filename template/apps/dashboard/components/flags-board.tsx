@@ -102,7 +102,7 @@ export function FlagsBoard({ flags }: { flags: FlagRow[] }) {
           </TableHeader>
           <TableBody>
             {flags.map((flag) => (
-              <FlagLine key={flag.name} flag={flag} />
+              <FlagLine key={`${flag.name}:${flag.envRule ?? flag.stored}`} flag={flag} />
             ))}
           </TableBody>
         </Table>

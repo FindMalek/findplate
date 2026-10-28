@@ -46,7 +46,8 @@ export function createFlags(options: { db: Db; override?: string; now?: () => Da
     try {
       for (const row of await db.select().from(featureFlag)) if (isFlagName(row.name)) rules[row.name] = row.rollout
     } catch (error) {
-      console.error("[flags] could not read overrides, serving defaults", error)
+      console.error("[flags] could not read overrides, keeping the last ones", error)
+      return cache?.rules ?? rules
     }
     cache = { at: now().getTime(), rules }
     return rules
