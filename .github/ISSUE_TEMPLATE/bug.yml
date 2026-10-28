@@ -1,0 +1,36 @@
+name: bug
+description: something in the cli or a generated project is broken
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: what happened
+      description: what you expected and what you got instead
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: command used
+      description: the exact `findplate create` command or flags
+      render: bash
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: findplate version
+      placeholder: "0.3.0"
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: node, pnpm, os
+      placeholder: "node 24, pnpm 10, macos"
+  - type: textarea
+    id: logs
+    attributes:
+      label: logs
+      render: text

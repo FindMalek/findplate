@@ -25,11 +25,9 @@
     "@tanstack/react-query": "catalog:",
     "drizzle-orm": "catalog:",
     "zod": "catalog:",
-    "@acme/email": "workspace:*",
     "@acme/jobs": "workspace:*",
+    "@acme/notification": "workspace:*",
     "@acme/storage": "workspace:*",
-    "@acme/whatsapp": "workspace:*",
-    "@acme/telegram": "workspace:*",
     "ai": "catalog:"
   },
   "peerDependencies": {

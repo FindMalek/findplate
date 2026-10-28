@@ -11,7 +11,23 @@ export const waitlistRouter = {
     .output(z.object({ ok: z.literal(true) }))
     .handler(async ({ context, input }) => {
       await enforceRateLimit(context, "waitlist.join", RATE_LIMITS.waitlist) // @findplate:rate-limit
-      await context.db.insert(waitlist).values({ email: input.email }).onConflictDoNothing()
+      const added = await context.db
+        .insert(waitlist)
+        .values({ email: input.email })
+        .onConflictDoNothing()
+        .returning({ id: waitlist.id })
+      // @findplate:notification
+      if (added.length > 0) {
+        void context.notification
+          .send({
+            channel: "email",
+            to: input.email,
+            template: "waitlistConfirmation",
+            data: { email: input.email },
+          })
+          .catch((error) => console.error("[waitlist] confirmation failed", error))
+      }
+      // @end
       return { ok: true as const }
     }),
 

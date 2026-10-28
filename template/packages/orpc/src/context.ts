@@ -1,10 +1,8 @@
 import type { Auth, Session } from "@acme/auth"
 import type { Db } from "@acme/db"
-import type { Mailer } from "@acme/email" // @findplate:email
 import type { Jobs } from "@acme/jobs" // @findplate:jobs
+import type { Notifier } from "@acme/notification" // @findplate:notification
 import type { Storage } from "@acme/storage" // @findplate:storage
-import type { Telegram } from "@acme/telegram" // @findplate:telegram
-import type { WhatsApp } from "@acme/whatsapp" // @findplate:whatsapp
 import type { LanguageModel } from "ai" // @findplate:ai
 import type { RateLimiter } from "./lib/rate-limit" // @findplate:rate-limit
 
@@ -26,14 +24,8 @@ export interface Services {
   // @findplate:storage
   storage: Storage | null
   // @end
-  // @findplate:whatsapp
-  whatsapp: WhatsApp | null
-  // @end
-  // @findplate:telegram
-  telegram: Telegram | null
-  // @end
-  // @findplate:email
-  mailer: Mailer | null
+  // @findplate:notification
+  notification: Notifier
   // @end
   // @findplate:ai
   model: LanguageModel | null

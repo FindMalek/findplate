@@ -25,7 +25,7 @@ The template uses pnpm workspaces and a lockfile for strict, cacheable installs.
 
 ## What happens when a key is missing?
 
-The feature turns off. Storage, AI, email, WhatsApp and Telegram return `null` from their factory and the code that uses them checks for it, so the app still starts.
+The feature turns off. Storage and AI return `null` from their factory and the code that uses them checks for it. In notification each channel stays off without its keys and `send` skips it, so the app still starts.
 
 ## Can I use a different database?
 
