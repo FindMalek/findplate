@@ -80,7 +80,7 @@ export async function runChecks(dir: string): Promise<CheckResult[]> {
     )
   }
 
-  if (state) {
+  if (state && envText !== undefined) {
     const pending = pendingKeys(loadManifest(), state.answers.modules, env)
     out.push(
       pending.length

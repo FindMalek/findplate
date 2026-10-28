@@ -81,11 +81,12 @@ export function pendingKeys(manifest: Manifest, modules: readonly string[], env:
 }
 
 export function renderNeeds(needs: Need[]): string {
+  const width = Math.max(...needs.map((need) => (need.key ? need.key.env : need.module).length))
   return needs
     .map((need) =>
       need.key
-        ? `${need.key.env}  ${need.key.label}  ${need.key.url}`
-        : `${need.module}  needs ${need.server?.label}  ${need.server?.url}`,
+        ? `${need.key.env.padEnd(width)}  ${need.key.label}  ${need.key.url}`
+        : `${need.module.padEnd(width)}  needs ${need.server?.label}  ${need.server?.url}`,
     )
     .join("\n")
 }
