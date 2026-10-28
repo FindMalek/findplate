@@ -61,8 +61,8 @@ try {
       fail(`doctor ${name} printed no json`, doctor)
       continue
     }
-    const project_ = report.results.find((entry) => entry.id === "project")
-    if (project_?.status !== "pass") fail(`doctor ${name}: project check is ${project_?.status}`, doctor)
+    const projectCheck = report.results.find((entry) => entry.id === "project")
+    if (projectCheck?.status !== "pass") fail(`doctor ${name}: project check is ${projectCheck?.status}`, doctor)
     // Generated projects need node >=24 (their engines), the cli itself only 20.19: doctor must tell the two apart.
     const wanted = Number.parseInt(process.versions.node, 10) >= 24 ? "pass" : "fail"
     if (report.results.find((entry) => entry.id === "node")?.status !== wanted)

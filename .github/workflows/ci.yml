@@ -167,7 +167,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node: ["20.19.0", "22", "24"]
+        # node 24 is covered by the ubuntu job of `cli`, which runs the same dist
+        node: ["20.19.0", "22"]
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6
