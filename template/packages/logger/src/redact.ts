@@ -7,7 +7,8 @@ export const REDACTED = "[redacted]"
 export function redact(value: unknown, depth = 0, seen = new WeakSet<object>()): unknown {
   if (value instanceof Error) {
     const extra = redact({ ...value }, depth + 1, seen) as Record<string, unknown>
-    return { name: value.name, message: value.message, stack: value.stack, ...extra }
+    const cause = value.cause === undefined ? {} : { cause: redact(value.cause, depth + 1, seen) }
+    return { name: value.name, message: value.message, stack: value.stack, ...cause, ...extra }
   }
   if (value === null || typeof value !== "object") return typeof value === "bigint" ? value.toString() : value
   if (value instanceof Headers) return redact(Object.fromEntries(value.entries()), depth, seen)

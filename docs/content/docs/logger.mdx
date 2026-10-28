@@ -11,7 +11,7 @@ findplate create my-app --modules logger
 
 ## Why not pino
 
-`packages/logger` is about 150 lines with zero dependencies. pino is great, but its worker thread transports and its bundling quirks cost more in a Bun api and in Next server bundles than they give back for a starter. If you outgrow it, keep the `Logger` interface and swap the body for pino.
+`packages/logger` is small and has no dependencies. pino is great, but its worker thread transports and its bundling quirks cost more in a Bun api and in Next server bundles than they give back for a starter. If you outgrow it, keep the `Logger` interface and swap the body for pino.
 
 ## What you get
 
@@ -36,7 +36,7 @@ The request id lives in an `AsyncLocalStorage`, so it reaches every line logged 
 
 ## With glitchtip and openobserve
 
-Both are optional and null safe. With `openobserve` on, lines logged inside a traced request carry `trace_id` and `span_id`. With `glitchtip` on they carry the Sentry ones and the Sentry scope gets a `request_id` tag, so an error report and its log lines can be joined.
+Both are optional and null safe. With `openobserve` on, lines logged inside a traced request carry `trace_id` and `span_id`. With `glitchtip` on they carry the Sentry ones.
 
 ## Env keys
 

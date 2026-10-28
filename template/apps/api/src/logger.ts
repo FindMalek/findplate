@@ -30,7 +30,6 @@ export function withRequestLogging(next: Handler): Handler {
     const { pathname } = new URL(request.url)
     const started = performance.now()
     return withRequestId(requestId, async () => {
-      Sentry.setTag("request_id", requestId) // @findplate:glitchtip
       let response: Response
       try {
         response = await next(request)
