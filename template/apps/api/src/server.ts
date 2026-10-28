@@ -8,6 +8,7 @@ import { SimpleCsrfProtectionHandlerPlugin } from "@orpc/server/plugins"
 import { ZodToJsonSchemaConverter } from "@orpc/zod/zod4"
 import * as Sentry from "@sentry/bun" // @findplate:glitchtip
 import { sql } from "drizzle-orm"
+import { withSecurityHeaders } from "./headers"
 import { withRequestLogging } from "./logger" // @findplate:logger
 import { traceCall } from "./openobserve" // @findplate:openobserve
 import { limitAuth } from "./rate-limit" // @findplate:rate-limit
@@ -48,7 +49,7 @@ export function createServer(services: Services & { auth: Auth }, opts: { public
     ],
   })
 
-  const handle = async (request: Request): Promise<Response> => {
+  async function handle(request: Request): Promise<Response> {
     const { pathname } = new URL(request.url)
     if (pathname === "/" || pathname === "/docs") return Response.redirect(new URL("/v1/docs", request.url), 302)
     if (pathname.startsWith("/auth/")) {
@@ -68,11 +69,9 @@ export function createServer(services: Services & { auth: Auth }, opts: { public
         .catch(() => false)
       return Response.json({ ok: db, db, env: services.config.deployEnv }, { status: db ? 200 : 503 })
     }
-    // @findplate:telegram
+    // @findplate:notification
     if (pathname === "/telegram/webhook" && request.method === "POST") {
-      return services.telegram
-        ? services.telegram.handleWebhook(request)
-        : Response.json({ message: "Telegram is not configured." }, { status: 404 })
+      return services.notification.handleTelegramWebhook(request)
     }
     // @end
     // @findplate:storage
@@ -90,5 +89,10 @@ export function createServer(services: Services & { auth: Auth }, opts: { public
     if (viaRest.matched) return viaRest.response
     return Response.json({ message: "Not found." }, { status: 404 })
   }
-  return wrappers.reduceRight<Handler>((next, wrap) => wrap(next), handle)
+
+  const https = opts.publicUrl.startsWith("https://")
+  const handler = wrappers.reduceRight<Handler>((next, wrap) => wrap(next), handle)
+  return async function fetch(request: Request): Promise<Response> {
+    return withSecurityHeaders(await handler(request), { https })
+  }
 }

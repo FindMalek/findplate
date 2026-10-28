@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: security vulnerability
+    url: https://github.com/FindMalek/findplate/security/advisories/new
+    about: report it privately, never in a public issue
+  - name: question or help
+    url: https://github.com/FindMalek/findplate/blob/main/SUPPORT.md
+    about: see SUPPORT.md before opening an issue

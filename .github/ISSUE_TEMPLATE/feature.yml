@@ -1,0 +1,18 @@
+name: feature
+description: suggest an improvement to the cli or the template
+labels: [feature]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: problem
+      description: what are you trying to do that is hard today
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: idea
+      description: how you would want it to work
+    validations:
+      required: true

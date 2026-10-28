@@ -1,0 +1,23 @@
+name: module request
+description: propose a new optional module for generated projects
+labels: [module]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: module
+      description: the service or capability (an email provider, a queue, a payments lib)
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: why it belongs in the template
+      description: who needs it and why a default wiring helps
+    validations:
+      required: true
+  - type: textarea
+    id: shape
+    attributes:
+      label: what it touches
+      description: packages, apps, env vars, scripts. see the module section of `CONTRIBUTING.md`
