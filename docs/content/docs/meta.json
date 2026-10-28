@@ -27,6 +27,7 @@
     "notification",
     "webhooks",
     "rate-limiting",
+    "flags",
     "---Design---",
     "presets",
     "theming",

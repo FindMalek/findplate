@@ -12,6 +12,7 @@
   "dependencies": {
     "@acme/common": "workspace:*",
     "@acme/env": "workspace:*",
+    "@acme/flags": "workspace:*",
     "@acme/orpc": "workspace:*",
     "@acme/ui": "workspace:*",
     "@databuddy/sdk": "catalog:",

@@ -1,0 +1,72 @@
+---
+title: Feature flags
+description: Small typed feature flags with code defaults, env overrides and per user rollouts edited in the dashboard.
+---
+
+The `flags` module adds `packages/flags`: a few typed flags you can turn on for everyone or for a share of your users, without a vendor. It is off by default.
+
+```bash
+findplate create my-app --modules flags
+```
+
+## Declare a flag
+
+Flags live in one object in `packages/flags/src/index.ts`. The name becomes a typed key everywhere, so a typo is a type error.
+
+```ts
+export const FLAGS = {
+  betaBanner: { default: false, description: "Show the beta badge in the dashboard" },
+  newCheckout: { default: false, description: "The redesigned checkout" },
+} as const
+```
+
+## Use a flag
+
+Server components, in `web` and `dashboard`:
+
+```tsx
+import { getFlag } from "@/lib/flags"
+
+if (await getFlag("newCheckout")) return <NewCheckout />
+```
+
+Client components:
+
+```tsx
+import { useFlag } from "@acme/orpc/flags"
+
+const enabled = useFlag("newCheckout")
+```
+
+Inside the api, `context.flags.isOn("newCheckout", context.session?.user.id)`.
+
+All three ask the api for `flags.all`, which answers for the signed in user when there is a session. The dashboard forwards the visitor's cookie, so a rollout is decided per user. If the api is down you get the default from code.
+
+Flags are public: `flags.all` is readable without a session, so never put a secret in a flag name or description.
+
+## Where a value comes from
+
+From strongest to weakest:
+
+1. `FLAGS_OVERRIDE` in the env, for example `betaBanner=on,newCheckout=25`. Values are `on`, `off`, `true`, `false` or a percentage. It beats everything, use it as a kill switch. The dashboard shows these rows as locked.
+2. a row in the `feature_flag` table, edited on the **Flags** page of the dashboard (admins only)
+3. the `default` in code
+
+A rollout of 25 means 25% of signed in users, picked by a stable hash of the flag and the user id, so a user keeps their answer while you raise the number. Anonymous visitors only get a flag that is at 100. Overrides from the database are cached for 5 seconds.
+
+## Env keys
+
+```bash
+FLAGS_OVERRIDE=
+```
+
+## Swap to the Vercel Flags SDK
+
+Nothing here locks you in. To move to [Flags SDK](https://flags-sdk.dev) with Vercel Flags:
+
+1. `pnpm add flags @flags-sdk/vercel` in `apps/web` and `apps/dashboard`
+2. declare each flag with `flag({ key: "newCheckout", adapter: vercelAdapter, identify })` in a `flags.ts`, where `identify` returns `{ user: { id } }` from the session
+3. replace the body of `getFlag` in `lib/flags.ts` with a call to that flag, and `useFlag` with a prop read from a server component
+4. create the flags with `vercel flags create newCheckout --kind boolean`, then drop the `flags` module (`findplate remove flags`) once nothing calls it
+
+The names stay the same, so call sites do not change.

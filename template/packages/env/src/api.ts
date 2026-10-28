@@ -33,6 +33,11 @@ const schema = z.object({
   UPSTASH_REDIS_REST_TOKEN: optional,
   // @end
 
+  // @findplate:flags
+  /** Overrides that beat the database, e.g. `betaBanner=on,otherFlag=25`. */
+  FLAGS_OVERRIDE: optional,
+  // @end
+
   // @findplate:storage
   S3_ENDPOINT: optional,
   S3_REGION: z.string().default("auto"),
