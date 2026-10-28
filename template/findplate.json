@@ -258,6 +258,14 @@
       ],
       "packages": ["@acme/jobs", "pg-boss"],
       "scripts": { "dev:worker": "bun --watch --env-file=.env apps/api/src/worker.ts" }
+    },
+    "i18n": {
+      "label": "Internationalization",
+      "hint": "next-intl in web and dashboard, english and french, locale switcher, hreflang in the sitemap",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": ["packages/i18n", "apps/web/i18n", "apps/web/proxy.ts", "apps/dashboard/i18n"],
+      "packages": ["@acme/i18n", "next-intl"]
     }
   }
 }

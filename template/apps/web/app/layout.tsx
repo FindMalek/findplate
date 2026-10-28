@@ -2,6 +2,7 @@ import "@acme/ui/globals.css"
 import { QueryProvider } from "@acme/orpc/react"
 import { cn } from "@acme/ui/lib/utils"
 import type { Metadata } from "next"
+import { getLocale } from "next-intl/server" // @findplate:i18n
 import { Analytics } from "@/components/analytics" // @findplate:databuddy
 import { ThemeProvider } from "@/components/theme-provider"
 import { Umami } from "@/components/umami" // @findplate:umami
@@ -18,9 +19,11 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image" },
 }
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const page = { lang: "en" }
+  page.lang = await getLocale() // @findplate:i18n
   return (
-    <html lang="en" suppressHydrationWarning className={cn("h-full antialiased", fontVariables, "font-sans")}>
+    <html lang={page.lang} suppressHydrationWarning className={cn("h-full antialiased", fontVariables, "font-sans")}>
       <body className="relative flex min-h-full flex-col bg-background text-foreground">
         <ThemeProvider>
           {/* @findplate:umami */}

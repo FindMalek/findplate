@@ -27,6 +27,7 @@
     "notification",
     "webhooks",
     "rate-limiting",
+    "i18n",
     "flags",
     "jobs",
     "logger",
