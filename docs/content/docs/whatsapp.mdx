@@ -49,7 +49,9 @@ Without `KAPSO_API_KEY` and `WHATSAPP_PHONE_NUMBER_ID` it is `null`.
 
 ## Remove
 
-Generate without it: leave `whatsapp` out of `--modules`. In an existing project delete `packages/whatsapp` and `packages/orpc/src/routers/whatsapp.ts`, drop the `@acme/whatsapp` and `@kapso/whatsapp-cloud-api` dependencies, remove the Kapso block from `.env` and fix what `pnpm check-types` reports.
+Run `findplate remove whatsapp` in the project, see [add and doctor](/docs/add-doctor#findplate-remove). It deletes the files the module owns, strips its code from shared files and drops its packages, only where you haven't edited them.
+
+If you'd rather do it by hand: for a new project leave `whatsapp` out of `--modules`. In an existing project delete `packages/whatsapp` and `packages/orpc/src/routers/whatsapp.ts`, drop the `@acme/whatsapp` and `@kapso/whatsapp-cloud-api` dependencies, remove the Kapso block from `.env` and fix what `pnpm check-types` reports.
 
 ## Swap
 
