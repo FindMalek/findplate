@@ -7,6 +7,7 @@
     ".": "./src/index.ts",
     "./client": "./src/client.ts",
     "./errors": "./src/errors.ts",
+    "./flags": "./src/flags.tsx",
     "./react": "./src/react.tsx",
     "./server": "./src/server-client.ts",
     "./proxy": "./src/proxy.ts"
@@ -19,12 +20,14 @@
     "@acme/auth": "workspace:*",
     "@acme/common": "workspace:*",
     "@acme/db": "workspace:*",
+    "@acme/flags": "workspace:*",
     "@orpc/client": "catalog:",
     "@orpc/server": "catalog:",
     "@orpc/tanstack-query": "catalog:",
     "@tanstack/react-query": "catalog:",
     "drizzle-orm": "catalog:",
     "zod": "catalog:",
+    "@acme/jobs": "workspace:*",
     "@acme/notification": "workspace:*",
     "@acme/storage": "workspace:*",
     "ai": "catalog:"

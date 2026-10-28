@@ -27,10 +27,23 @@ const schema = z.object({
   GITHUB_REPO: optional,
   GITHUB_TOKEN: optional,
 
+  // @findplate:logger
+  LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
+  // @end
+
   // @findplate:rate-limit
   /** Shared counters across api replicas; without them limits are kept in memory per process. */
   UPSTASH_REDIS_REST_URL: z.url().optional(),
   UPSTASH_REDIS_REST_TOKEN: optional,
+  // @end
+
+  // @findplate:flags
+  /** Overrides that beat the database, e.g. `betaBanner=on,otherFlag=25`. */
+  FLAGS_OVERRIDE: optional,
+  // @end
+  // @findplate:jobs
+  /** Run the job worker inside the api. Turn off when it runs in its own container (apps/api/Dockerfile, target worker). */
+  JOBS_WORKER: z.stringbool().default(true),
   // @end
 
   // @findplate:storage
