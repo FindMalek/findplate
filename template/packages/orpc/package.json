@@ -9,11 +9,12 @@
     "./errors": "./src/errors.ts",
     "./react": "./src/react.tsx",
     "./server": "./src/server-client.ts",
-    "./proxy": "./src/proxy.ts"
+    "./proxy": "./src/proxy.ts",
+    "./testing": "./src/testing.ts"
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "test": "bun test --pass-with-no-tests"
+    "test": "bun test"
   },
   "dependencies": {
     "@acme/auth": "workspace:*",
