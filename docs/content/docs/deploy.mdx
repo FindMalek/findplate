@@ -49,11 +49,11 @@ Next apps are built with `output: "standalone"` and run on port 3000 with a heal
 3. Set the env keys on each application. Use the api service's internal address for `API_URL`.
 4. Attach your domains.
 
-## Coming
+## Automated setup
 
-- automated dokploy, s3, dns and turbo cache setup ([#8](https://github.com/FindMalek/findplate/issues/8))
-- preview comments and github deployments ([#9](https://github.com/FindMalek/findplate/issues/9))
-- db and s3 browsers for previews ([#10](https://github.com/FindMalek/findplate/issues/10))
+- [provision](/docs/provision) creates the Dokploy projects, S3 buckets, DNS records and turbo cache, and sets up nightly database backups.
+- [previews](/docs/previews) deploys every pull request to Dokploy with a Vercel style comment and GitHub deployments.
+- `findplate provision browsers` adds a read-only database browser and an S3 browser to the preview environment, see [provision](/docs/provision).
 
 ## Hosting these docs
 
