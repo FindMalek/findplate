@@ -3,6 +3,7 @@ import { RootProvider } from "fumadocs-ui/provider/next"
 import type { Metadata } from "next"
 import { IBM_Plex_Sans, JetBrains_Mono } from "next/font/google"
 import type { ReactNode } from "react"
+import StaticSearch from "@/components/docs/search-dialog"
 import { SITE } from "@/lib/site"
 
 const plex = IBM_Plex_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-plex" })
@@ -19,7 +20,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${plex.variable} ${mono.variable}`} suppressHydrationWarning>
       <body className="flex min-h-screen flex-col">
-        <RootProvider>{children}</RootProvider>
+        <RootProvider search={{ SearchDialog: StaticSearch }}>{children}</RootProvider>
       </body>
     </html>
   )
