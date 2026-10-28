@@ -27,7 +27,7 @@ Most starters are a repo you clone, rename by hand and then spend a day cutting 
 - **A second choice of stack.** No Prisma, no tRPC, no Auth.js, no pages router. If you want one, findplate is the wrong tool.
 - **Payments, teams and billing.** Every product wants them different, and a half-built version costs more to remove than to write.
 - **A component library of its own.** UI is shadcn, in your repo, so you edit the components.
-- **Updates after generation.** Pull the changes you want from the repo by hand. A diff you read beats a migration you trust.
+- **Silent updates.** `findplate update` is a three-way merge you run on purpose. It never touches files you didn't change and lists conflicts instead of guessing, so you still read a diff.
 - **Hosted services.** The modules that need a server (Umami, GlitchTip, Langfuse and the rest) point at an instance you run, with a [compose file](/docs/self-hosted) each.
 
 ## Why these choices

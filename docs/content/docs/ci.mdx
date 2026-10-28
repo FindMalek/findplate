@@ -3,13 +3,23 @@ title: CI
 description: Checks for the generator and for generated projects.
 ---
 
-<Callout title="Coming" type="warn">
-  CI is tracked in [#5](https://github.com/FindMalek/findplate/issues/5) and [#18](https://github.com/FindMalek/findplate/issues/18). Generated projects do not include workflows yet.
-</Callout>
+## In the findplate repo
+
+Every pull request runs:
+
+- `repo`: biome, the cli type check and tests, and syncpack on the template.
+- one `template` job per module, plus `all modules` and `minimum`. Each generates a project, then runs lint, types and tests. The two aggregate jobs also build.
+- `migrations`: generates the drizzle migration in a generated project and fails if it drifts.
+- `lighthouse`: audits the generated landing page.
+- PR hygiene: no AI attribution, a `closes #n` link, and `type(scope): subject` commits.
+
+The module jobs are built at runtime from `template/findplate.json`, so a new module needs no CI edit.
+
+## In a generated project
+
+The project ships `ci`, `pr-hygiene` and `project-status` workflows, issue and PR templates, and the [Dokploy preview](/docs/previews) workflows. `findplate github` wires the repo variables and the board, see [GitHub](/docs/github).
 
 ## Run the checks yourself
-
-Until then, the same checks run locally in a generated project:
 
 ```bash
 pnpm lint
@@ -17,9 +27,3 @@ pnpm check-types
 pnpm test
 pnpm build
 ```
-
-## Planned
-
-- generator CI: generate a project from the template and build it, so a template change cannot break `create` ([#5](https://github.com/FindMalek/findplate/issues/5))
-- CI for generated projects, based on the setups from dukkani and sonaraem ([#18](https://github.com/FindMalek/findplate/issues/18))
-- vercel style preview comments and github deployments ([#9](https://github.com/FindMalek/findplate/issues/9))
