@@ -1,0 +1,52 @@
+---
+title: Eject a module
+description: Remove a module from a generated project without breaking it, with the command or by hand.
+---
+
+Every module can come out after the project exists. The cli does it for you with `findplate remove`; the manual steps are below for when you would rather see each change.
+
+## With the command
+
+```bash
+findplate remove ai --dry-run   # list what would change
+findplate remove ai             # do it
+```
+
+Commit first, the git tree must be clean (exit `3` otherwise, `--force` skips it). `--dry-run` prints every file and diff and writes nothing. The full flag list is in [add and doctor](/docs/add-doctor#findplate-remove).
+
+## What it deletes
+
+| What | Where it lives | What happens |
+| --- | --- | --- |
+| files | the module's `paths` in `template/findplate.json`, for example `packages/ai` | deleted if you never edited them, listed and kept if you did |
+| marked code | `// @findplate:<module>` blocks and single lines in shared files | stripped from files you haven't edited, merged into files you have, clashes left as `<<<<<<< yours` markers |
+| dependencies | the module's `packages` in every `package.json` and the pnpm catalog | removed |
+| env keys | the module's block in `.env.example` | removed. `.env` is never edited, the leftover keys are printed so you can delete them |
+| state | `.findplate/state.json` | the module leaves `answers.modules` |
+
+It refuses (exit `2`) when another enabled module `requires` the one you remove. Name both to remove them together.
+
+## Migrations
+
+The database is not touched. The module's drizzle migration and its journal entry stay, because deleting a migration that already ran breaks every database that applied it.
+
+- tables are still there. Drop them with a new migration: delete the schema file, then `pnpm db:generate` and apply it
+- the migration never ran anywhere (fresh project, no deploy): pass `--drop-migrations` to delete it too
+
+## By hand
+
+1. read the module's entry in `findplate.json` in the template, it lists its `paths`, `packages`, `keys` and `requires`
+2. delete the `paths`
+3. search the project for `@findplate:<module>`, delete each marked block and each marked line, together with its `@end`
+4. remove the `packages` from every `package.json` and from `pnpm-workspace.yaml`, then run `pnpm install`
+5. delete the module's keys from `.env` and `.env.example`
+6. remove the module from `modules` in `.findplate/state.json`, so `findplate update` and `add` keep agreeing with the code
+
+## After
+
+```bash
+pnpm install        # prune the lockfile
+pnpm check-types    # code of yours that still imports the module
+```
+
+Anything you wrote yourself that uses the module (a page calling its router, for example) is not removed, the type check points at it.
