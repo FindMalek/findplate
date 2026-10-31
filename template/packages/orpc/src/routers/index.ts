@@ -1,5 +1,6 @@
 import type { RouterClient } from "@orpc/server"
 import { adminRouter, meRouter } from "./account"
+import { billingRouter } from "./billing" // @findplate:billing
 import { flagsRouter } from "./flags" // @findplate:flags
 import { jobsRouter } from "./jobs" // @findplate:jobs
 import { notesRouter } from "./notes"
@@ -20,6 +21,7 @@ export const appRouter = {
   me: meRouter,
   notes: notesRouter,
   admin,
+  billing: billingRouter, // @findplate:billing
   flags: flagsRouter, // @findplate:flags
   jobs: jobsRouter, // @findplate:jobs
   roadmap: roadmapRouter, // @findplate:roadmap

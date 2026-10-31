@@ -13,6 +13,7 @@ import {
 import { tmpdir } from "node:os"
 import { dirname, join, relative, resolve } from "node:path"
 import * as p from "@clack/prompts"
+import { unifiedDiff } from "../diff-plan"
 import { generate } from "../generate"
 import { toNames } from "../generate/rename"
 import { type FileTriple, mergeFile, planFile, type UpdateAction } from "../merge-plan"
@@ -35,7 +36,7 @@ export interface UpdateFlags {
 
 const IGNORED = new Set(["node_modules", ".next", ".turbo", ".git", ".findplate", "dist"])
 
-function walk(root: string, dir = root): string[] {
+export function walk(root: string, dir = root): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
     if (IGNORED.has(entry.name)) return []
     const path = join(dir, entry.name)
@@ -43,7 +44,7 @@ function walk(root: string, dir = root): string[] {
   })
 }
 
-const read = (root: string, file: string) => {
+export const read = (root: string, file: string) => {
   const path = join(root, file)
   return existsSync(path) ? readFileSync(path) : undefined
 }
@@ -56,13 +57,33 @@ function dirtyGit(dir: string): string | undefined {
 }
 
 /** Downloads the template that `version` shipped, from the npm package. */
-async function fetchTemplate(version: string, into: string): Promise<string> {
+export async function fetchTemplate(version: string, into: string): Promise<string> {
   mkdirSync(into, { recursive: true })
   await run("npm", ["pack", `findplate@${version}`, "--pack-destination", into, "--silent"], into)
   const tarball = readdirSync(into).find((name) => name.endsWith(".tgz"))
   if (!tarball) throw new Error(`Couldn't download findplate@${version}`)
   await run("tar", ["-xzf", tarball], into)
   return join(into, "package", "template")
+}
+
+/** Renders a template with the project's recorded answers, without the `.env`. */
+export function renderer(state: ProjectState) {
+  const { answers } = state
+  const preset = listPresets().find((candidate) => candidate.id === answers.preset)
+  if (!preset) throw new Error(`Unknown preset "${answers.preset}" in .findplate/state.json`)
+  return (templateRoot: string, target: string) => {
+    generate({
+      templateDir: templateRoot,
+      target,
+      names: toNames(answers.name),
+      pitch: answers.pitch,
+      preset,
+      modules: new Set(answers.modules),
+      env: {},
+      postgresPort: answers.postgresPort,
+    })
+    rmSync(join(target, ".env"), { force: true })
+  }
 }
 
 export async function update(flags: UpdateFlags) {
@@ -86,22 +107,7 @@ export async function update(flags: UpdateFlags) {
     const baseSource = flags.baseTemplate
       ? resolve(flags.baseTemplate)
       : await fetchTemplate(from as string, join(work, "pack"))
-    const { answers } = state
-    const preset = listPresets().find((candidate) => candidate.id === answers.preset)
-    if (!preset) throw new Error(`Unknown preset "${answers.preset}" in .findplate/state.json`)
-    const render = (templateRoot: string, target: string) => {
-      generate({
-        templateDir: templateRoot,
-        target,
-        names: toNames(answers.name),
-        pitch: answers.pitch,
-        preset,
-        modules: new Set(answers.modules),
-        env: {},
-        postgresPort: answers.postgresPort,
-      })
-      rmSync(join(target, ".env"), { force: true })
-    }
+    const render = renderer(state)
     const base = join(work, "base")
     const next = join(work, "next")
     render(baseSource, base)
@@ -116,25 +122,43 @@ export async function update(flags: UpdateFlags) {
       conflict: [],
     }
     const conflicts = new Set<string>()
+    const writes: { file: string; content?: Buffer; mode: number; ours?: Buffer }[] = []
     for (const file of new Set([...walk(base), ...walk(next)])) {
       const triple: FileTriple = { base: read(base, file), next: read(next, file), ours: read(dir, file) }
       const action = planFile(triple)
       counts[action].push(file)
       if (action === "conflict") conflicts.add(file)
-      if (flags.dryRun || action === "keep" || action === "conflict") continue
-      const path = join(dir, file)
-      if (action === "delete") {
-        unlinkSync(path)
-        continue
-      }
-      let content = triple.next as Buffer
+      if (action === "keep" || action === "conflict") continue
+      let content = triple.next
       if (action === "merge") {
-        const merged = mergeFile({ base: triple.base, ours: triple.ours as Buffer, next: content })
+        const merged = mergeFile({ base: triple.base, ours: triple.ours as Buffer, next: triple.next as Buffer })
         content = merged.content
         if (merged.conflicts) conflicts.add(file)
       }
-      mkdirSync(dirname(path), { recursive: true })
-      writeFileSync(path, content, { mode: statSync(join(next, file)).mode })
+      writes.push({ file, content, ours: triple.ours, mode: content ? statSync(join(next, file)).mode : 0 })
+    }
+
+    if (flags.dryRun) {
+      for (const { file, content, ours } of writes) {
+        const action = counts.add.includes(file) ? "add" : content ? "change" : "remove"
+        console.info(`${bold(action)} ${file}\n${unifiedDiff(file, ours, content)}\n`)
+      }
+    }
+    if (conflicts.size) {
+      p.log.warn(
+        `${bold("Resolve these by hand")} (conflict markers or untouched files):\n${[...conflicts].map((file) => `  ${file}`).join("\n")}`,
+      )
+    }
+    if (!flags.dryRun) {
+      for (const { file, content, mode } of writes) {
+        const path = join(dir, file)
+        if (!content) {
+          unlinkSync(path)
+          continue
+        }
+        mkdirSync(dirname(path), { recursive: true })
+        writeFileSync(path, content, { mode })
+      }
     }
 
     const verb = flags.dryRun ? "would be" : "were"
@@ -144,11 +168,6 @@ export async function update(flags: UpdateFlags) {
         `${counts.keep.length} files are unchanged by the template ${dim("and left alone")}`,
       ].join("\n"),
     )
-    if (conflicts.size) {
-      p.log.warn(
-        `${bold("Resolve these by hand")} (conflict markers or untouched files):\n${[...conflicts].map((file) => `  ${file}`).join("\n")}`,
-      )
-    }
     if (!flags.dryRun) {
       const saved: ProjectState = { ...state, cliVersion: flags.version }
       saveState(dir, saved)

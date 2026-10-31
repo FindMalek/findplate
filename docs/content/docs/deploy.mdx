@@ -1,6 +1,6 @@
 ---
 title: Deploy
-description: Ship a generated project on Vercel or your own server.
+description: Ship a generated project on Dokploy, your own server, Vercel, Fly or Railway.
 ---
 
 A generated project is three deployable apps (`web`, `dashboard`, `api`, plus `docs` when you kept that module) and a Postgres database. All apps read the same env keys, set them on every service.
@@ -20,13 +20,28 @@ ADMIN_EMAIL=
 ADMIN_PASSWORD=
 ```
 
-## Vercel
+## Dokploy
 
-Deploy `web` and `dashboard` as two Vercel projects from the same repo.
+[Dokploy](https://dokploy.com) runs the same images.
 
-1. Import the repo, set the root directory to `apps/web`, repeat for `apps/dashboard`.
-2. Add the env keys above to both.
-3. Host the `api` somewhere that runs bun or docker, see below, and point `API_URL` and `API_PUBLIC_URL` at it.
+1. Create a project with a Postgres database.
+2. Add three applications from your repo, build type Dockerfile, with paths `apps/web/Dockerfile`, `apps/dashboard/Dockerfile` and `apps/api/Dockerfile`, and `.` as the context.
+3. Set the env keys on each application. Use the api service's internal address for `API_URL`.
+4. Attach your domains.
+
+## Docker compose
+
+Every generated project has a `docker-compose.yml` at the root that runs postgres, api, web, dashboard and the modules you kept: docs, umami, openobserve and glitchtip. It is cut to your module selection when you generate.
+
+On Dokploy, create a Compose service from your repo, set the compose path to `./docker-compose.yml`, paste your `.env` into its Environment tab and deploy. Set `WEB_URL`, `DASHBOARD_URL` and `API_PUBLIC_URL` to your domains, then attach them to the services in Dokploy.
+
+Anywhere else with docker:
+
+```bash
+docker compose up -d --build
+```
+
+`BETTER_AUTH_SECRET` is required, `create` already wrote one to `.env`. The api runs migrations on start. umami, openobserve and glitchtip start with placeholder passwords, change them in `.env` before exposing them. trigger.dev is not in the file, it needs its own stack, see the [trigger.dev self-hosting guide](https://trigger.dev/docs/self-hosting/docker).
 
 ## Self-host with docker
 
@@ -40,14 +55,13 @@ docker build -f apps/api/Dockerfile -t my-app-api .
 
 Next apps are built with `output: "standalone"` and run on port 3000 with a healthcheck. Pass the env at run time: the web app reads its urls per request, so one image works for every environment.
 
-## Dokploy
+## Other targets
 
-[Dokploy](https://dokploy.com) runs the same images.
+Each recipe ships its config in the generated project and checks `/health` on the api:
 
-1. Create a project with a Postgres database.
-2. Add three applications from your repo, build type Dockerfile, with paths `apps/web/Dockerfile`, `apps/dashboard/Dockerfile` and `apps/api/Dockerfile`, and `.` as the context.
-3. Set the env keys on each application. Use the api service's internal address for `API_URL`.
-4. Attach your domains.
+- [Vercel](/docs/deploy-vercel) for `web` and `dashboard`, with `vercel.json` in each app
+- [Fly.io](/docs/deploy-fly) for the api, with `apps/api/fly.toml`
+- [Railway](/docs/deploy-railway) for the api, with `apps/api/railway.json`
 
 ## Automated setup
 

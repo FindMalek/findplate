@@ -33,11 +33,19 @@ The project must be a clean git repository, so `git diff` shows exactly what mov
 | Flag | Description |
 | --- | --- |
 | `[dir]` | project directory, defaults to the current one |
-| `--dry-run` | print the plan, change nothing |
+| `--dry-run` | list every file that would change with its diff, then the conflicts, and write nothing |
 | `--force` | update even with uncommitted changes |
 | `--base-template <dir>` | template of the recorded version, instead of downloading it |
 
 After an update, run `pnpm install` and your checks. Projects created before the version was recorded need `--base-template`.
+
+## findplate diff
+
+```bash
+findplate diff [dir] [--base-template <dir>]
+```
+
+Shows how your project differs from the template version recorded in `.findplate/state.json`: every modified, added or removed file with its diff. Your `.env` files are ignored. It is read only.
 
 ## Dependencies
 
