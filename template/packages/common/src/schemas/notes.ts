@@ -10,13 +10,18 @@ export const noteSchema = z.object({
   updatedAt: z.date(),
 })
 
-export const noteInputSchema = z.object({
-  title: z.string().trim().min(1).max(NOTE_TITLE_MAX),
-  body: z.string().max(NOTE_BODY_MAX).default(""),
-  pinned: z.boolean().default(false),
-})
+const title = z.string().trim().min(1).max(NOTE_TITLE_MAX)
+const body = z.string().max(NOTE_BODY_MAX)
 
-export const noteUpdateSchema = noteInputSchema.partial().extend({ id: z.uuid() })
+export const noteInputSchema = z.object({ title, body: body.default(""), pinned: z.boolean().default(false) })
+
+/** No defaults here: a patch only touches the fields it carries (a default would reset the rest). */
+export const noteUpdateSchema = z.object({
+  id: z.uuid(),
+  title: title.optional(),
+  body: body.optional(),
+  pinned: z.boolean().optional(),
+})
 
 export const noteStatsSchema = z.object({ total: z.number(), pinned: z.number() })
 

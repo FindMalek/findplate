@@ -12,6 +12,9 @@
   "dependencies": {
     "@acme/common": "workspace:*",
     "@acme/env": "workspace:*",
+    "@acme/flags": "workspace:*",
+    "@acme/logger": "workspace:*",
+    "@acme/i18n": "workspace:*",
     "@acme/orpc": "workspace:*",
     "@acme/ui": "workspace:*",
     "@databuddy/sdk": "catalog:",
@@ -20,6 +23,7 @@
     "@tanstack/react-query": "catalog:",
     "lucide-react": "catalog:",
     "next": "catalog:",
+    "next-intl": "catalog:",
     "next-themes": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",

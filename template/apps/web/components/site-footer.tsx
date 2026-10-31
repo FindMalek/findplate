@@ -1,3 +1,4 @@
+import { LocaleSwitcher } from "@acme/i18n/switcher" // @findplate:i18n
 import { StarIcon } from "lucide-react"
 import { getRepo } from "@/lib/api"
 import { SITE } from "@/lib/site"
@@ -44,6 +45,9 @@ export async function SiteFooter() {
               </span>
             </a>
           )}
+          {/* @findplate:i18n */}
+          <LocaleSwitcher mode="path" />
+          {/* @end */}
           <ThemeToggle />
         </span>
       </div>

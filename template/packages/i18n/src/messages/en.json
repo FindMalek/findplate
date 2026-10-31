@@ -1,0 +1,11 @@
+{
+  "language": {
+    "label": "Language",
+    "description": "The language of this app."
+  },
+  "hero": {
+    "badge": "early access",
+    "getStarted": "Get started",
+    "apiDocs": "API docs"
+  }
+}

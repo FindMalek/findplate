@@ -79,7 +79,10 @@ acme/
 | `pnpm lint` | biome and oxlint |
 | `pnpm check` | biome format and fix |
 | `pnpm check-types` | typescript across the repo |
-| `pnpm test` | tests in every package |
+| `pnpm test` | tests in every package, against postgres (`pnpm db:up` first) |
+<!-- @findplate:e2e -->
+| `pnpm test:e2e` | playwright smoke test of web, dashboard and api |
+<!-- @end -->
 | `pnpm db:generate` / `db:migrate` / `db:seed` / `db:studio` | drizzle |
 | `pnpm ui:add <component>` | add a shadcn component |
 | `pnpm bump-deps` | update every dependency, catalog included, to the latest version |

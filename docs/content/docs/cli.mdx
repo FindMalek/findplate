@@ -81,13 +81,14 @@ The first commit lands on your `init.defaultBranch` (or `main` when unset). The 
 | `0` | done, or you cancelled a prompt |
 | `1` | a step failed, or `doctor` found a failing check |
 | `2` | usage error, such as a missing `--name` without a terminal, an unknown preset, profile or module |
-| `3` | `findplate add` refused because the git tree has uncommitted changes, see [add and doctor](/docs/add-doctor) |
+| `3` | `findplate add` or `findplate remove` refused because the git tree has uncommitted changes, see [add and doctor](/docs/add-doctor) |
 
 ## Other commands
 
 | Command | What it does |
 | --- | --- |
 | `findplate add <module...>` | add modules to a generated project, see [add and doctor](/docs/add-doctor) |
+| `findplate remove <module...>` | remove modules from a generated project, see [add and doctor](/docs/add-doctor#findplate-remove) |
 | `findplate doctor` | check env, database, tools, dns and deploys, see [add and doctor](/docs/add-doctor) |
 | `findplate update` | three-way merge of the newest template into your project, see [updates](/docs/updates) |
 | `findplate github` | repo, board, labels, milestones and rules on GitHub, see [GitHub](/docs/github) |

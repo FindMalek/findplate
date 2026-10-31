@@ -9,7 +9,7 @@ Yes. Run `findplate add <module>` in the project. It applies only that module's 
 
 ## Can I remove a module later?
 
-Yes. Each module page has a Remove section. Delete the paths it lists, drop its packages, remove its env block and fix what the type check reports.
+Yes. Run `findplate remove <module>` in the project. It deletes the files the module owns, strips its code from shared files and drops its packages, but only where you haven't edited them. Edited files are listed and left alone, `.env` is never touched and the database migration is kept by default. See [add and doctor](/docs/add-doctor#findplate-remove). Each module page also has the manual steps.
 
 ## Does the project depend on findplate?
 
@@ -25,7 +25,7 @@ The template uses pnpm workspaces and a lockfile for strict, cacheable installs.
 
 ## What happens when a key is missing?
 
-The feature turns off. Storage, AI, email, WhatsApp and Telegram return `null` from their factory and the code that uses them checks for it, so the app still starts.
+The feature turns off. Storage and AI return `null` from their factory and the code that uses them checks for it. In notification each channel stays off without its keys and `send` skips it, so the app still starts.
 
 ## Can I use a different database?
 

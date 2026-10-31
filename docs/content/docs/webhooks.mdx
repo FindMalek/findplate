@@ -3,7 +3,7 @@ title: Webhooks
 description: Verify inbound webhooks with hmac, svix or a secret header.
 ---
 
-The `webhooks` module adds `packages/webhooks`, small helpers to check that a request really came from the provider. It has no dependencies and is off by default. The `telegram` module needs it, so picking telegram turns it on.
+The `webhooks` module adds `packages/webhooks`, small helpers to check that a request really came from the provider. It has no dependencies and is off by default. The `notification` module needs it for the Telegram webhook, so picking notification turns it on.
 
 ```bash
 findplate create my-app --modules webhooks

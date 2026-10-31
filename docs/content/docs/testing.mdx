@@ -1,0 +1,80 @@
+---
+title: Testing
+description: What the tests in a generated project cover, how to add one, and the optional e2e smoke test.
+---
+
+A generated project is tested against a real Postgres, not mocks. `pnpm test` runs `bun test` in every package through turbo, so results are cached and only touched packages rerun.
+
+## Postgres
+
+Tests that touch data need a server to create databases on. Start the compose one and run the tests:
+
+```bash
+pnpm db:up
+pnpm test
+```
+
+`createTestDb()` from `@acme/db/testing` connects to `TEST_DATABASE_URL`, or `DATABASE_URL`, creates a fresh database named `test_<uuid>`, applies the drizzle migrations and drops it again on `close()`. Every test file gets its own database, so files never see each other's rows and your dev data is never touched. Bun runs the files of a package one after the other and turbo runs the packages in parallel. If the server is down the error says so.
+
+In CI the `ci` workflow of the project runs a `postgres:17-alpine` service container and sets `DATABASE_URL` to it.
+
+## What is covered
+
+| Where | What |
+| --- | --- |
+| `packages/common` | the note schemas: trimming, defaults, partial updates |
+| `packages/env` | which variables are required, defaults, empty strings as unset |
+| `packages/db` | `seedDemo` twice leaves the first run's data alone |
+| `packages/auth` | sign up, sign in and the session through the real better-auth handlers, wrong and short passwords, duplicate emails |
+| `packages/orpc` | `public`, `me`, `notes` and the admin role gate, called through the real router |
+| `apps/api` | `ensureAdmin`, `/health`, sign up over http then a REST call with the cookie, auth rate limit |
+| module packages | each module tests its own code (`whatsapp`, `telegram`, `webhooks`, `email`, `roadmap`, `rate-limit`) |
+
+Tests that belong to a module live inside the module's own paths, so they disappear with it. A test for core code that touches a module wraps that part in `@findplate:<module>` markers like any other code.
+
+## Add a test
+
+Put `thing.test.ts` next to the code. For anything that needs the database, services or a signed-in user use the helper in `@acme/orpc/testing`:
+
+```ts
+import { afterAll, beforeAll, expect, test } from "bun:test"
+import { createTestApp, type TestApp } from "@acme/orpc/testing"
+
+let app: TestApp
+beforeAll(async () => {
+  app = await createTestApp()
+})
+afterAll(() => app.close())
+
+test("a member cannot list users", async () => {
+  const { client } = await app.signUp("member@example.com")
+  await expect(client.admin.users()).rejects.toMatchObject({ code: "FORBIDDEN" })
+})
+```
+
+`signUp` signs a user up and in for real and returns a client carrying their cookie (`{ role: "admin" }` promotes them first). `app.anonymous` is a client with no session. Only the outside world is faked: storage, mail, WhatsApp, Telegram and the AI model are `null`.
+
+Keep it small: one behaviour per test, a test that fails before the fix and passes after, no snapshots, no tests of types or getters, mock only network and time.
+
+## End-to-end smoke test
+
+The optional `e2e` module adds `apps/e2e` and a workflow. It is off by default.
+
+```bash
+findplate create my-app --modules e2e
+pnpm db:up
+pnpm --filter e2e run install:browser   # once, downloads chromium
+pnpm test:e2e
+```
+
+Playwright builds `web` and `dashboard`, starts them on ports 4100 and 4102 with the api on 4101 and a fresh `acme_e2e` database, then drives chromium through:
+
+- the landing page answers 200 and renders its hero
+- `/api/health` on web and on the dashboard reaches the api and the database
+- sign up in the dashboard, sign out, sign in, create a note and see it listed after a reload
+
+`pnpm test` does not run it, so the unit loop stays fast. The generated `.github/workflows/e2e.yml` runs it on every pull request with a Postgres service container, caches the browser and uploads the report when it fails.
+
+## In the findplate repo
+
+The `all modules` job of [CI](/docs/ci) runs `pnpm test:e2e` too, so the template cannot rot. Every module job runs the unit tests against a Postgres service container.
