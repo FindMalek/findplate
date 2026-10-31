@@ -7,6 +7,7 @@
     "dev": "next dev --port 3003",
     "build": "next build",
     "start": "next start --port 3003",
+    "test": "bun test",
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {

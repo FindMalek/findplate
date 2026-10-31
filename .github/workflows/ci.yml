@@ -117,6 +117,10 @@ jobs:
         if: matrix.build
         working-directory: ${{ env.PROJECT }}
         run: pnpm build
+      - name: Docs llms.txt
+        if: matrix.build && contains(matrix.modules, 'docs')
+        working-directory: ${{ env.PROJECT }}
+        run: pnpm --filter docs test
       - name: Playwright version
         if: matrix.name == 'all modules'
         id: playwright
