@@ -1,5 +1,6 @@
 import { fileURLToPath } from "node:url"
 import { loadEnvConfig } from "@next/env"
+import createMDX from "@next/mdx" // @findplate:blog
 import type { NextConfig } from "next"
 import createNextIntlPlugin from "next-intl/plugin" // @findplate:i18n
 
@@ -34,6 +35,8 @@ const nextConfig: NextConfig = {
 }
 
 const plugins: Array<(config: NextConfig) => NextConfig> = []
+plugins.push(createMDX()) // @findplate:blog
+plugins.push((config) => ({ ...config, outputFileTracingIncludes: { "/**": ["./content/blog/*.mdx"] } })) // @findplate:blog
 plugins.push(createNextIntlPlugin()) // @findplate:i18n
 plugins.push((config) => ({ ...config, transpilePackages: [...(config.transpilePackages ?? []), "@acme/i18n"] })) // @findplate:i18n
 

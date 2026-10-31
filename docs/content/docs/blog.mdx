@@ -1,0 +1,55 @@
+---
+title: Blog and changelog
+description: MDX posts in the web app with an rss feed, og images and a changelog page.
+---
+
+The `blog` module adds a blog and a `/changelog` page to `apps/web`. Posts are MDX files, no cms. It is off by default.
+
+```bash
+findplate create my-app --modules blog
+```
+
+## Write a post
+
+Add `apps/web/content/blog/my-post.mdx`. The file name is the url (`/blog/my-post`). Export a `meta` at the top, then write markdown:
+
+```mdx
+export const meta = {
+  title: "Hello, world",
+  description: "One line for search results and the feed.",
+  date: "2026-01-01",
+}
+
+Your post here.
+```
+
+It shows up in `/blog`, `/blog/rss.xml` and `sitemap.xml`. Each post gets its own social card from its title (`app/blog/[slug]/opengraph-image.tsx`) and `BlogPosting` structured data. Style the markdown in `apps/web/mdx-components.tsx`, where you can also map your own react components to tags.
+
+## Changelog
+
+`/changelog` renders `apps/web/content/changelog.mdx`. Add new versions on top as `##` headings.
+
+## What it adds
+
+Files and folders:
+
+- `apps/web/app/blog`, `apps/web/app/changelog`
+- `apps/web/content`
+- `apps/web/lib/blog.ts`
+- `apps/web/mdx-components.tsx`, `apps/web/types/mdx.d.ts`
+
+Packages:
+
+- `@next/mdx`, `@mdx-js/loader`, `@mdx-js/react`, `@types/mdx`
+
+It also adds the blog and changelog links to the footer and the sitemap, and the mdx plugin to `apps/web/next.config.ts`. In Docker the posts are traced into the standalone build, so a new post needs a rebuild.
+
+## Remove
+
+Run `findplate remove blog` in the project, see [add and doctor](/docs/add-doctor#findplate-remove). It deletes the files the module owns, strips its code from shared files and drops its packages, only where you haven't edited them.
+
+If you'd rather do it by hand: for a new project leave `blog` out of `--modules`. In a project that already exists, delete the paths above, drop its packages from `apps/web/package.json`, remove the blog lines from `next.config.ts`, `app/sitemap.ts` and `components/site-footer.tsx`, and fix what `pnpm check-types` reports.
+
+## Swap
+
+The docs module ([Docs site](/docs/docs-module)) is for documentation. For a hosted cms, replace `getPosts` and `getPost` in `apps/web/lib/blog.ts` and keep the pages.

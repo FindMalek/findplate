@@ -218,6 +218,22 @@
       ],
       "packages": []
     },
+    "blog": {
+      "label": "Blog and changelog",
+      "hint": "mdx posts in the web app with an rss feed, og images, sitemap entries and a changelog page",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": [
+        "apps/web/app/blog",
+        "apps/web/app/changelog",
+        "apps/web/content",
+        "apps/web/lib/blog.ts",
+        "apps/web/lib/blog.test.ts",
+        "apps/web/mdx-components.tsx",
+        "apps/web/types/mdx.d.ts"
+      ],
+      "packages": ["@next/mdx", "@mdx-js/loader", "@mdx-js/react", "@types/mdx"]
+    },
     "cache": {
       "label": "Cache",
       "hint": "typed get, set, ttl and tag invalidation on Upstash Redis, in memory without it",

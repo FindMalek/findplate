@@ -30,6 +30,7 @@
     "webhooks",
     "rate-limiting",
     "cache",
+    "blog",
     "i18n",
     "flags",
     "billing",

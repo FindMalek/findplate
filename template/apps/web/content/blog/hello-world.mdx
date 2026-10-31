@@ -1,0 +1,15 @@
+export const meta = {
+  title: "Hello, world",
+  description: "What this blog is for and how to add a post.",
+  date: "2026-01-01",
+}
+
+This is the first post. Posts are MDX files in `apps/web/content/blog`, the file name is the url.
+
+## Add a post
+
+Create `content/blog/my-post.mdx`, export a `meta` with a `title`, `description` and `date`, then write markdown below it. It shows up in the index, the rss feed and the sitemap on the next build.
+
+## Components
+
+Any react component works in a post. Map your own to tags in `mdx-components.tsx`.

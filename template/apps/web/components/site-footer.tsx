@@ -21,6 +21,14 @@ export async function SiteFooter() {
           <span className="font-medium text-foreground">{SITE.name}</span> · {SITE.license}
         </span>
         <span className="flex items-center gap-3">
+          {/* @findplate:blog */}
+          <a href="/blog" className="text-muted-foreground hover:text-foreground">
+            Blog
+          </a>
+          <a href="/changelog" className="text-muted-foreground hover:text-foreground">
+            Changelog
+          </a>
+          {/* @end */}
           {/* @findplate:roadmap */}
           <a href="/roadmap" className="text-muted-foreground hover:text-foreground">
             Roadmap
