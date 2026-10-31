@@ -1,4 +1,5 @@
 import { createAuth } from "@acme/auth"
+import { createBilling } from "@acme/billing" // @findplate:billing
 import { user } from "@acme/db"
 import { createTestDb, type TestDb } from "@acme/db/testing"
 import { createFlags } from "@acme/flags/server" // @findplate:flags
@@ -36,6 +37,7 @@ export async function createTestApp() {
     // @findplate:storage
     storage: null,
     // @end
+    billing: createBilling({}, testDb.db), // @findplate:billing
     flags: createFlags({ db: testDb.db }), // @findplate:flags
     jobs: { enqueue: async () => ({ ok: true, id: null }), list: async () => [] }, // @findplate:jobs
     // @findplate:notification

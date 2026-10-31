@@ -37,6 +37,20 @@ const schema = z.object({
   UPSTASH_REDIS_REST_TOKEN: optional,
   // @end
 
+  // @findplate:billing
+  /** `stripe` or `polar` when both have keys. */
+  BILLING_PROVIDER: z.enum(["stripe", "polar"]).optional(),
+  STRIPE_SECRET_KEY: optional,
+  STRIPE_WEBHOOK_SECRET: optional,
+  /** Stripe price id of the Pro plan. */
+  STRIPE_PRICE_PRO: optional,
+  POLAR_ACCESS_TOKEN: optional,
+  POLAR_WEBHOOK_SECRET: optional,
+  /** Polar product id of the Pro plan. */
+  POLAR_PRODUCT_PRO: optional,
+  /** `sandbox` for Polar's test environment. */
+  POLAR_SERVER: z.enum(["production", "sandbox"]).optional(),
+  // @end
   // @findplate:flags
   /** Overrides that beat the database, e.g. `betaBanner=on,otherFlag=25`. */
   FLAGS_OVERRIDE: optional,

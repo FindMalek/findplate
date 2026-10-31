@@ -29,6 +29,7 @@
     "rate-limiting",
     "i18n",
     "flags",
+    "billing",
     "jobs",
     "logger",
     "---Design---",

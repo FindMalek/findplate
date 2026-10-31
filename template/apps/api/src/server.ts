@@ -23,6 +23,7 @@ type Interceptors = NonNullable<NonNullable<ConstructorParameters<typeof RPCHand
  *   /rpc/*        oRPC for web + dashboard (needs `x-csrf-token: orpc`)
  *   /v1/*         the same procedures as REST, docs at /v1/docs, spec at /v1/openapi.json
  *   /files/<key>  redirect to a short-lived url for an uploaded file
+ *   /billing/webhook  Stripe or Polar events (signature checked)
  *   /telegram/webhook  Telegram bot updates (secret header checked)
  *   /health       for Dokploy and uptime checks
  */
@@ -69,6 +70,11 @@ export function createServer(services: Services & { auth: Auth }, opts: { public
         .catch(() => false)
       return Response.json({ ok: db, db, env: services.config.deployEnv }, { status: db ? 200 : 503 })
     }
+    // @findplate:billing
+    if (pathname === "/billing/webhook" && request.method === "POST") {
+      return services.billing.handleWebhook(request)
+    }
+    // @end
     // @findplate:notification
     if (pathname === "/telegram/webhook" && request.method === "POST") {
       return services.notification.handleTelegramWebhook(request)

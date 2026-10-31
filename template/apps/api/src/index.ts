@@ -1,5 +1,6 @@
 import { resolveModel } from "@acme/ai" // @findplate:ai
 import { createAuth } from "@acme/auth"
+import { createBilling } from "@acme/billing" // @findplate:billing
 import { createDb } from "@acme/db"
 import { runMigrations } from "@acme/db/migrate"
 import { seedDemo } from "@acme/db/seed"
@@ -58,6 +59,7 @@ const fetch = createServer(
       webUrl: env.WEB_URL, // @findplate:status
       dashboardUrl: env.DASHBOARD_URL, // @findplate:status
     },
+    billing: createBilling(env, db), // @findplate:billing
     flags: createFlags({ db, override: env.FLAGS_OVERRIDE }), // @findplate:flags
     jobs, // @findplate:jobs
     // @findplate:rate-limit
