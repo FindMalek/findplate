@@ -85,6 +85,14 @@ describe("generate", () => {
     expect(min).toContain("  dashboard:")
   })
 
+  test("deploy recipes ship with the project, named after it", () => {
+    const { target } = make([])
+    expect(readFileSync(join(target, "apps/api/fly.toml"), "utf8")).toContain('app = "demo-app-api"')
+    expect(readFileSync(join(target, "apps/api/railway.json"), "utf8")).toContain("/health")
+    expect(readFileSync(join(target, "apps/web/vercel.json"), "utf8")).toContain("--filter=web")
+    expect(readFileSync(join(target, "apps/dashboard/vercel.json"), "utf8")).toContain("--filter=dashboard")
+  })
+
   test("with every module: no template names or markers left, env filled", () => {
     const { target } = make([
       "storage",
