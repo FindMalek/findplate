@@ -3,7 +3,7 @@ import { ORPCError } from "@orpc/server"
 import { and, desc, eq, isNull } from "drizzle-orm"
 import { z } from "zod"
 import { API_KEY_SCOPES, generateKey } from "../lib/api-keys"
-import { audit } from "../lib/audit"
+import { audit } from "../lib/audit" // @findplate:audit-log
 import { protectedProcedure } from "../procedures"
 
 const keySchema = z.object({
@@ -68,7 +68,7 @@ export const apiKeysRouter = {
           expiresAt: input.expiresInDays ? new Date(context.now().getTime() + input.expiresInDays * 86_400_000) : null,
         })
         .returning({ id: apiKey.id })
-      await audit(context, { action: "api-key.create", targetId: row?.id, metadata: { scope: input.scope } })
+      await audit(context, { action: "api-key.create", targetId: row?.id, metadata: { scope: input.scope } }) // @findplate:audit-log
       return { id: row!.id, key }
     }),
 
@@ -81,7 +81,7 @@ export const apiKeysRouter = {
         .update(apiKey)
         .set({ revokedAt: context.now() })
         .where(and(eq(apiKey.id, input.id), eq(apiKey.userId, context.user.id)))
-      await audit(context, { action: "api-key.revoke", targetId: input.id })
+      await audit(context, { action: "api-key.revoke", targetId: input.id }) // @findplate:audit-log
       return { ok: true as const }
     }),
 }
