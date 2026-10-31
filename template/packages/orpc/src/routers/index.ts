@@ -33,12 +33,8 @@ export const appRouter = {
   public: publicRouter,
   feedback: feedbackRouter, // @findplate:feedback
   me: meRouter,
-<<<<<<< HEAD
   notes,
-=======
-  notes: notesRouter,
   privacy: privacyRouter, // @findplate:compliance
->>>>>>> origin/main
   admin,
   apiKeys: apiKeysRouter, // @findplate:api-keys
   billing: billingRouter, // @findplate:billing
