@@ -381,6 +381,22 @@
       ],
       "packages": []
     },
+    "api-keys": {
+      "label": "API keys",
+      "hint": "personal bearer keys for the REST api: hashed, read or write, expiry, revoke",
+      "group": "platform",
+      "profiles": ["everything"],
+      "paths": [
+        "packages/db/src/schema/api-keys.ts",
+        "packages/db/drizzle/0006_api_keys.sql",
+        "packages/db/drizzle/meta/0006_snapshot.json",
+        "packages/orpc/src/lib/api-keys.ts",
+        "packages/orpc/src/routers/api-keys.ts",
+        "apps/dashboard/components/api-keys-board.tsx",
+        "apps/dashboard/app/(app)/api-keys"
+      ],
+      "packages": []
+    },
     "i18n": {
       "label": "Internationalization",
       "hint": "next-intl in web and dashboard, english and french, locale switcher, hreflang in the sitemap",

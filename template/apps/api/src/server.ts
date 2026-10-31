@@ -89,6 +89,11 @@ export function createServer(services: Services & { auth: Auth }, opts: { public
     // @end
 
     const context = await createContext(services, request.headers)
+    // @findplate:api-keys
+    if (context.apiKey?.scope === "read" && request.method !== "GET" && request.method !== "HEAD") {
+      return Response.json({ message: "This API key is read only." }, { status: 403 })
+    }
+    // @end
     const viaRpc = await rpc.handle(request, { prefix: "/rpc", context })
     if (viaRpc.matched) return viaRpc.response
     const viaRest = await rest.handle(request, { prefix: "/v1", context })
