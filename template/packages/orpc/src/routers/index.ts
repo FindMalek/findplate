@@ -5,6 +5,7 @@ import { auditRouter } from "./audit" // @findplate:audit-log
 import { billingRouter } from "./billing" // @findplate:billing
 import { feedbackRouter } from "./feedback" // @findplate:feedback
 import { flagsRouter } from "./flags" // @findplate:flags
+import { inboxAdminRouter, inboxRouter } from "./inbox" // @findplate:inbox
 import { jobsRouter } from "./jobs" // @findplate:jobs
 import { notesRouter } from "./notes"
 import { notificationRouter } from "./notification" // @findplate:notification
@@ -15,6 +16,7 @@ import { waitlistRouter } from "./waitlist" // @findplate:waitlist
 
 const admin = {
   ...adminRouter,
+  inbox: inboxAdminRouter, // @findplate:inbox
   audit: auditRouter, // @findplate:audit-log
   notification: notificationRouter, // @findplate:notification
 }
@@ -29,6 +31,7 @@ export const appRouter = {
   apiKeys: apiKeysRouter, // @findplate:api-keys
   billing: billingRouter, // @findplate:billing
   flags: flagsRouter, // @findplate:flags
+  inbox: inboxRouter, // @findplate:inbox
   jobs: jobsRouter, // @findplate:jobs
   roadmap: roadmapRouter, // @findplate:roadmap
   status: statusRouter, // @findplate:status

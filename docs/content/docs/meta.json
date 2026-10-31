@@ -38,6 +38,7 @@
     "audit-log",
     "api-keys",
     "feedback",
+    "inbox",
     "jobs",
     "logger",
     "---Design---",
