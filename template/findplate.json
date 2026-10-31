@@ -270,6 +270,7 @@
         "packages/jobs/src/trigger.ts",
         "packages/jobs/src/trigger.test.ts",
         "packages/jobs/src/trigger",
+        "apps/api/src/trigger.ts",
         "packages/jobs/trigger.config.ts"
       ],
       "packages": ["@trigger.dev/sdk", "trigger.dev"],
