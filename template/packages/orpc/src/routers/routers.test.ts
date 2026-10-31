@@ -67,3 +67,31 @@ test("admin.users is for admins only", async () => {
   expect(users.map((u) => u.email)).toContain("boss@acme.test")
   expect(total).toBeGreaterThanOrEqual(2)
 })
+
+// @findplate:orgs
+test("orgs: notes follow the active organization and only members can switch to it", async () => {
+  const ada = await app.signUp("ada-org@acme.test")
+  const bob = await app.signUp("bob-org@acme.test")
+  const created = await app.services.auth.api.createOrganization({
+    body: { name: "Acme", slug: "acme" },
+    headers: ada.headers,
+    returnHeaders: true,
+  })
+  // The session is cookie cached: carry the cookies the call just set, as a browser would.
+  const jar = new Map<string, string>()
+  for (const line of [ada.headers.get("cookie") ?? "", ...created.headers.getSetCookie()]) {
+    for (const part of line.split("; ")) jar.set(part.split("=")[0] ?? "", part.split(";")[0] ?? "")
+  }
+  const inOrg = app.clientFor(new Headers({ cookie: [...jar.values()].join("; "), "x-csrf-token": "orpc" }))
+
+  await inOrg.notes.create({ title: "team plan" })
+  expect((await inOrg.notes.list()).map((n) => n.title)).toEqual(["team plan"])
+  expect(await bob.client.notes.list()).toEqual([])
+  await expect(
+    app.services.auth.api.setActiveOrganization({
+      body: { organizationId: created.response.id },
+      headers: bob.headers,
+    }),
+  ).rejects.toThrow()
+})
+// @end

@@ -303,6 +303,23 @@
         { "env": "POLAR_ACCESS_TOKEN", "label": "Polar access token", "url": "https://polar.sh/settings" }
       ]
     },
+    "orgs": {
+      "label": "Organizations",
+      "hint": "teams with roles and email invites on the better-auth organization plugin, notes scoped to the active organization",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": [
+        "packages/auth/src/orgs.ts",
+        "packages/db/src/schema/orgs.ts",
+        "packages/db/drizzle/0004_orgs.sql",
+        "packages/db/drizzle/meta/0004_snapshot.json",
+        "packages/orpc/src/lib/org.ts",
+        "apps/dashboard/components/team-board.tsx",
+        "apps/dashboard/app/(app)/team",
+        "apps/dashboard/app/(app)/accept-invitation"
+      ],
+      "packages": []
+    },
     "i18n": {
       "label": "Internationalization",
       "hint": "next-intl in web and dashboard, english and french, locale switcher, hreflang in the sitemap",
