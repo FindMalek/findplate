@@ -5,6 +5,7 @@ import pkg from "../package.json"
 import { addCommand } from "./commands/add"
 import { configCommand } from "./commands/config"
 import { create } from "./commands/create"
+import { diffCommand } from "./commands/diff"
 import { doctorCommand } from "./commands/doctor"
 import { github } from "./commands/github"
 import { provisionCommand } from "./commands/provision"
@@ -22,9 +23,10 @@ Usage
   findplate create [dir] [options]   re-run in an unfinished project to resume it
   findplate github [dir] [options]   create the repo, board, labels and rules on GitHub (idempotent)
   findplate update [dir] [options]   merge the newest template into an existing project
+  findplate diff [dir] [--base-template <dir>]   show how the project differs from the template it was generated from
   findplate add <module...> [dir] [--force]   add modules to an existing project
   findplate remove <module...> [dir] [--force] [--dry-run]   remove modules from a project
-  findplate doctor [dir] [--json]    check env, database, tools, dns and deploys
+  findplate doctor [dir] [--json] [--security]   check env, database, tools, dns and deploys
   findplate config [list|get|set|unset|path] [key] [value]
   findplate provision <dokploy|s3|dns|turbo|backup|all> [--dry-run]   see provision --help
 
@@ -89,6 +91,7 @@ async function main() {
       "project-template": { type: "string" },
       force: { type: "boolean", default: false },
       json: { type: "boolean", default: false },
+      security: { type: "boolean", default: false },
       "dry-run": { type: "boolean", default: false },
       "base-template": { type: "string" },
       "drop-migrations": { type: "boolean", default: false },
@@ -100,6 +103,7 @@ async function main() {
   if (values.version) return console.info(VERSION)
   const [command = "create", dir] = positionals
   if (values.help) return console.info(HELP)
+  if (command === "diff") return diffCommand({ dir, baseTemplate: values["base-template"] })
   if (command === "update") {
     return update({
       dir,
@@ -114,7 +118,7 @@ async function main() {
   if (latest) {
     console.error(`${dim(`findplate ${VERSION} is behind ${latest}. Run`)} ${accent("npx findplate@latest")}\n`)
   }
-  if (command === "doctor") return doctorCommand({ dir, json: values.json })
+  if (command === "doctor") return doctorCommand({ dir, json: values.json, security: values.security })
   if (command === "add") {
     const args = positionals.slice(1)
     const dirArg = args.find((arg) => arg.includes("/") || arg === ".")

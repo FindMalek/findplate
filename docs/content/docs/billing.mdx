@@ -1,0 +1,80 @@
+---
+title: Billing
+description: Subscriptions with Stripe or Polar, a customer portal, plan entitlements and webhooks.
+---
+
+The `billing` module adds `packages/billing`, a `subscription` table, a `billing` router, a `/billing` page in the dashboard and a webhook route on the api. It needs the `webhooks` module for the signature checks and is off by default.
+
+```bash
+findplate create my-app --modules billing
+```
+
+Stripe and Polar are both called over plain `fetch`, there is no vendor sdk in your project. Fill the keys of one of them and billing turns on, leave them empty and everyone stays on free. With both filled, `BILLING_PROVIDER=stripe|polar` picks.
+
+## Plans and entitlements
+
+Plans live in code, in `packages/billing/src/plans.ts`:
+
+```ts
+export const PLANS = {
+  free: { label: "Free", features: ["notes"] },
+  pro: { label: "Pro", features: ["notes", "export", "priority-support"] },
+} as const
+```
+
+Gate a feature with `canUse`, on the server or in a component:
+
+```ts
+const { plan } = await context.billing.status(context.user.id)
+if (!canUse(plan, "export")) throw new ORPCError("FORBIDDEN", { message: "Upgrade to Pro." })
+```
+
+A subscription gives its plan while it is `active`, `trialing` or `past_due` (the provider is still retrying the payment). Anything else, `canceled` for one, drops the user back to free.
+
+## Stripe
+
+1. Create a product with a recurring price, copy the price id to `STRIPE_PRICE_PRO`.
+2. Add a webhook endpoint `<api url>/billing/webhook` for `customer.subscription.created`, `.updated` and `.deleted`, copy its signing secret to `STRIPE_WEBHOOK_SECRET`.
+3. Turn on the customer portal in the Stripe dashboard.
+4. Set `STRIPE_SECRET_KEY`. Locally, `stripe listen --forward-to localhost:3001/billing/webhook` prints a test signing secret.
+
+## Polar
+
+1. Create a product, copy its id to `POLAR_PRODUCT_PRO`.
+2. Add a webhook `<api url>/billing/webhook` for the `subscription.*` events, copy its secret to `POLAR_WEBHOOK_SECRET`.
+3. Set `POLAR_ACCESS_TOKEN`, and `POLAR_SERVER=sandbox` while testing.
+
+Polar identifies the customer by your user id (`external_customer_id`), so the portal needs no stored customer.
+
+## How the webhooks are handled
+
+Every provider event becomes one `BillingEvent` and goes through `applyEvent`:
+
+- the event id is stored, a redelivery does nothing
+- the event time is stored on the row, an older event arriving late never overwrites a newer state
+- a bad signature answers `400`, a failure while applying answers `500` so the provider retries
+
+## Procedures
+
+| Procedure | What it does |
+| --- | --- |
+| `billing.status` | plan, status, renewal date and whether the provider is set up |
+| `billing.checkout` | `{ plan }`, answers the provider's checkout url |
+| `billing.portal` | answers the customer portal url, `NOT_FOUND` before the first subscription |
+
+## Env keys
+
+```bash
+BILLING_PROVIDER=
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+STRIPE_PRICE_PRO=
+POLAR_ACCESS_TOKEN=
+POLAR_WEBHOOK_SECRET=
+POLAR_PRODUCT_PRO=
+POLAR_SERVER=
+```
+
+## Remove it
+
+Generate without the module, or delete the `billing` paths of `template/findplate.json` by hand: `packages/billing`, the schema file, the router and the dashboard page. If the migration `0003_billing` already ran, add a drizzle migration that drops the `subscription` and `billing_event` tables.

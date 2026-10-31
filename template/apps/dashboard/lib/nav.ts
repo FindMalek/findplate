@@ -12,6 +12,7 @@ export interface NavItem {
 export const NAV: NavItem[] = [
   { href: "/", label: "Overview", icon: LayoutDashboardIcon },
   { href: "/notes", label: "Notes", icon: NotebookPenIcon },
+  { href: "/billing", label: "Billing", icon: SettingsIcon }, // @findplate:billing
   { href: "/users", label: "Users", icon: UsersIcon, admin: true },
   { href: "/waitlist", label: "Waitlist", icon: UsersIcon, admin: true }, // @findplate:waitlist
   { href: "/flags", label: "Flags", icon: SettingsIcon, admin: true }, // @findplate:flags

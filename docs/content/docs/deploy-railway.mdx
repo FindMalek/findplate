@@ -1,0 +1,22 @@
+---
+title: Deploy on Railway
+description: Run the api on Railway with a Postgres plugin and a health check.
+---
+
+The generated `apps/api/railway.json` builds `apps/api/Dockerfile` from the repo root and waits for `GET /health` before switching traffic.
+
+1. Create a project, add a Postgres database and a service from your repo.
+2. Railway picks up `apps/api/railway.json`. Set the service config path to it if it does not.
+3. Set the variables on the api service:
+
+```bash
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+BETTER_AUTH_SECRET=   # openssl rand -base64 32
+WEB_URL=
+DASHBOARD_URL=
+API_PUBLIC_URL=       # the public railway domain
+ADMIN_EMAIL=
+ADMIN_PASSWORD=
+```
+
+4. Generate a domain, then set `API_URL` and `API_PUBLIC_URL` on web and dashboard to it.

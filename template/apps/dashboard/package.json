@@ -11,6 +11,7 @@
     "test": "bun test"
   },
   "dependencies": {
+    "@acme/billing": "workspace:*",
     "@acme/common": "workspace:*",
     "@acme/env": "workspace:*",
     "@acme/flags": "workspace:*",
