@@ -28,6 +28,7 @@
     "notification",
     "webhooks",
     "rate-limiting",
+    "cache",
     "i18n",
     "flags",
     "billing",

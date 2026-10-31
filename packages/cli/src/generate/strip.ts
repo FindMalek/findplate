@@ -1,14 +1,16 @@
 import { toLf } from "../platform"
 
-const START = /^\s*(?:\/\/|#|\{\/\*|<!--)\s*@findplate:([\w-]+)\s*(?:\*\/\}|-->)?\s*$/
+const START = /^\s*(?:\/\/|#|\{\/\*|<!--)\s*@findplate:([\w|-]+)\s*(?:\*\/\}|-->)?\s*$/
 const END = /^\s*(?:\/\/|#|\{\/\*|<!--)\s*@end\s*(?:\*\/\}|-->)?\s*$/
 /** One line owned by a module: `import { x } from "y" // @findplate:ai`. Import sorting keeps these attached. */
-const INLINE = /^(.*\S)\s*\/\/\s*@findplate:([\w-]+)\s*$/
+const INLINE = /^(.*\S)\s*\/\/\s*@findplate:([\w|-]+)\s*$/
+
+const isOn = (names: string, enabled: ReadonlySet<string>) => names.split("|").some((name) => enabled.has(name))
 
 /**
  * Keeps the code inside `@findplate:<module>` … `@end` markers when the module is enabled and drops it when not.
  * The marker lines themselves always go. Markers can be `//`, `#`, `{/* … *\/}` or `<!-- … -->` comments; they don't nest. A
- * trailing `// @findplate:<module>` marks a single line instead.
+ * trailing `// @findplate:<module>` marks a single line instead. `a|b` keeps the code when either module is on.
  */
 export function stripModules(source: string, enabled: ReadonlySet<string>): string {
   if (!source.includes("@findplate:")) return source
@@ -22,7 +24,7 @@ export function stripModules(source: string, enabled: ReadonlySet<string>): stri
     if (start) {
       if (open) throw new Error(`nested @findplate:${start[1]} inside @findplate:${open}`)
       open = start[1]!
-      skipping = enabled.has(open) ? null : open
+      skipping = isOn(open, enabled) ? null : open
       continue
     }
     if (END.test(line)) {
@@ -33,7 +35,7 @@ export function stripModules(source: string, enabled: ReadonlySet<string>): stri
     }
     const inline = line.match(INLINE)
     if (inline) {
-      if (!skipping && enabled.has(inline[2]!)) out.push(inline[1]!)
+      if (!skipping && isOn(inline[2]!, enabled)) out.push(inline[1]!)
       else removed = true
       continue
     }

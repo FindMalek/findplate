@@ -1,0 +1,57 @@
+---
+title: Cache
+description: A small typed cache with ttl and tag invalidation on Upstash Redis, in memory without it.
+---
+
+The `cache` module adds `packages/cache` and a `cache` service in the api context. Values are stored as JSON, expire after a ttl and can be dropped by tag. It is off by default.
+
+```bash
+findplate create my-app --modules cache
+```
+
+## Use it
+
+```ts
+const stars = await context.cache.wrap("repo:acme", () => fetchStars(), { ttlMs: 600_000, tags: ["repo"] })
+
+await context.cache.set("user:42", user, { ttlMs: 60_000, tags: ["user:42"] })
+const hit = await context.cache.get<User>("user:42")
+
+await context.cache.invalidateTag("user:42")
+await context.cache.delete("repo:acme")
+```
+
+`wrap` returns the cached value or runs the loader and stores its result. Without `ttlMs` a value stays until it is deleted or its tag is invalidated.
+
+## Backends
+
+With no keys the cache lives in memory of the api process. That is fine in dev and for one container. With several replicas use [Upstash Redis](https://upstash.com), which is reached over REST:
+
+```bash
+UPSTASH_REDIS_REST_URL=
+UPSTASH_REDIS_REST_TOKEN=
+```
+
+These are the same two keys the [`rate-limit`](/docs/rate-limiting) module reads, so with both on one Upstash database serves both. Redis keys are prefixed `cache:` and tags are kept as sets under `cache:tag:`.
+
+If Upstash is unreachable the cache acts as a miss and the error is logged, so a broken cache never fails a request.
+
+## What it adds
+
+Files and folders:
+
+- `packages/cache`
+
+Packages:
+
+- `@acme/cache`
+
+## Remove
+
+Run `findplate remove cache` in the project, see [add and doctor](/docs/add-doctor#findplate-remove). It deletes the files the module owns, strips its code from shared files and drops its packages, only where you haven't edited them.
+
+If you'd rather do it by hand: for a new project leave `cache` out of `--modules`. In a project that already exists, delete `packages/cache`, drop `@acme/cache` from the `package.json` files, remove the `cache` service from `packages/orpc/src/context.ts` and `apps/api/src/index.ts`, and fix what `pnpm check-types` reports.
+
+## Swap
+
+Any other store fits behind `CacheStore` (`get`, `set`, `delete`, `invalidateTag`). Pass it to `createCacheFromStore` in `apps/api/src/index.ts`.
