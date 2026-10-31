@@ -44,6 +44,7 @@ Each module has a page with what it adds, its env keys, how to remove it and how
 | [`cache`](/docs/cache) | everything | `packages/cache`. Typed cache with ttl and tag invalidation, on Upstash Redis or in memory |
 | [`flags`](/docs/flags) | everything | `packages/flags`. Typed feature flags: code defaults, env overrides, rollouts edited in the dashboard |
 | [`billing`](/docs/billing) | everything | needs `webhooks`. Subscriptions with Stripe or Polar: checkout, customer portal, plan entitlements |
+| [`orgs`](/docs/orgs) | everything | Teams with roles and email invites on the better-auth organization plugin, notes scoped to the active organization |
 | [`jobs`](/docs/jobs) | everything | `packages/jobs`. Background jobs and cron on your Postgres with pg-boss, optional separate worker |
 | [`trigger`](/docs/jobs#run-on-triggerdev) | everything | needs `jobs`. Runs the same jobs on trigger.dev, cloud or self-hosted, instead of pg-boss |
 | [`e2e`](/docs/testing) | everything | playwright smoke test of web, dashboard and api, plus its workflow |

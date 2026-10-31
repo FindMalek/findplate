@@ -1,0 +1,51 @@
+---
+title: Organizations
+description: Teams with roles and email invites on the better-auth organization plugin.
+---
+
+The `orgs` module adds organizations to the dashboard: create one, invite teammates by email, switch between your organizations and your personal space. It is the [better-auth organization plugin](https://better-auth.com/docs/plugins/organization) with the tables, the pages and the data scoping already wired. Off by default.
+
+```bash
+findplate create my-app --modules orgs
+```
+
+## What you get
+
+- tables `organization`, `member` and `invitation` (in `packages/db/src/schema/orgs.ts`), and `session.active_organization_id`
+- a `/team` page in the dashboard: create an organization, switch the active one, invite by email, remove members, cancel invites
+- `/accept-invitation/<id>`, the link in the invite mail (sent with the `notification` module when it is on, through the `adminInvite` template, otherwise the invite only shows up on the team page)
+- `orgClient` from `@acme/auth/orgs`, the browser client with the organization plugin
+
+## Scoped data
+
+The notes example follows the active organization:
+
+- with an organization active, `notes.*` reads and writes that organization's notes
+- with none active (the personal space), it is everything you wrote
+
+`organization_id` on a note is set when it is created. The active organization is only a pointer in the session, so every scoped call checks again that the caller is still a member (`packages/orpc/src/lib/org.ts`): someone removed from an organization loses its data on their next request.
+
+Scope your own tables the same way:
+
+```ts
+const organizationId = await activeOrganizationId(context)   // null in the personal space
+```
+
+## Role guard
+
+`orgProcedure` is `protectedProcedure` plus a membership check. The handler gets `context.org` as `{ organizationId, role }`:
+
+```ts
+export const removeAll = orgProcedure.handler(({ context }) => {
+  if (context.org.role !== "owner") throw new ORPCError("FORBIDDEN")
+  // ...
+})
+```
+
+## Customizing roles
+
+The plugin ships `owner`, `admin` and `member`. To add roles or change what each can do, pass an access control to `organization()` in `packages/auth/src/index.ts`, see the plugin docs.
+
+## Remove it
+
+Generate without the module. The migration `0004_orgs` adds the three tables and two columns, drop them in a new drizzle migration if it already ran.
