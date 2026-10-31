@@ -1,0 +1,48 @@
+---
+title: Trust
+description: What CI proves on every change, and how to check it yourself.
+---
+
+No claims here, only what the pipeline runs. The live results are on the [CI workflow](https://github.com/FindMalek/findplate/actions/workflows/ci.yml).
+
+[![ci](https://github.com/FindMalek/findplate/actions/workflows/ci.yml/badge.svg)](https://github.com/FindMalek/findplate/actions/workflows/ci.yml)
+
+## Module matrix
+
+CI generates a project for every cell, then runs `pnpm lint`, `pnpm check-types` and `pnpm test` in it. Cells build with `pnpm build` on `main` and for the first two rows on pull requests.
+
+| Cell | Modules |
+| --- | --- |
+| minimum | none |
+| all modules | every module in `template/findplate.json` |
+| one per module | the module plus what it `requires` |
+
+The `all modules` cell also runs the Playwright smoke test. A separate job checks that the schema and the checked in migrations agree, and another boots the [self-host compose](/docs/deploy#docker-compose) and calls `/health`.
+
+## Lighthouse
+
+CI builds `web` and `dashboard` with every module on, serves them, and audits four pages with Lighthouse. A score under the floor raises a warning.
+
+| Page | Performance | Accessibility | Best practices | SEO |
+| --- | --- | --- | --- | --- |
+| landing, roadmap, status | 0.8 | 0.9 | 0.9 | 0.9 |
+| dashboard sign-in | 0.8 | 0.9 | 0.9 | |
+
+The audit runs on the default preset. Raw reports are uploaded as the `lighthouse` artifact of each run.
+
+## Platforms
+
+| What | Covered |
+| --- | --- |
+| cli on os | ubuntu, macos, windows |
+| cli on node | 20.19, 22, 24 |
+| generated project | node 24, bun 1.4, postgres 17 |
+| self-host | docker compose on linux |
+
+## Check it yourself
+
+```bash
+npx findplate demo
+```
+
+Generates a sample project in a temp folder, starts its database with docker and runs the apps on `localhost:3000` and `localhost:3002`. Pass a folder to keep it: `npx findplate demo ./sample`.
