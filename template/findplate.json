@@ -403,6 +403,20 @@
       ],
       "packages": []
     },
+    "feedback": {
+      "label": "Feedback widget",
+      "hint": "a feedback button in web and dashboard that opens a GitHub issue in the project repo",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": [
+        "apps/web/components/feedback-button.tsx",
+        "apps/dashboard/components/feedback-button.tsx",
+        "packages/orpc/src/lib/feedback.ts",
+        "packages/orpc/src/lib/feedback.test.ts",
+        "packages/orpc/src/routers/feedback.ts"
+      ],
+      "packages": []
+    },
     "i18n": {
       "label": "Internationalization",
       "hint": "next-intl in web and dashboard, english and french, locale switcher, hreflang in the sitemap",
