@@ -1,0 +1,37 @@
+---
+title: API keys
+description: Personal bearer keys for the REST api, hashed, read or write, with expiry and revoke.
+---
+
+The `api-keys` module lets users call your REST api (`/v1`, docs at `/v1/docs`) without a browser session. It adds the `api_key` table, `apiKeys.*` procedures and an `/api-keys` page in the dashboard. Off by default.
+
+```bash
+findplate create my-app --modules api-keys
+curl -H "Authorization: Bearer ak_..." https://api.example.com/v1/me
+```
+
+## How keys work
+
+- a key is `ak_` plus 32 random bytes. Only its sha256 is stored, the key is shown once when it is created
+- `read` keys can send `GET` and `HEAD`, `write` keys everything (checked in `apps/api/src/server.ts`, a read key gets `403` on a write)
+- an optional expiry (`expiresInDays`), and revoking is immediate
+- `last used` is kept, updated at most once a minute
+- keys never carry the admin role: a key owned by an admin still gets `403` on admin procedures
+- keys cannot create or revoke keys, that needs the browser session
+- calls with a key skip the `x-csrf-token` header (it only protects cookies), and share the rate limit of their owner when `rate-limit` is on
+
+A call with a key runs as its owner, so anything you gate on `context.user` works unchanged. `context.apiKey` is `{ id, scope }` for key calls and `null` for sessions, use it to tell them apart.
+
+## Procedures
+
+| Procedure | What it does |
+| --- | --- |
+| `apiKeys.list` | your active keys (never the secret) |
+| `apiKeys.create` | `{ name, scope, expiresInDays? }`, answers `{ id, key }` once |
+| `apiKeys.revoke` | `{ id }` |
+
+With the `audit-log` module on, creating and revoking keys is recorded.
+
+## Remove it
+
+Generate without the module. The migration `0006_api_keys` creates `api_key`, drop it in a new drizzle migration if it already ran.

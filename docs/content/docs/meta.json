@@ -35,6 +35,7 @@
     "billing",
     "orgs",
     "audit-log",
+    "api-keys",
     "jobs",
     "logger",
     "---Design---",
