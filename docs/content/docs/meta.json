@@ -38,6 +38,7 @@
     "orgs",
     "audit-log",
     "api-keys",
+    "impersonation",
     "compliance",
     "inbox",
     "feedback",
