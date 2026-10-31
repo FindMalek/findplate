@@ -31,6 +31,7 @@
     "flags",
     "billing",
     "orgs",
+    "audit-log",
     "jobs",
     "logger",
     "---Design---",

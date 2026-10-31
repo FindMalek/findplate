@@ -1,0 +1,35 @@
+---
+title: Audit log
+description: An append-only record of who did what, with an admin viewer.
+---
+
+The `audit-log` module records what users and admins do, so you can answer "who deleted this" later. It adds the `audit_log` table, a helper for your procedures, `admin.audit.list` (also `GET /v1/admin/audit`) and an admin-only `/audit-log` page with an action filter. Off by default.
+
+```bash
+findplate create my-app --modules audit-log
+```
+
+## Record an action
+
+Call `audit` from any procedure, after the thing happened:
+
+```ts
+import { audit } from "../lib/audit"
+
+await audit(context, { action: "project.delete", targetId: project.id, metadata: { name: project.name } })
+```
+
+Use `noun.verb` names so the filter works on prefixes (`project.` lists every project action). The row stores the signed-in user, the first hop of `x-forwarded-for` (set by Dokploy, Vercel and Cloudflare, so only trust it behind one of them) and the time.
+
+The template already records `note.delete` and `profile.update`.
+
+## Good to know
+
+- append only: no procedure updates or deletes a row. For a hard guarantee also revoke `update` and `delete` on `audit_log` for the api's database role
+- a failing audit write is logged and never fails the action it describes
+- deleting a user keeps their rows, the actor becomes empty
+- there is no retention job. Prune old rows with a cron job from the `jobs` module when the table grows
+
+## Remove it
+
+Generate without the module. The migration `0005_audit` creates `audit_log`, drop the table in a new drizzle migration if it already ran.

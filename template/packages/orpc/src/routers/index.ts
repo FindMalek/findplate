@@ -1,5 +1,6 @@
 import type { RouterClient } from "@orpc/server"
 import { adminRouter, meRouter } from "./account"
+import { auditRouter } from "./audit" // @findplate:audit-log
 import { billingRouter } from "./billing" // @findplate:billing
 import { flagsRouter } from "./flags" // @findplate:flags
 import { jobsRouter } from "./jobs" // @findplate:jobs
@@ -12,6 +13,7 @@ import { waitlistRouter } from "./waitlist" // @findplate:waitlist
 
 const admin = {
   ...adminRouter,
+  audit: auditRouter, // @findplate:audit-log
   notification: notificationRouter, // @findplate:notification
 }
 

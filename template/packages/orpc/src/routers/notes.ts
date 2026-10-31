@@ -5,6 +5,7 @@ import { generateText } from "ai" // @findplate:ai
 import { and, count, desc, eq, type SQL } from "drizzle-orm"
 import { z } from "zod"
 import type { Context } from "../context"
+import { audit } from "../lib/audit" // @findplate:audit-log
 import { activeOrganizationId } from "../lib/org" // @findplate:orgs
 import { protectedProcedure } from "../procedures"
 
@@ -82,6 +83,7 @@ export const notesRouter = {
     .output(z.object({ ok: z.literal(true) }))
     .handler(async ({ context, input }) => {
       await context.db.delete(notes).where(await mine(context, input.id))
+      await audit(context, { action: "note.delete", targetId: input.id }) // @findplate:audit-log
       return { ok: true as const }
     }),
 

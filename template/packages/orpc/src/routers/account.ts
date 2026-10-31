@@ -4,6 +4,7 @@ import { user } from "@acme/db"
 import { ORPCError } from "@orpc/server"
 import { count, desc, eq } from "drizzle-orm"
 import { z } from "zod"
+import { audit } from "../lib/audit" // @findplate:audit-log
 import { adminProcedure, protectedProcedure } from "../procedures"
 
 // @findplate:storage
@@ -33,6 +34,7 @@ export const meRouter = {
         .update(user)
         .set({ name: input.name, updatedAt: context.now() })
         .where(eq(user.id, context.user.id))
+      await audit(context, { action: "profile.update", targetId: context.user.id }) // @findplate:audit-log
       return { ok: true as const }
     }),
 
