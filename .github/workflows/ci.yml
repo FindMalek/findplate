@@ -240,7 +240,8 @@ jobs:
         run: bun run build
         working-directory: packages/cli
       - name: Test
-        run: bun test
+        # windows runners are slow: generating a project takes more than bun's 5s default
+        run: bun test --timeout 30000
         working-directory: packages/cli
       - name: Smoke the built cli
         run: node .github/scripts/cli-smoke.mjs
