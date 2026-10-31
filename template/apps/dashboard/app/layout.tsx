@@ -1,4 +1,5 @@
 import "@acme/ui/globals.css"
+import { ConsentBanner } from "@acme/compliance/banner" // @findplate:compliance
 import { QueryProvider } from "@acme/orpc/react"
 import { Toaster } from "@acme/ui/components/sonner"
 import { TooltipProvider } from "@acme/ui/components/tooltip"
@@ -6,6 +7,7 @@ import { cn } from "@acme/ui/lib/utils"
 import type { Metadata } from "next"
 import { getLocale } from "next-intl/server" // @findplate:i18n
 import { Analytics } from "@/components/analytics" // @findplate:databuddy
+import { FeedbackButton } from "@/components/feedback-button" // @findplate:feedback
 import { ThemeProvider } from "@/components/theme-provider"
 import { Umami } from "@/components/umami" // @findplate:umami
 import { dashboardUrl, SITE } from "@/lib/site"
@@ -38,8 +40,14 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           {/* @end */}
           <QueryProvider>
             <TooltipProvider>{children}</TooltipProvider>
+            {/* @findplate:feedback */}
+            <FeedbackButton />
+            {/* @end */}
           </QueryProvider>
           <Toaster position="top-center" />
+          {/* @findplate:compliance */}
+          <ConsentBanner />
+          {/* @end */}
         </ThemeProvider>
       </body>
     </html>

@@ -218,6 +218,28 @@
       ],
       "packages": []
     },
+    "mobile": {
+      "label": "Mobile app",
+      "hint": "an Expo app in apps/mobile with the typed api client, better-auth sign in and the notes example",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": ["apps/mobile"],
+      "packages": [
+        "@better-auth/expo",
+        "expo",
+        "expo-constants",
+        "expo-linking",
+        "expo-network",
+        "expo-router",
+        "expo-secure-store",
+        "expo-status-bar",
+        "expo-web-browser",
+        "react-native",
+        "react-native-safe-area-context",
+        "react-native-screens"
+      ],
+      "scripts": { "dev:mobile": "pnpm --filter mobile start" }
+    },
     "blog": {
       "label": "Blog and changelog",
       "hint": "mdx posts in the web app with an rss feed, og images, sitemap entries and a changelog page",
@@ -391,6 +413,34 @@
         "apps/dashboard/app/(app)/inbox"
       ],
       "packages": []
+    },
+    "feedback": {
+      "label": "Feedback widget",
+      "hint": "a feedback button in web and dashboard that opens a GitHub issue in the project repo",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": [
+        "apps/web/components/feedback-button.tsx",
+        "apps/dashboard/components/feedback-button.tsx",
+        "packages/orpc/src/lib/feedback.ts",
+        "packages/orpc/src/lib/feedback.test.ts",
+        "packages/orpc/src/routers/feedback.ts"
+      ],
+      "packages": []
+    },
+    "compliance": {
+      "label": "Compliance",
+      "hint": "cookie consent that gates analytics, data export and account deletion, privacy and terms page stubs",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": [
+        "packages/compliance",
+        "packages/orpc/src/routers/privacy.ts",
+        "apps/dashboard/components/privacy-panel.tsx",
+        "apps/web/app/privacy",
+        "apps/web/app/terms"
+      ],
+      "packages": ["@acme/compliance"]
     },
     "search": {
       "label": "Search",

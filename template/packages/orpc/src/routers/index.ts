@@ -3,12 +3,14 @@ import { adminRouter, meRouter } from "./account"
 import { apiKeysRouter } from "./api-keys" // @findplate:api-keys
 import { auditRouter } from "./audit" // @findplate:audit-log
 import { billingRouter } from "./billing" // @findplate:billing
+import { feedbackRouter } from "./feedback" // @findplate:feedback
 import { flagsRouter } from "./flags" // @findplate:flags
 import { inboxAdminRouter, inboxRouter } from "./inbox" // @findplate:inbox
 import { jobsRouter } from "./jobs" // @findplate:jobs
 import { notesRouter } from "./notes"
 import { notesSearchRouter } from "./notes-search" // @findplate:search
 import { notificationRouter } from "./notification" // @findplate:notification
+import { privacyRouter } from "./privacy" // @findplate:compliance
 import { publicRouter } from "./public"
 import { roadmapRouter } from "./roadmap" // @findplate:roadmap
 import { statusRouter } from "./status" // @findplate:status
@@ -29,8 +31,14 @@ const admin = {
 /** One router, namespaced: `public` needs no session, everything else does (and `admin` needs the admin role). */
 export const appRouter = {
   public: publicRouter,
+  feedback: feedbackRouter, // @findplate:feedback
   me: meRouter,
+<<<<<<< HEAD
   notes,
+=======
+  notes: notesRouter,
+  privacy: privacyRouter, // @findplate:compliance
+>>>>>>> origin/main
   admin,
   apiKeys: apiKeysRouter, // @findplate:api-keys
   billing: billingRouter, // @findplate:billing

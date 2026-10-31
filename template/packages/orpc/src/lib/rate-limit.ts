@@ -20,6 +20,7 @@ export const RATE_LIMITS = {
   default: { limit: 120, windowMs: 60_000 },
   auth: { limit: 10, windowMs: 60_000 },
   waitlist: { limit: 5, windowMs: 10 * 60_000 },
+  feedback: { limit: 3, windowMs: 10 * 60_000 }, // @findplate:feedback
 } satisfies Record<string, RateLimitRule>
 
 const MAX_KEYS = 10_000

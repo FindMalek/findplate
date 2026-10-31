@@ -1,9 +1,11 @@
 import "@acme/ui/globals.css"
+import { ConsentBanner } from "@acme/compliance/banner" // @findplate:compliance
 import { QueryProvider } from "@acme/orpc/react"
 import { cn } from "@acme/ui/lib/utils"
 import type { Metadata } from "next"
 import { getLocale } from "next-intl/server" // @findplate:i18n
 import { Analytics } from "@/components/analytics" // @findplate:databuddy
+import { FeedbackButton } from "@/components/feedback-button" // @findplate:feedback
 import { ThemeProvider } from "@/components/theme-provider"
 import { Umami } from "@/components/umami" // @findplate:umami
 import { siteUrl } from "@/lib/seo"
@@ -38,7 +40,13 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
               <div className="absolute inset-0 bg-dots" />
             </div>
             {children}
+            {/* @findplate:feedback */}
+            <FeedbackButton />
+            {/* @end */}
           </QueryProvider>
+          {/* @findplate:compliance */}
+          <ConsentBanner />
+          {/* @end */}
         </ThemeProvider>
       </body>
     </html>
