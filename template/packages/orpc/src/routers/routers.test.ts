@@ -68,6 +68,21 @@ test("admin.users is for admins only", async () => {
   expect(total).toBeGreaterThanOrEqual(2)
 })
 
+// @findplate:audit-log
+test("audit log: actions are recorded and only admins can read them", async () => {
+  const { client } = await app.signUp("audited@acme.test")
+  const admin = await app.signUp("audit-admin@acme.test", { role: "admin" })
+  const note = await client.notes.create({ title: "temp" })
+  await client.notes.remove({ id: note.id })
+
+  await expect(client.admin.audit.list({})).rejects.toMatchObject({ code: "FORBIDDEN" })
+  const entries = await admin.client.admin.audit.list({ action: "note." })
+  expect(entries).toContainEqual(
+    expect.objectContaining({ action: "note.delete", targetId: note.id, actorEmail: "audited@acme.test" }),
+  )
+})
+// @end
+
 // @findplate:orgs
 test("orgs: notes follow the active organization and only members can switch to it", async () => {
   const ada = await app.signUp("ada-org@acme.test")

@@ -328,6 +328,21 @@
       ],
       "packages": []
     },
+    "audit-log": {
+      "label": "Audit log",
+      "hint": "append-only record of who did what, with an admin viewer and a helper for your procedures",
+      "group": "platform",
+      "profiles": ["everything"],
+      "paths": [
+        "packages/db/src/schema/audit.ts",
+        "packages/db/drizzle/0005_audit.sql",
+        "packages/db/drizzle/meta/0005_snapshot.json",
+        "packages/orpc/src/lib/audit.ts",
+        "packages/orpc/src/routers/audit.ts",
+        "apps/dashboard/app/(app)/audit-log"
+      ],
+      "packages": []
+    },
     "i18n": {
       "label": "Internationalization",
       "hint": "next-intl in web and dashboard, english and french, locale switcher, hreflang in the sitemap",

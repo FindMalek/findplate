@@ -1,4 +1,5 @@
 export * from "./app"
+export * from "./audit" // @findplate:audit-log
 export * from "./auth"
 export * from "./billing" // @findplate:billing
 export * from "./flags" // @findplate:flags

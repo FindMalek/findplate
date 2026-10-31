@@ -15,6 +15,7 @@ export const NAV: NavItem[] = [
   { href: "/billing", label: "Billing", icon: SettingsIcon }, // @findplate:billing
   { href: "/team", label: "Team", icon: UsersIcon }, // @findplate:orgs
   { href: "/users", label: "Users", icon: UsersIcon, admin: true },
+  { href: "/audit-log", label: "Audit log", icon: SettingsIcon, admin: true }, // @findplate:audit-log
   { href: "/waitlist", label: "Waitlist", icon: UsersIcon, admin: true }, // @findplate:waitlist
   { href: "/flags", label: "Flags", icon: SettingsIcon, admin: true }, // @findplate:flags
   { href: "/settings", label: "Settings", icon: SettingsIcon },
