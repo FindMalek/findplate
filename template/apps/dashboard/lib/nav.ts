@@ -13,6 +13,7 @@ export const NAV: NavItem[] = [
   { href: "/", label: "Overview", icon: LayoutDashboardIcon },
   { href: "/notes", label: "Notes", icon: NotebookPenIcon },
   { href: "/billing", label: "Billing", icon: SettingsIcon }, // @findplate:billing
+  { href: "/api-keys", label: "API keys", icon: SettingsIcon }, // @findplate:api-keys
   { href: "/team", label: "Team", icon: UsersIcon }, // @findplate:orgs
   { href: "/users", label: "Users", icon: UsersIcon, admin: true },
   { href: "/audit-log", label: "Audit log", icon: SettingsIcon, admin: true }, // @findplate:audit-log

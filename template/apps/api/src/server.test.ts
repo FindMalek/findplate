@@ -43,3 +43,22 @@ test("sign up over http, then use the session cookie on the REST api", async () 
 test("unknown paths are a 404", async () => {
   expect((await call("/nope")).status).toBe(404)
 })
+
+// @findplate:api-keys
+test("a bearer key works without a cookie, a read key cannot write, a revoked key stops", async () => {
+  const owner = await app.signUp("keys@acme.test")
+  const read = await owner.client.apiKeys.create({ name: "ci", scope: "read" })
+  const bearer = { authorization: `Bearer ${read.key}` }
+
+  expect((await call("/v1/me", { headers: bearer })).status).toBe(200)
+  const write = await call("/v1/notes", {
+    method: "POST",
+    headers: { ...bearer, "content-type": "application/json" },
+    body: JSON.stringify({ title: "x" }),
+  })
+  expect(write.status).toBe(403)
+
+  await owner.client.apiKeys.revoke({ id: read.id })
+  expect((await call("/v1/me", { headers: bearer })).status).toBe(401)
+})
+// @end

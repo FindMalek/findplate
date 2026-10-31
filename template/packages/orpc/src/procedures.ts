@@ -24,10 +24,11 @@ export const publicProcedure = o.use(logErrors)
  * cross-site form can't. That covers the REST (OpenAPI) routes too, not just RPC.
  */
 const requireSession = o.middleware(async ({ context, next }) => {
-  if (context.headers.get("x-csrf-token") !== "orpc") {
+  if (!context.session) throw new ORPCError("UNAUTHORIZED", { message: "Please sign in." })
+  // The header only protects cookies: an API key call carries none.
+  if (!context.apiKey && context.headers.get("x-csrf-token") !== "orpc") {
     throw new ORPCError("FORBIDDEN", { message: "Missing the x-csrf-token header." })
   }
-  if (!context.session) throw new ORPCError("UNAUTHORIZED", { message: "Please sign in." })
   return next({ context: { session: context.session, user: context.session.user } })
 })
 
