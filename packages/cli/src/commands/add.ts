@@ -9,6 +9,7 @@ import { toNames } from "../generate/rename"
 import { capture } from "../git"
 import { loadManifest } from "../manifest"
 import { templateDir } from "../paths"
+import { RM_OPTIONS, toPosix } from "../platform"
 import { listPresets } from "../presets"
 import { has, run } from "../run"
 import { loadState, type ProjectState, saveState } from "../state"
@@ -112,6 +113,6 @@ export async function addCommand(flags: AddFlags) {
     if (flags.install && (await has("pnpm"))) await run("pnpm", ["install"], dir)
     else p.log.info("Run pnpm install to pick up the new packages")
   } finally {
-    rmSync(scratch, { recursive: true, force: true })
+    rmSync(scratch, RM_OPTIONS)
   }
 }

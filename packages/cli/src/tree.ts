@@ -2,6 +2,7 @@ import { createHash } from "node:crypto"
 import { existsSync, readdirSync, readFileSync } from "node:fs"
 import { join, relative } from "node:path"
 import type { Tree } from "./add-plan"
+import { toPosix } from "./platform"
 
 /** Never copied from the regenerated project: local secrets, state, the lockfile pnpm owns, build output. */
 const IGNORED = new Set([
@@ -23,7 +24,7 @@ export function readTree(root: string): Tree {
       if (IGNORED.has(entry.name) || entry.name.endsWith(".tsbuildinfo") || entry.name === "next-env.d.ts") continue
       const path = join(dir, entry.name)
       if (entry.isDirectory()) walk(path)
-      else tree.set(relative(root, path), createHash("sha1").update(readFileSync(path)).digest("hex"))
+      else tree.set(toPosix(relative(root, path)), createHash("sha1").update(readFileSync(path)).digest("hex"))
     }
   }
   if (existsSync(root)) walk(root)

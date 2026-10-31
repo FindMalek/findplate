@@ -216,3 +216,61 @@ jobs:
             ${{ env.PROJECT }}/web.log
             ${{ env.PROJECT }}/dashboard.log
           if-no-files-found: ignore
+
+  cli:
+    name: cli (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: pnpm install --frozen-lockfile --filter findplate...
+      - name: Build
+        run: bun run build
+        working-directory: packages/cli
+      - name: Test
+        # windows runners are slow: generating a project takes more than bun's 5s default
+        run: bun test --timeout 30000
+        working-directory: packages/cli
+      - name: Smoke the built cli
+        run: node .github/scripts/cli-smoke.mjs
+
+  cli-node:
+    name: cli (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        # node 24 is covered by the ubuntu job of `cli`, which runs the same dist
+        node: ["20.19.0", "22"]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: pnpm
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: pnpm install --frozen-lockfile --filter findplate...
+      - name: Build
+        run: bun run build
+        working-directory: packages/cli
+      - uses: actions/setup-node@v7
+        with:
+          node-version: ${{ matrix.node }}
+      - name: Smoke the built cli
+        run: node .github/scripts/cli-smoke.mjs

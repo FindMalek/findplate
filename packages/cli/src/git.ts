@@ -1,4 +1,5 @@
 import { execFile } from "node:child_process"
+import { spawnPlan } from "./platform"
 import { run } from "./run"
 
 export interface GitProbe {
@@ -16,8 +17,11 @@ export function planGitInit(probe: GitProbe): GitPlan {
 }
 
 export function capture(cmd: string, args: string[], cwd: string): Promise<string | undefined> {
+  const plan = spawnPlan(cmd, args)
   return new Promise((resolve) =>
-    execFile(cmd, args, { cwd }, (error, stdout) => resolve(error ? undefined : stdout.trim())),
+    execFile(plan.cmd, plan.args, { cwd, shell: plan.shell }, (error, stdout) =>
+      resolve(error ? undefined : stdout.trim()),
+    ),
   )
 }
 
