@@ -4,6 +4,7 @@ import { basename, join, relative } from "node:path"
 import { loadManifest } from "../manifest"
 import { toPosix } from "../platform"
 import { type Preset, presetTheme } from "../presets"
+import { brandSource } from "./brand"
 import { buildEnv } from "./env"
 import { fontsModule } from "./fonts"
 import { ogColors, ogEntry } from "./og"
@@ -133,6 +134,18 @@ export function generate(opts: GenerateOptions) {
       readFileSync(site, "utf8")
         .replace(/tagline: ".*",/, () => tagline)
         .replace(/og: \{[^}]*\},/, () => ogEntryText),
+    )
+  }
+
+  if (opts.modules.has("notification")) {
+    const brand = join(target, "packages/notification/src/brand.ts")
+    writeFileSync(
+      brand,
+      brandSource(readFileSync(brand, "utf8"), {
+        css: presetTheme(opts.preset.id),
+        sans: opts.preset.fonts.sans,
+        mono: opts.preset.fonts.mono,
+      }),
     )
   }
 

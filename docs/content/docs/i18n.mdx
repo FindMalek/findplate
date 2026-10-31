@@ -1,0 +1,53 @@
+---
+title: Internationalization
+description: next-intl in web and dashboard with English and French, a language switcher and hreflang in the sitemap.
+---
+
+The `i18n` module adds [next-intl](https://next-intl.dev) to the landing page and the dashboard. English and French ship as an example. It is off by default.
+
+```bash
+findplate create my-app --modules i18n
+```
+
+## How locales are chosen
+
+| App | Language comes from | Why |
+| --- | --- | --- |
+| web | the url: `/` is English, `/fr` is French | one url, one language, so search engines index each |
+| dashboard | the language cookie, else the browser's `Accept-Language` | it is private, there is nothing to index |
+
+The web app gets its `[locale]` style routing from `apps/web/proxy.ts`. `/fr/roadmap` is rewritten to the existing `/roadmap` page with an `x-locale` header, `/en/roadmap` redirects to `/roadmap`, and a visitor who chose French before is sent from `/roadmap` to `/fr/roadmap`. No page moves into a `[locale]` folder, so existing routes keep working and removing the module is just deleting files.
+
+Reading the language from the request makes every web page rendered per request, `/roadmap` and `/status` included, instead of prerendered at build.
+
+## Messages
+
+Messages live in `packages/i18n/src/messages/<locale>.json` and are typed from `en.json`: a key that is missing in `fr.json`, or a `t("typo")`, fails `pnpm check-types`.
+
+```tsx
+import { getTranslations } from "next-intl/server"
+
+const t = await getTranslations("hero")
+t("getStarted") // "Commencer" on /fr
+```
+
+Client components use `useTranslations` the same way once a `NextIntlClientProvider` wraps them. The two example strings the module translates are the hero in `apps/web/components/hero.tsx` and the settings row in the dashboard, translate more by moving a string into the json files.
+
+## Add a language
+
+1. add the code to `LOCALES` and its name to `LOCALE_NAMES` in `packages/i18n/src/config.ts`
+2. add `messages/<code>.json` with the same keys and register it in `MESSAGES` in `packages/i18n/src/index.ts`
+
+The switcher, the proxy, the sitemap and the dashboard pick it up.
+
+## Language switcher
+
+`LocaleSwitcher` from `@acme/i18n/switcher` is a dropdown built from `@acme/ui` components. It sits in the web footer, and the dashboard has a language row in Settings (`LocaleSetting`). Each language is shown in its own name.
+
+## SEO
+
+`apps/web/app/sitemap.ts` lists every page in every language with `hreflang` alternates and an `x-default`, so `/roadmap` and `/fr/roadmap` point at each other. Email templates are not touched, they stay in English until you translate them.
+
+## Env keys
+
+None.

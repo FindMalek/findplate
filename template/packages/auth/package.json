@@ -9,6 +9,7 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
+    "test": "bun test",
     "auth:schema": "pnpm dlx auth@1.7.10 generate --config auth.config.ts --output ../db/src/schema/auth.ts -y"
   },
   "dependencies": {

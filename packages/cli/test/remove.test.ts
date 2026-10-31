@@ -61,21 +61,21 @@ test("remove undoes add and matches a fresh project without the module", async (
   const target = join(work, "demo")
   await create({ ...base, dir: fresh, modules: "" })
   await create({ ...base, dir: target, modules: "" })
-  await addCommand({ dir: target, modules: ["telegram"], install: false, force: true, yes: true })
-  expect(loadState(target)?.answers.modules).toEqual(["telegram", "webhooks"])
-  expect(existsSync(join(target, "packages/telegram"))).toBe(true)
+  await addCommand({ dir: target, modules: ["notification"], install: false, force: true, yes: true })
+  expect(loadState(target)?.answers.modules).toEqual(["notification", "webhooks"])
+  expect(existsSync(join(target, "packages/notification"))).toBe(true)
 
   await expect(
     removeCommand({ dir: target, modules: ["webhooks"], force: true, dryRun: false, dropMigrations: false }),
-  ).rejects.toThrow("telegram requires webhooks")
+  ).rejects.toThrow("notification requires webhooks")
 
   const flags = { dir: target, force: true, dryRun: false, dropMigrations: false }
-  await removeCommand({ ...flags, modules: ["telegram", "webhooks"], dryRun: true })
-  expect(existsSync(join(target, "packages/telegram"))).toBe(true)
+  await removeCommand({ ...flags, modules: ["notification", "webhooks"], dryRun: true })
+  expect(existsSync(join(target, "packages/notification"))).toBe(true)
 
-  await removeCommand({ ...flags, modules: ["telegram", "webhooks"] })
+  await removeCommand({ ...flags, modules: ["notification", "webhooks"] })
   expect(loadState(target)?.answers.modules).toEqual([])
-  expect(existsSync(join(target, "packages/telegram"))).toBe(false)
+  expect(existsSync(join(target, "packages/notification"))).toBe(false)
   expect(files(target)).toEqual(files(fresh))
 }, 30_000)
 

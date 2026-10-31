@@ -1,26 +1,29 @@
 import { Button } from "@acme/ui/components/button"
 import { ArrowRightIcon } from "lucide-react"
 import type { Route } from "next"
+import { heroCopy } from "@/i18n/copy" // @findplate:i18n
 import { SITE } from "@/lib/site"
 import { StatusWindow } from "./status-window"
 import { WaitlistForm } from "./waitlist-form" // @findplate:waitlist
 import { Wordmark } from "./wordmark"
 
-export function Hero({ dashboardUrl, docsUrl }: { dashboardUrl: string; docsUrl: string }) {
+export async function Hero({ dashboardUrl, docsUrl }: { dashboardUrl: string; docsUrl: string }) {
+  const copy = { badge: SITE.badge, start: "Get started", docs: "API docs" }
+  Object.assign(copy, await heroCopy()) // @findplate:i18n
   return (
     <section className="mx-auto flex w-full max-w-4xl flex-col items-center gap-6 px-6 py-10 text-center">
       <span className="inline-flex items-center gap-1.5 border bg-card/80 px-2.5 py-0.5 font-mono text-muted-foreground text-xs uppercase tracking-wide">
         <span className="size-1.5 rounded-full bg-primary" />
-        {SITE.badge}
+        {copy.badge}
       </span>
       <Wordmark text={SITE.name} />
       <p className="max-w-lg text-lg text-muted-foreground leading-relaxed">{SITE.tagline}</p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         <Button size="lg" render={<a href={`${dashboardUrl}/sign-up` as Route} />} nativeButton={false}>
-          Get started <ArrowRightIcon data-icon="inline-end" />
+          {copy.start} <ArrowRightIcon data-icon="inline-end" />
         </Button>
         <Button size="lg" variant="outline" render={<a href={docsUrl} />} nativeButton={false}>
-          API docs
+          {copy.docs}
         </Button>
       </div>
       {/* @findplate:waitlist */}

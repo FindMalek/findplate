@@ -24,11 +24,13 @@
     "waitlist",
     "roadmap",
     "status",
-    "whatsapp",
-    "telegram",
+    "notification",
     "webhooks",
-    "email",
     "rate-limiting",
+    "i18n",
+    "flags",
+    "jobs",
+    "logger",
     "---Design---",
     "presets",
     "theming",
@@ -42,6 +44,7 @@
     "---Agents and CI---",
     "agents",
     "llm",
+    "testing",
     "ci"
   ]
 }

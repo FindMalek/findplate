@@ -29,15 +29,6 @@
       "paths": ["packages/storage"],
       "packages": ["@acme/storage"]
     },
-    "whatsapp": {
-      "label": "WhatsApp",
-      "hint": "notify() through Kapso template messages",
-      "group": "notifications",
-      "profiles": ["everything"],
-      "paths": ["packages/whatsapp", "packages/orpc/src/routers/whatsapp.ts"],
-      "packages": ["@acme/whatsapp", "@kapso/whatsapp-cloud-api"],
-      "keys": [{ "env": "KAPSO_API_KEY", "label": "Kapso API key", "url": "https://app.kapso.ai" }]
-    },
     "webhooks": {
       "label": "Webhooks",
       "hint": "signature checks for inbound webhooks (hmac, svix, secret header)",
@@ -46,30 +37,32 @@
       "paths": ["packages/webhooks"],
       "packages": ["@acme/webhooks"]
     },
-    "telegram": {
-      "label": "Telegram bot",
-      "hint": "notify() to a chat, webhook route and setup command",
+    "notification": {
+      "label": "Notification",
+      "hint": "email, Telegram and WhatsApp behind one notifier, with branded react-email templates and a preview app",
       "group": "notifications",
       "profiles": ["everything"],
       "requires": ["webhooks"],
-      "paths": ["packages/telegram", "packages/orpc/src/routers/telegram.ts"],
-      "packages": ["@acme/telegram"],
+      "paths": ["packages/notification", "packages/orpc/src/routers/notification.ts", "apps/email"],
+      "packages": [
+        "@acme/notification",
+        "@kapso/whatsapp-cloud-api",
+        "@opencoredev/email-sdk",
+        "@react-email/components",
+        "@react-email/render",
+        "@react-email/ui",
+        "react-email"
+      ],
+      "scripts": { "dev:email": "turbo dev -F email", "email:export": "turbo export -F email" },
       "keys": [
+        { "env": "RESEND_API_KEY", "label": "Resend API key (email)", "url": "https://resend.com/api-keys" },
         {
           "env": "TELEGRAM_BOT_TOKEN",
           "label": "Telegram bot token (from @BotFather)",
           "url": "https://t.me/BotFather"
-        }
+        },
+        { "env": "KAPSO_API_KEY", "label": "Kapso API key (WhatsApp)", "url": "https://app.kapso.ai" }
       ]
-    },
-    "email": {
-      "label": "Email",
-      "hint": "react-email templates sent through email-sdk and Resend",
-      "group": "notifications",
-      "profiles": ["everything"],
-      "paths": ["packages/email", "packages/orpc/src/routers/email.ts"],
-      "packages": ["@acme/email", "@opencoredev/email-sdk", "@react-email/render"],
-      "keys": [{ "env": "RESEND_API_KEY", "label": "Resend API key", "url": "https://resend.com/api-keys" }]
     },
     "docs": {
       "label": "Docs site",
@@ -105,7 +98,13 @@
       "server": { "label": "a self-hosted Umami server", "url": "https://umami.is/docs/install" },
       "paths": ["apps/web/components/umami.tsx", "apps/dashboard/components/umami.tsx"],
       "packages": [],
-      "keys": [{ "env": "NEXT_PUBLIC_UMAMI_WEBSITE_ID", "label": "Umami website id", "url": "https://umami.is/docs/add-a-website" }]
+      "keys": [
+        {
+          "env": "NEXT_PUBLIC_UMAMI_WEBSITE_ID",
+          "label": "Umami website id",
+          "url": "https://umami.is/docs/add-a-website"
+        }
+      ]
     },
     "openobserve": {
       "label": "OpenObserve",
@@ -122,21 +121,21 @@
       "group": "ops",
       "profiles": [],
       "server": { "label": "a self-hosted GlitchTip server", "url": "https://glitchtip.com/documentation/install" },
-      "paths": [
-        "apps/web/instrumentation.ts",
-        "apps/web/instrumentation-client.ts",
-        "apps/dashboard/instrumentation.ts",
-        "apps/dashboard/instrumentation-client.ts"
-      ],
+      "paths": ["apps/web/instrumentation-client.ts", "apps/dashboard/instrumentation-client.ts"],
       "packages": ["@sentry/bun", "@sentry/nextjs"],
-      "keys": [{ "env": "GLITCHTIP_DSN", "label": "GlitchTip DSN", "url": "https://glitchtip.com/documentation/install" }]
+      "keys": [
+        { "env": "GLITCHTIP_DSN", "label": "GlitchTip DSN", "url": "https://glitchtip.com/documentation/install" }
+      ]
     },
     "infisical": {
       "label": "Infisical",
       "hint": "self-hosted secrets, dev scripts run through the infisical cli",
       "group": "ops",
       "profiles": [],
-      "server": { "label": "a self-hosted Infisical server", "url": "https://infisical.com/docs/self-hosting/overview" },
+      "server": {
+        "label": "a self-hosted Infisical server",
+        "url": "https://infisical.com/docs/self-hosting/overview"
+      },
       "paths": [".infisical.json"],
       "packages": [],
       "scripts": { "dev:secrets": "infisical run --env=dev -- turbo dev" }
@@ -151,7 +150,11 @@
       "paths": ["apps/api/src/langfuse.ts"],
       "packages": ["@langfuse/otel", "@langfuse/vercel-ai-sdk", "@opentelemetry/sdk-node"],
       "keys": [
-        { "env": "LANGFUSE_PUBLIC_KEY", "label": "Langfuse public key", "url": "https://langfuse.com/docs/get-started" },
+        {
+          "env": "LANGFUSE_PUBLIC_KEY",
+          "label": "Langfuse public key",
+          "url": "https://langfuse.com/docs/get-started"
+        },
         { "env": "LANGFUSE_SECRET_KEY", "label": "Langfuse secret key", "url": "https://langfuse.com/docs/get-started" }
       ]
     },
@@ -207,8 +210,72 @@
       "hint": "per route and ip limits on the api, in memory or on Upstash Redis",
       "group": "platform",
       "profiles": ["standard", "everything"],
-      "paths": ["apps/api/src/rate-limit.ts", "packages/orpc/src/lib/rate-limit.ts", "packages/orpc/src/lib/rate-limit.test.ts"],
+      "paths": [
+        "apps/api/src/rate-limit.ts",
+        "apps/api/src/rate-limit.test.ts",
+        "packages/orpc/src/lib/rate-limit.ts",
+        "packages/orpc/src/lib/rate-limit.test.ts"
+      ],
       "packages": []
+    },
+    "flags": {
+      "label": "Feature flags",
+      "hint": "typed flags with code defaults, env overrides and dashboard rollouts per user",
+      "group": "platform",
+      "profiles": ["everything"],
+      "paths": [
+        "packages/flags",
+        "packages/db/src/schema/flags.ts",
+        "packages/db/drizzle/0002_flags.sql",
+        "packages/db/drizzle/meta/0002_snapshot.json",
+        "packages/orpc/src/routers/flags.ts",
+        "packages/orpc/src/flags.tsx",
+        "apps/web/lib/flags.ts",
+        "apps/dashboard/lib/flags.ts",
+        "apps/dashboard/components/beta-banner.tsx",
+        "apps/dashboard/components/flags-board.tsx",
+        "apps/dashboard/app/(app)/flags"
+      ],
+      "packages": ["@acme/flags"]
+    },
+    "logger": {
+      "label": "Logger",
+      "hint": "structured json logs with request ids and redaction in api, web and dashboard",
+      "group": "ops",
+      "profiles": ["everything"],
+      "paths": ["packages/logger", "apps/api/src/logger.ts"],
+      "packages": ["@acme/logger"]
+    },
+    "jobs": {
+      "label": "Background jobs",
+      "hint": "pg-boss queues and cron on your postgres, typed jobs, optional separate worker",
+      "group": "platform",
+      "profiles": ["everything"],
+      "paths": [
+        "packages/jobs",
+        "apps/api/src/jobs.ts",
+        "apps/api/src/worker.ts",
+        "packages/orpc/src/routers/jobs.ts"
+      ],
+      "packages": ["@acme/jobs", "pg-boss"],
+      "scripts": { "dev:worker": "bun --watch --env-file=.env apps/api/src/worker.ts" }
+    },
+    "i18n": {
+      "label": "Internationalization",
+      "hint": "next-intl in web and dashboard, english and french, locale switcher, hreflang in the sitemap",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": ["packages/i18n", "apps/web/i18n", "apps/web/proxy.ts", "apps/dashboard/i18n"],
+      "packages": ["@acme/i18n", "next-intl"]
+    },
+    "e2e": {
+      "label": "End-to-end tests",
+      "hint": "playwright smoke test of web, dashboard and api, plus its workflow",
+      "group": "platform",
+      "profiles": ["everything"],
+      "paths": ["apps/e2e", ".github/workflows/e2e.yml"],
+      "packages": ["@playwright/test"],
+      "scripts": { "test:e2e": "pnpm --filter e2e run e2e" }
     }
   }
 }

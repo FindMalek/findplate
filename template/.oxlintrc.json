@@ -7,6 +7,8 @@
     "**/.next",
     "packages/ui/src/components/**",
     "packages/ui/src/brand/**",
+    "packages/notification/**",
+    "apps/email/**",
     ".agents/**",
     ".claude/**",
     ".opencode/**",

@@ -1,0 +1,20 @@
+{
+  "name": "e2e",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "e2e": "playwright test",
+    "install:browser": "playwright install chromium"
+  },
+  "dependencies": {
+    "postgres": "catalog:"
+  },
+  "devDependencies": {
+    "@acme/config": "workspace:*",
+    "@playwright/test": "catalog:",
+    "@types/bun": "catalog:",
+    "typescript": "catalog:"
+  }
+}

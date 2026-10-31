@@ -12,6 +12,12 @@ Work is tracked as [GitHub issues](https://github.com/FindMalek/findplate/issues
 - no AI attribution in commits, pull request titles or bodies
 - `pnpm lint` runs biome, `pnpm check` fixes what it can
 
+## Labels
+
+`.github/scripts/labels.sh` creates or updates the repo labels (bug, feature, module, docs, good first issue, help wanted, p0 to p2). It is idempotent, run it with `gh` logged in.
+
+Security reports go through [SECURITY.md](SECURITY.md), questions through [SUPPORT.md](SUPPORT.md), and everyone follows the [code of conduct](CODE_OF_CONDUCT.md).
+
 ## Layout
 
 ```text

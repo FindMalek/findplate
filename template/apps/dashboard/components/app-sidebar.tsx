@@ -31,6 +31,7 @@ const NAV: { href: Route; label: string; icon: typeof LayoutDashboardIcon; admin
   { href: "/notes", label: "Notes", icon: NotebookPenIcon },
   { href: "/users", label: "Users", icon: UsersIcon, admin: true },
   { href: "/waitlist", label: "Waitlist", icon: UsersIcon, admin: true }, // @findplate:waitlist
+  { href: "/flags", label: "Flags", icon: SettingsIcon, admin: true }, // @findplate:flags
   { href: "/settings", label: "Settings", icon: SettingsIcon },
 ]
 
