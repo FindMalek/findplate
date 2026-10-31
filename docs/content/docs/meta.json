@@ -37,6 +37,7 @@
     "orgs",
     "audit-log",
     "api-keys",
+    "feedback",
     "jobs",
     "logger",
     "---Design---",

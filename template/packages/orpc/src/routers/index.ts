@@ -3,6 +3,7 @@ import { adminRouter, meRouter } from "./account"
 import { apiKeysRouter } from "./api-keys" // @findplate:api-keys
 import { auditRouter } from "./audit" // @findplate:audit-log
 import { billingRouter } from "./billing" // @findplate:billing
+import { feedbackRouter } from "./feedback" // @findplate:feedback
 import { flagsRouter } from "./flags" // @findplate:flags
 import { jobsRouter } from "./jobs" // @findplate:jobs
 import { notesRouter } from "./notes"
@@ -21,6 +22,7 @@ const admin = {
 /** One router, namespaced: `public` needs no session, everything else does (and `admin` needs the admin role). */
 export const appRouter = {
   public: publicRouter,
+  feedback: feedbackRouter, // @findplate:feedback
   me: meRouter,
   notes: notesRouter,
   admin,

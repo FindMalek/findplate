@@ -1,0 +1,34 @@
+---
+title: Feedback widget
+description: A feedback button in web and dashboard that opens a GitHub issue.
+---
+
+The `feedback` module adds a small Feedback button bottom left in `web` and `dashboard`. The form posts to `feedback.send` (`POST /v1/public/feedback`) and the api opens an issue labelled `feedback` in your repo, with the sender's email and the page they were on. Off by default.
+
+```bash
+findplate create my-app --modules feedback
+```
+
+It uses the same two env keys as the `roadmap` module, on the api:
+
+```bash
+GITHUB_REPO=owner/repo
+GITHUB_TOKEN=ghp_...   # a token that can create issues in that repo
+```
+
+Without them the form answers "Feedback needs GITHUB_REPO and GITHUB_TOKEN".
+
+## Spam
+
+- a hidden `website` field: a bot that fills it gets `ok` and nothing is sent
+- three messages per ten minutes per caller when the `rate-limit` module is on, without it nothing limits the route, so turn it on for a public site
+
+Add the `feedback` label to the repo first, or GitHub creates the issue without it.
+
+## Not included
+
+Screenshots. The form sends text, an optional email and the path of the page.
+
+## Remove it
+
+Generate without the module.
