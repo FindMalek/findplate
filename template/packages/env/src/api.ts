@@ -45,6 +45,11 @@ const schema = z.object({
   /** Run the job worker inside the api. Turn off when it runs in its own container (apps/api/Dockerfile, target worker). */
   JOBS_WORKER: z.stringbool().default(true),
   // @end
+  // @findplate:trigger
+  /** Set to run jobs on trigger.dev (cloud or your own instance) instead of pg-boss. */
+  TRIGGER_SECRET_KEY: optional,
+  TRIGGER_API_URL: optional,
+  // @end
 
   // @findplate:storage
   S3_ENDPOINT: optional,

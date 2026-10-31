@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@acme/db": "workspace:*",
+    "@trigger.dev/sdk": "catalog:",
     "drizzle-orm": "catalog:",
     "pg-boss": "catalog:",
     "zod": "catalog:"
@@ -19,6 +20,7 @@
   "devDependencies": {
     "@acme/config": "workspace:*",
     "@types/bun": "catalog:",
+    "trigger.dev": "catalog:",
     "typescript": "catalog:"
   }
 }

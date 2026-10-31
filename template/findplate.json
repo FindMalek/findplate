@@ -260,6 +260,27 @@
       "packages": ["@acme/jobs", "pg-boss"],
       "scripts": { "dev:worker": "bun --watch --env-file=.env apps/api/src/worker.ts" }
     },
+    "trigger": {
+      "label": "Jobs on trigger.dev",
+      "hint": "run the jobs on trigger.dev (cloud or self-hosted) instead of pg-boss, same typed jobs",
+      "group": "platform",
+      "profiles": ["everything"],
+      "requires": ["jobs"],
+      "paths": [
+        "packages/jobs/src/trigger.ts",
+        "packages/jobs/src/trigger.test.ts",
+        "packages/jobs/src/trigger",
+        "packages/jobs/trigger.config.ts"
+      ],
+      "packages": ["@trigger.dev/sdk", "trigger.dev"],
+      "keys": [
+        { "env": "TRIGGER_SECRET_KEY", "label": "trigger.dev secret key", "url": "https://cloud.trigger.dev" }
+      ],
+      "scripts": {
+        "trigger:dev": "pnpm --filter @acme/jobs exec trigger dev",
+        "trigger:deploy": "pnpm --filter @acme/jobs exec trigger deploy"
+      }
+    },
     "i18n": {
       "label": "Internationalization",
       "hint": "next-intl in web and dashboard, english and french, locale switcher, hreflang in the sitemap",

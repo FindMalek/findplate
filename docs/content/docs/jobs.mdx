@@ -69,6 +69,33 @@ JOBS_WORKER=false   # on the api, it then only enqueues
 
 Run as many workers as you like, pg-boss hands each job to one of them and runs each cron tick once.
 
+## Run on trigger.dev
+
+pg-boss needs no extra service, which is why it is the default. If you would rather have a dashboard, long running tasks and no worker to operate, add the `trigger` module (it needs `jobs`):
+
+```bash
+findplate add trigger
+```
+
+The jobs stay the same typed `defineJob` definitions. Each one also becomes a trigger.dev task in `packages/jobs/src/trigger/tasks.ts`, with the job name as task id, its retry policy and, for cron jobs, a declarative schedule. A new job needs its line there as well as in `JOBS`, a test fails when one is missing.
+
+Set the key and the api enqueues to trigger.dev instead of pg-boss, leave it empty and nothing changes:
+
+```bash
+TRIGGER_SECRET_KEY=tr_dev_...   # from cloud.trigger.dev, or your own instance
+TRIGGER_API_URL=                # only for a self-hosted instance
+TRIGGER_PROJECT_REF=proj_...    # for deploys
+```
+
+- `pnpm trigger:dev` runs the tasks locally against your dev environment
+- `pnpm trigger:deploy` deploys them. Set `DATABASE_URL` in the project's environment variables on trigger.dev, the handlers use the same database as the api
+- `jobs.list` counts runs from the trigger.dev api (up to 100 per status), `jobs.enqueue` triggers the task
+- `JOBS_WORKER` does nothing then, trigger.dev runs the handlers
+
+Self hosting: trigger.dev v4 is open source, follow its [self-hosting guide](https://trigger.dev/docs/self-hosting/overview) (docker compose, or Kubernetes) and set `TRIGGER_API_URL` to it. It is a bigger stack than the other self hosted modules (its own postgres, redis and a supervisor), so use the cloud to start.
+
+pg-boss or trigger.dev? pg-boss when you want one less service and jobs that finish in seconds. trigger.dev for long tasks, a run dashboard, replay and fan out. [Inngest](https://www.inngest.com) and [Hatchet](https://hatchet.run) fit the same slot if you prefer them, the `Jobs` interface in `packages/jobs/src/index.ts` is what the api needs.
+
 ## Graceful shutdown
 
 On `SIGTERM` or `SIGINT` the api stops accepting requests, waits up to 8 seconds for running jobs to finish and exits, which fits the 10 seconds Docker gives a container. Jobs still running after that are failed and retried by another worker, so write handlers that are safe to run twice.
