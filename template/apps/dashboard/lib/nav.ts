@@ -11,6 +11,7 @@ export interface NavItem {
 /** The sidebar and the command palette both read this list, so a module adds its page here once. */
 export const NAV: NavItem[] = [
   { href: "/", label: "Overview", icon: LayoutDashboardIcon },
+  { href: "/inbox", label: "Inbox", icon: NotebookPenIcon }, // @findplate:inbox
   { href: "/notes", label: "Notes", icon: NotebookPenIcon },
   { href: "/billing", label: "Billing", icon: SettingsIcon }, // @findplate:billing
   { href: "/api-keys", label: "API keys", icon: SettingsIcon }, // @findplate:api-keys
