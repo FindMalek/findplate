@@ -1,5 +1,6 @@
 import type { Db } from "@acme/db"
 import * as schema from "@acme/db/schema"
+import { expo } from "@better-auth/expo" // @findplate:mobile
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { admin, magicLink } from "better-auth/plugins"
@@ -48,6 +49,7 @@ export function createAuth(config: AuthConfig) {
     socialProviders: config.github ? { github: config.github } : undefined,
     plugins: [
       admin(),
+      expo(), // @findplate:mobile
       // @findplate:orgs
       organization({
         sendInvitationEmail: sendInvitation

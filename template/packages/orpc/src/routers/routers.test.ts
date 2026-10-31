@@ -126,6 +126,17 @@ test("inbox: a message shows up unread for its user only, and reading clears it"
 })
 // @end
 
+// @findplate:feedback
+test("feedback: a bot filling the honeypot is dropped quietly, and without GitHub keys it says so", async () => {
+  expect(await app.anonymous.feedback.send({ message: "buy cheap watches", website: "http://spam" })).toEqual({
+    ok: true,
+  })
+  await expect(app.anonymous.feedback.send({ message: "a real remark" })).rejects.toMatchObject({
+    code: "SERVICE_UNAVAILABLE",
+  })
+})
+// @end
+
 // @findplate:audit-log
 test("audit log: an admin signing in as a user, and stopping, is recorded", async () => {
   const admin = await app.signUp("imp-admin@acme.test", { role: "admin" })
