@@ -27,10 +27,23 @@ const schema = z.object({
   GITHUB_REPO: optional,
   GITHUB_TOKEN: optional,
 
+  // @findplate:logger
+  LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
+  // @end
+
   // @findplate:rate-limit
   /** Shared counters across api replicas; without them limits are kept in memory per process. */
   UPSTASH_REDIS_REST_URL: z.url().optional(),
   UPSTASH_REDIS_REST_TOKEN: optional,
+  // @end
+
+  // @findplate:flags
+  /** Overrides that beat the database, e.g. `betaBanner=on,otherFlag=25`. */
+  FLAGS_OVERRIDE: optional,
+  // @end
+  // @findplate:jobs
+  /** Run the job worker inside the api. Turn off when it runs in its own container (apps/api/Dockerfile, target worker). */
+  JOBS_WORKER: z.stringbool().default(true),
   // @end
 
   // @findplate:storage
@@ -57,21 +70,17 @@ const schema = z.object({
   LANGFUSE_SECRET_KEY: optional,
   LANGFUSE_BASE_URL: z.url().default("https://cloud.langfuse.com"),
   // @end
-  // @findplate:whatsapp
+  // @findplate:notification
+  RESEND_API_KEY: optional,
+  EMAIL_FROM: z.string().default("Acme <onboarding@resend.dev>"),
+  TELEGRAM_BOT_TOKEN: optional,
+  TELEGRAM_CHAT_ID: optional,
+  TELEGRAM_WEBHOOK_SECRET: optional,
   KAPSO_API_KEY: optional,
   WHATSAPP_PHONE_NUMBER_ID: optional,
   WHATSAPP_NOTIFY_TO: optional,
   WHATSAPP_TEMPLATE_NAME: z.string().default("app_notification"),
   WHATSAPP_TEMPLATE_LANGUAGE: z.string().default("en_US"),
-  // @end
-  // @findplate:telegram
-  TELEGRAM_BOT_TOKEN: optional,
-  TELEGRAM_CHAT_ID: optional,
-  TELEGRAM_WEBHOOK_SECRET: optional,
-  // @end
-  // @findplate:email
-  RESEND_API_KEY: optional,
-  EMAIL_FROM: z.string().default("Acme <onboarding@resend.dev>"),
   // @end
 
   // @findplate:ai

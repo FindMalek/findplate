@@ -27,6 +27,7 @@ Each module has a page with what it adds, its env keys, how to remove it and how
 
 | Module | Profiles | What it adds |
 | --- | --- | --- |
+| [`i18n`](/docs/i18n) | everything | next-intl in web and dashboard with English and French, a language switcher and hreflang in the sitemap |
 | [`docs`](/docs/docs-module) | standard, everything | `apps/docs`. A fumadocs site on Next with pages about your project |
 | [`waitlist`](/docs/waitlist) | everything | email signup on the landing page, signups listed in the dashboard |
 | [`roadmap`](/docs/roadmap) | everything | public `/roadmap` from the repo's GitHub milestones |
@@ -39,6 +40,8 @@ Each module has a page with what it adds, its env keys, how to remove it and how
 | [`storage`](/docs/storage) | standard, everything | `packages/storage`. Uploads to any S3 API: Garage, R2, AWS, MinIO |
 | [`ai`](/docs/ai) | standard, everything | `packages/ai`. Vercel AI SDK with Groq, OpenAI or Anthropic |
 | [`rate-limit`](/docs/rate-limiting) | standard, everything | per route and ip limits on the api, in memory or on Upstash Redis |
+| [`flags`](/docs/flags) | everything | `packages/flags`. Typed feature flags: code defaults, env overrides, rollouts edited in the dashboard |
+| [`jobs`](/docs/jobs) | everything | `packages/jobs`. Background jobs and cron on your Postgres with pg-boss, optional separate worker |
 | [`e2e`](/docs/testing) | everything | playwright smoke test of web, dashboard and api, plus its workflow |
 | [`webhooks`](/docs/webhooks) | everything | `packages/webhooks`. Signature checks for inbound webhooks: hmac, svix, secret header |
 
@@ -46,9 +49,7 @@ Each module has a page with what it adds, its env keys, how to remove it and how
 
 | Module | Profiles | What it adds |
 | --- | --- | --- |
-| [`whatsapp`](/docs/whatsapp) | everything | `packages/whatsapp`. `notify()` through Kapso template messages |
-| [`telegram`](/docs/telegram) | everything | `packages/telegram`. Bot with `notify()`, a webhook route and a setup command |
-| [`email`](/docs/email) | everything | `packages/email`. react-email templates sent through email-sdk and Resend |
+| [`notification`](/docs/notification) | everything | `packages/notification` and `apps/email`. Email, Telegram and WhatsApp behind one notifier, branded react-email templates and a preview app |
 
 ### Analytics
 
@@ -61,6 +62,7 @@ Each module has a page with what it adds, its env keys, how to remove it and how
 
 | Module | Profiles | What it adds |
 | --- | --- | --- |
+| [`logger`](/docs/logger) | everything | `packages/logger`. Json logs with request ids and redaction in api, web and dashboard |
 | [`openobserve`](/docs/openobserve) | custom, needs a server | otel traces from the api to OpenObserve |
 | [`glitchtip`](/docs/glitchtip) | custom, needs a server | sentry sdk in api, web and dashboard, pointed at GlitchTip |
 | [`infisical`](/docs/infisical) | custom, needs a server | `pnpm dev:secrets` runs dev with infisical |
@@ -73,15 +75,13 @@ The cli lists this before it asks for keys, and `findplate doctor` warns about a
 | Module | Needs |
 | --- | --- |
 | `ai` | one of [Groq](https://console.groq.com/keys), [OpenAI](https://platform.openai.com/api-keys) or [Anthropic](https://console.anthropic.com/settings/keys) |
-| `email` | a [Resend API key](https://resend.com/api-keys) |
-| `telegram` | a bot token from [@BotFather](https://t.me/BotFather) |
-| `whatsapp` | a [Kapso API key](https://app.kapso.ai) |
+| `notification` | any of a [Resend API key](https://resend.com/api-keys), a bot token from [@BotFather](https://t.me/BotFather) and a [Kapso API key](https://app.kapso.ai); each channel turns on with its keys |
 | `databuddy` | a [Databuddy client id](https://app.databuddy.cc) |
 | `umami`, `glitchtip`, `langfuse` | a self-hosted server, plus a website id, DSN or key pair from it |
 | `openobserve`, `infisical` | a self-hosted server |
 
 ## Dependencies between modules
 
-`langfuse` requires `ai`, and `telegram` requires `webhooks`. The cli turns required modules on for you and says so in the prompt, so `--modules langfuse` generates `ai,langfuse`.
+`langfuse` requires `ai`, and `notification` requires `webhooks`. The cli turns required modules on for you and says so in the prompt, so `--modules langfuse` generates `ai,langfuse`.
 
 The self-hosted ones also have a compose snippet each in [self-hosted tools](/docs/self-hosted).

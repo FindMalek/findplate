@@ -7,7 +7,7 @@ description: Turn on a module in an existing project, and check that the project
 
 ```bash
 findplate add ai
-findplate add storage,whatsapp ./my-app
+findplate add storage,notification ./my-app
 ```
 
 Run it inside a project made by `findplate create`, or pass the project folder. It reads `.findplate/state.json` (name, preset, pitch, enabled modules), regenerates the template with and without the module, and applies only the difference:
@@ -33,7 +33,7 @@ The project was generated from template version `templateVersion` in `.findplate
 
 ```bash
 findplate remove ai
-findplate remove telegram,webhooks ./my-app --dry-run
+findplate remove notification,webhooks ./my-app --dry-run
 ```
 
 The inverse of `add`. It regenerates the template twice from `.findplate/state.json`, with the module and without it, and applies the difference to your project:
@@ -44,7 +44,7 @@ The inverse of `add`. It regenerates the template twice from `.findplate/state.j
 - its env keys leave `.env.example`. `.env` is never edited, the keys still in it are printed so you can remove them
 - `.findplate/state.json` drops the module
 
-It refuses (exit `2`) when another enabled module requires the one you remove, for example `telegram` needs `webhooks`; name both to remove them together. Like `add`, a dirty git tree exits with code `3` unless you pass `--force`.
+It refuses (exit `2`) when another enabled module requires the one you remove, for example `notification` needs `webhooks`; name both to remove them together. Like `add`, a dirty git tree exits with code `3` unless you pass `--force`.
 
 The database is not touched. The drizzle migration and its journal entry stay in the project, because removing a migration that already ran breaks every database that applied it. To drop the tables, add a new migration. If the migration never ran anywhere, pass `--drop-migrations` to delete it too.
 

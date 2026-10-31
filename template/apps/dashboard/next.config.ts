@@ -1,6 +1,7 @@
 import { fileURLToPath } from "node:url"
 import { loadEnvConfig } from "@next/env"
 import type { NextConfig } from "next"
+import createNextIntlPlugin from "next-intl/plugin" // @findplate:i18n
 
 const root = fileURLToPath(new URL("../../", import.meta.url))
 // One .env at the repo root for every app.
@@ -13,15 +14,27 @@ const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  {
+    key: "Content-Security-Policy",
+    value: "frame-ancestors 'none'; base-uri 'self'; object-src 'none'",
+  },
 ]
+
+const transpilePackages = ["@acme/ui", "@acme/orpc", "@acme/common"]
+transpilePackages.push("@acme/logger") // @findplate:logger
 
 const nextConfig: NextConfig = {
   output: "standalone",
   outputFileTracingRoot: root,
-  transpilePackages: ["@acme/ui", "@acme/orpc", "@acme/common"],
+  transpilePackages,
   poweredByHeader: false,
   typedRoutes: true,
   headers: async () => [{ source: "/:path*", headers: securityHeaders }],
 }
 
-export default nextConfig
+const plugins: Array<(config: NextConfig) => NextConfig> = []
+plugins.push(createNextIntlPlugin()) // @findplate:i18n
+plugins.push((config) => ({ ...config, transpilePackages: [...(config.transpilePackages ?? []), "@acme/i18n"] })) // @findplate:i18n
+
+export default plugins.reduce((config, plugin) => plugin(config), nextConfig)

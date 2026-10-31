@@ -311,6 +311,9 @@ export async function create(flags: CreateFlags) {
       ...(canInstall ? [] : [accent(installCommand(pm))]),
       `${accent(scriptCommand(pm, "db:up"))}  ${dim(`postgres on :${postgresPort}`)}`,
       `${accent(scriptCommand(pm, "dev"))}  ${dim("web :3000 · api :3001 · dashboard :3002")}`,
+      ...(modules.includes("notification")
+        ? [`${accent(scriptCommand(pm, "dev:email"))}  ${dim("email previews :3004")}`]
+        : []),
       "",
       `dashboard admin  ${bold(admin.adminEmail)}`,
       `password         ${dim("ADMIN_PASSWORD in .env")}`,

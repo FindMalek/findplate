@@ -76,10 +76,9 @@ describe("generate", () => {
     const { target } = make([
       "storage",
       "ai",
-      "whatsapp",
-      "telegram",
+      "webhooks",
+      "notification",
       "docs",
-      "email",
       "waitlist",
       "roadmap",
       "status",
@@ -122,6 +121,26 @@ describe("generate", () => {
       ).entries.map((entry: { tag: string }) => entry.tag)
     expect(tags(["waitlist"])).toEqual(["0000_init", "0001_waitlist"])
     expect(tags([])).toEqual(["0000_init"])
+  })
+
+  test("notification module: email brand follows the preset's colors and radius", () => {
+    const brand = (id: string) =>
+      readFileSync(
+        join(
+          make(["webhooks", "notification"], listPresets().find((p) => p.id === id)!).target,
+          "packages/notification/src/brand.ts",
+        ),
+        "utf8",
+      )
+    const radius = { monochrome: 0, editorial: 2, clay: 12, midnight: 8, soft: 20 }
+    const primaries = new Set<string>()
+    for (const [id, px] of Object.entries(radius)) {
+      const source = brand(id)
+      expect(source).toContain(`radius: ${px},`)
+      primaries.add(source.match(/light: \{[^}]*primary: "(#[0-9a-f]{6})"/)![1]!)
+    }
+    expect(primaries.size).toBe(5)
+    expect(brand("clay")).toContain("'DM Sans'")
   })
 
   test("docs module: only with --modules docs, with the preset fonts, pitch and env url", () => {

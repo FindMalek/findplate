@@ -6,7 +6,7 @@ export interface OgColors {
   accent: string
 }
 
-type Rgb = [number, number, number]
+export type Rgb = [number, number, number]
 
 function oklchToRgb(l: number, c: number, hueDeg: number): Rgb {
   const h = (hueDeg * Math.PI) / 180
@@ -39,7 +39,7 @@ export function oklchToHex(value: string, over: Rgb = [0, 0, 0]): string {
   return hex(rgb.map((v, i) => Math.round(v * alpha + over[i]! * (1 - alpha))) as Rgb)
 }
 
-function block(css: string, mode: "light" | "dark"): string {
+export function block(css: string, mode: "light" | "dark"): string {
   const start = css.indexOf(mode === "dark" ? ".dark {" : ":root {")
   if (start < 0) throw new Error(`theme has no ${mode} block`)
   return css.slice(start, css.indexOf("}", start))
