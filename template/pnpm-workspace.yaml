@@ -49,6 +49,7 @@ catalog:
   "@types/react-dom": ^19.2.3
   ai: 7.0.143
   better-auth: 1.7.10
+  cmdk: 1.1.1
   drizzle-kit: 0.31.11
   drizzle-orm: 0.45.4
   fumadocs-core: 16.17.8

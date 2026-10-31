@@ -47,6 +47,40 @@ They work with GitHub issues and the Project board, and only commit or push when
 
 Offline or a repo moved? That pack is skipped with a note and the rest still install. Skip all of it with `--no-skills`.
 
+## Plan output and errors
+
+```bash
+findplate create ./demo --name demo --modules ai --plan --json
+```
+
+Prints what `create` would generate and writes nothing: the resolved `name`, `dir`, `preset`, `profile`, `modules`, which modules were `added` because another requires them, the env keys and servers they `need`, and the list of `files`. With `--json` every failure is machine readable too, on stdout and with the usual [exit code](/docs/cli#exit-codes):
+
+```json
+{ "ok": false, "error": { "message": "Unknown module(s): nope", "code": 2 } }
+```
+
+## MCP server
+
+```bash
+findplate mcp
+```
+
+Speaks MCP over stdio with no extra dependencies. Register it in your agent, for example in `.mcp.json`:
+
+```json
+{ "mcpServers": { "findplate": { "command": "npx", "args": ["-y", "findplate@latest", "mcp"] } } }
+```
+
+| Tool | Arguments |
+| --- | --- |
+| `create` | `dir`, `name`, `pitch`, `preset`, `profile`, `modules`, `plan`, `install`, `git` |
+| `add` | `modules`, `dir`, `force` |
+| `remove` | `modules`, `dir`, `force`, `dryRun` |
+| `update` | `dir`, `force`, `dryRun` |
+| `doctor` | `dir`, `security` |
+
+Each tool runs the matching cli command and returns its output, with `isError` set when the exit code is not `0`. `create` skips install, git, rules and skills unless you ask, and `add` never prompts.
+
 ## Today
 
 Agents can already drive the generator itself with no prompts, see [agent mode](/docs/cli#agent-mode). The Next apps also carry an `AGENTS.md` that points agents to the bundled Next docs.

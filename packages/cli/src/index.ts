@@ -9,6 +9,8 @@ import { demoCommand } from "./commands/demo"
 import { diffCommand } from "./commands/diff"
 import { doctorCommand } from "./commands/doctor"
 import { github } from "./commands/github"
+import { mcpCommand } from "./commands/mcp"
+import { planCommand } from "./commands/plan"
 import { provisionCommand } from "./commands/provision"
 import { removeCommand } from "./commands/remove"
 import { update } from "./commands/update"
@@ -29,6 +31,8 @@ Usage
   findplate add <module...> [dir] [--force]   add modules to an existing project
   findplate remove <module...> [dir] [--force] [--dry-run]   remove modules from a project
   findplate doctor [dir] [--json] [--security]   check env, database, tools, dns and deploys
+  findplate create [dir] --plan --json   print what would be generated as json, write nothing
+  findplate mcp                      mcp server over stdio: create, add, remove, update and doctor as tools
   findplate config [list|get|set|unset|path] [key] [value]
   findplate provision <dokploy|s3|dns|turbo|backup|all> [--dry-run]   see provision --help
 
@@ -94,6 +98,7 @@ async function main() {
       force: { type: "boolean", default: false },
       json: { type: "boolean", default: false },
       security: { type: "boolean", default: false },
+      plan: { type: "boolean", default: false },
       "dry-run": { type: "boolean", default: false },
       "base-template": { type: "string" },
       "drop-migrations": { type: "boolean", default: false },
@@ -106,6 +111,18 @@ async function main() {
   const [command = "create", dir] = positionals
   if (values.help) return console.info(HELP)
   if (command === "demo") return demoCommand({ dir })
+  if (command === "mcp") return mcpCommand()
+  if (command === "create" && values.plan) {
+    return planCommand({
+      dir,
+      name: values.name,
+      pitch: values.pitch,
+      preset: values.preset,
+      modules: values.modules,
+      profile: values.profile,
+      json: values.json,
+    })
+  }
   if (command === "diff") return diffCommand({ dir, baseTemplate: values["base-template"] })
   if (command === "update") {
     return update({
@@ -184,6 +201,9 @@ async function main() {
 }
 
 main().catch((error: Error) => {
-  p.log.error(error.message)
-  process.exit(error instanceof CliError ? error.code : EXIT.failure)
+  const code = error instanceof CliError ? error.code : EXIT.failure
+  if (process.argv.includes("--json"))
+    console.info(JSON.stringify({ ok: false, error: { message: error.message, code } }))
+  else p.log.error(error.message)
+  process.exit(code)
 })
