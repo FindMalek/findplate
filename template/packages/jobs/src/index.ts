@@ -6,6 +6,7 @@ import { JOBS } from "./jobs"
 
 export { defineJob, type Job, type JobContext, type JobDefinition, type RetryPolicy } from "./define"
 export { JOBS } from "./jobs"
+export { connectTrigger, createTriggerJobs, type TriggerClient } from "./trigger" // @findplate:trigger
 
 export interface JobInfo {
   name: string
