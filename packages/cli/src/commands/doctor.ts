@@ -21,11 +21,13 @@ import { capture } from "../git"
 import { loadManifest } from "../manifest"
 import { pendingKeys } from "../profiles"
 import { loadDone } from "../provision/state"
+import { securityChecks } from "../security-plan"
 import { loadState } from "../state"
 
 export interface DoctorFlags {
   dir?: string
   json: boolean
+  security?: boolean
 }
 
 const read = (file: string) => (existsSync(file) ? readFileSync(file, "utf8") : undefined)
@@ -171,10 +173,28 @@ export async function runChecks(dir: string): Promise<CheckResult[]> {
   return out
 }
 
+export async function runSecurityChecks(dir: string): Promise<CheckResult[]> {
+  const nextConfigs: Record<string, string> = {}
+  for (const app of ["web", "dashboard", "docs"]) {
+    for (const ext of ["ts", "mjs", "js"]) {
+      const rel = `apps/${app}/next.config.${ext}`
+      const text = read(join(dir, rel))
+      if (text !== undefined) nextConfigs[rel] = text
+    }
+  }
+  return securityChecks({
+    env: parseEnv(read(join(dir, ".env")) ?? ""),
+    authSource: read(join(dir, "packages/auth/src/index.ts")),
+    nextConfigs,
+    envTracked: (await capture("git", ["ls-files", ".env"], dir)) === ".env",
+    rateLimited: existsSync(join(dir, "apps/api/src/rate-limit.ts")),
+  })
+}
+
 export async function doctorCommand(flags: DoctorFlags) {
   const dir = resolve(flags.dir ?? ".")
   if (!existsSync(dir)) throw new CliError(`${dir} doesn't exist`, EXIT.usage)
-  const results = await runChecks(dir)
+  const results = flags.security ? await runSecurityChecks(dir) : await runChecks(dir)
   console.info(flags.json ? JSON.stringify({ ok: exitCode(results) === 0, results }, null, 2) : renderTable(results))
   process.exitCode = exitCode(results)
 }

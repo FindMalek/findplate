@@ -59,7 +59,7 @@ Run `pnpm install` afterwards to prune the lockfile, then `pnpm check-types` for
 ## findplate doctor
 
 ```bash
-findplate doctor [dir] [--json]
+findplate doctor [dir] [--json] [--security]
 ```
 
 Prints a table of checks, each `PASS`, `WARN`, `FAIL` or `SKIP`:
@@ -78,3 +78,14 @@ Prints a table of checks, each `PASS`, `WARN`, `FAIL` or `SKIP`:
 | dokploy, vercel | the configured dokploy url is unreachable (warn); vercel is only reported as linked or not |
 
 The exit code is `1` when any check fails, `0` otherwise. `--json` prints `{ "ok": boolean, "results": [...] }` for scripts and agents.
+
+`--security` runs only the security checks, each with the fix in its message, and exits `1` when one fails, so it works in CI:
+
+| Check | Fails when |
+| --- | --- |
+| auth secret | `BETTER_AUTH_SECRET` is empty, a placeholder or under 32 chars |
+| admin password | `ADMIN_PASSWORD` is empty, a default or under 10 chars |
+| open signup | email signup is not disabled in `packages/auth`, a failure when `DASHBOARD_URL` is not local, a warning otherwise |
+| security headers | an app's `next.config` sets no `Content-Security-Policy` |
+| `.env` tracked | git tracks `.env` |
+| auth rate limit | the `rate-limit` module is not in the api |

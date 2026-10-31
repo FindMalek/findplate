@@ -24,7 +24,7 @@ Usage
   findplate update [dir] [options]   merge the newest template into an existing project
   findplate add <module...> [dir] [--force]   add modules to an existing project
   findplate remove <module...> [dir] [--force] [--dry-run]   remove modules from a project
-  findplate doctor [dir] [--json]    check env, database, tools, dns and deploys
+  findplate doctor [dir] [--json] [--security]   check env, database, tools, dns and deploys
   findplate config [list|get|set|unset|path] [key] [value]
   findplate provision <dokploy|s3|dns|turbo|backup|all> [--dry-run]   see provision --help
 
@@ -89,6 +89,7 @@ async function main() {
       "project-template": { type: "string" },
       force: { type: "boolean", default: false },
       json: { type: "boolean", default: false },
+      security: { type: "boolean", default: false },
       "dry-run": { type: "boolean", default: false },
       "base-template": { type: "string" },
       "drop-migrations": { type: "boolean", default: false },
@@ -114,7 +115,7 @@ async function main() {
   if (latest) {
     console.error(`${dim(`findplate ${VERSION} is behind ${latest}. Run`)} ${accent("npx findplate@latest")}\n`)
   }
-  if (command === "doctor") return doctorCommand({ dir, json: values.json })
+  if (command === "doctor") return doctorCommand({ dir, json: values.json, security: values.security })
   if (command === "add") {
     const args = positionals.slice(1)
     const dirArg = args.find((arg) => arg.includes("/") || arg === ".")
