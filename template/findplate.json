@@ -212,6 +212,7 @@
       "profiles": ["standard", "everything"],
       "paths": [
         "apps/api/src/rate-limit.ts",
+        "apps/api/src/rate-limit.test.ts",
         "packages/orpc/src/lib/rate-limit.ts",
         "packages/orpc/src/lib/rate-limit.test.ts"
       ],
@@ -266,6 +267,15 @@
       "profiles": ["everything"],
       "paths": ["packages/i18n", "apps/web/i18n", "apps/web/proxy.ts", "apps/dashboard/i18n"],
       "packages": ["@acme/i18n", "next-intl"]
+    },
+    "e2e": {
+      "label": "End-to-end tests",
+      "hint": "playwright smoke test of web, dashboard and api, plus its workflow",
+      "group": "platform",
+      "profiles": ["everything"],
+      "paths": ["apps/e2e", ".github/workflows/e2e.yml"],
+      "packages": ["@playwright/test"],
+      "scripts": { "test:e2e": "pnpm --filter e2e run e2e" }
     }
   }
 }

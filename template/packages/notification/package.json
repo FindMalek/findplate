@@ -10,7 +10,7 @@
   },
   "scripts": {
     "check-types": "tsc --noEmit",
-    "test": "bun test --pass-with-no-tests",
+    "test": "bun test",
     "domain": "bun src/setup/domain.ts",
     "telegram:setup": "bun --env-file=../../.env src/setup/telegram.ts",
     "whatsapp:setup": "bun --env-file=../../.env src/setup/whatsapp.ts"

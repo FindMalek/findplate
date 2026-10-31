@@ -1,7 +1,7 @@
 import { ADMIN_LIST_LIMIT } from "@acme/common/constants"
 import { adminUserSchema, meSchema, okSchema, profileInputSchema } from "@acme/common/schemas"
 import { user } from "@acme/db"
-import { ORPCError } from "@orpc/server" // @findplate:storage
+import { ORPCError } from "@orpc/server"
 import { count, desc, eq } from "drizzle-orm"
 import { z } from "zod"
 import { adminProcedure, protectedProcedure } from "../procedures"
@@ -14,13 +14,15 @@ export const meRouter = {
   get: protectedProcedure
     .route({ method: "GET", path: "/me", summary: "The signed-in user", tags: ["account"] })
     .output(meSchema)
-    .handler(({ context }) => ({
-      id: context.user.id,
-      name: context.user.name,
-      email: context.user.email,
-      image: context.user.image ?? null,
-      role: context.user.role ?? null,
-    })),
+    .handler(async ({ context }) => {
+      // The session is cookie cached for minutes, so a rename or new avatar would show up late: read the row.
+      const [row] = await context.db
+        .select({ id: user.id, name: user.name, email: user.email, image: user.image, role: user.role })
+        .from(user)
+        .where(eq(user.id, context.user.id))
+      if (!row) throw new ORPCError("UNAUTHORIZED", { message: "Please sign in." })
+      return row
+    }),
 
   update: protectedProcedure
     .route({ method: "PATCH", path: "/me", summary: "Update your profile", tags: ["account"] })
