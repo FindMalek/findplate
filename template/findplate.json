@@ -375,17 +375,6 @@
       ],
       "packages": []
     },
-    "feedback": {
-      "label": "Feedback widget",
-      "hint": "a feedback button in web and dashboard that opens a GitHub issue in the project repo",
-      "group": "product",
-      "profiles": ["everything"],
-      "paths": [
-        "apps/web/components/feedback-button.tsx",
-        "apps/dashboard/components/feedback-button.tsx",
-        "packages/orpc/src/lib/feedback.ts",
-        "packages/orpc/src/lib/feedback.test.ts",
-        "packages/orpc/src/routers/feedback.ts"
     "inbox": {
       "label": "In-app notifications",
       "hint": "a bell with unread count and an inbox page in the dashboard, notifyInbox() from any procedure or job",

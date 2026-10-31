@@ -111,16 +111,6 @@ test("orgs: notes follow the active organization and only members can switch to 
 })
 // @end
 
-<<<<<<< HEAD
-// @findplate:feedback
-test("feedback: a bot filling the honeypot is dropped quietly, and without GitHub keys it says so", async () => {
-  expect(await app.anonymous.feedback.send({ message: "buy cheap watches", website: "http://spam" })).toEqual({
-    ok: true,
-  })
-  await expect(app.anonymous.feedback.send({ message: "a real remark" })).rejects.toMatchObject({
-    code: "SERVICE_UNAVAILABLE",
-  })
-=======
 // @findplate:inbox
 test("inbox: a message shows up unread for its user only, and reading clears it", async () => {
   const ada = await app.signUp("inbox-ada@acme.test")
@@ -133,6 +123,16 @@ test("inbox: a message shows up unread for its user only, and reading clears it"
 
   await ada.client.inbox.markAllRead()
   expect((await ada.client.inbox.list()).unread).toBe(0)
->>>>>>> origin/main
+})
+// @end
+
+// @findplate:feedback
+test("feedback: a bot filling the honeypot is dropped quietly, and without GitHub keys it says so", async () => {
+  expect(await app.anonymous.feedback.send({ message: "buy cheap watches", website: "http://spam" })).toEqual({
+    ok: true,
+  })
+  await expect(app.anonymous.feedback.send({ message: "a real remark" })).rejects.toMatchObject({
+    code: "SERVICE_UNAVAILABLE",
+  })
 })
 // @end
