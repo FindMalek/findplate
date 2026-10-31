@@ -13,6 +13,7 @@
   "dependencies": {
     "@acme/billing": "workspace:*",
     "@acme/common": "workspace:*",
+    "@acme/compliance": "workspace:*",
     "@acme/env": "workspace:*",
     "@acme/flags": "workspace:*",
     "@acme/logger": "workspace:*",

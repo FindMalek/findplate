@@ -429,6 +429,20 @@
       ],
       "packages": []
     },
+    "compliance": {
+      "label": "Compliance",
+      "hint": "cookie consent that gates analytics, data export and account deletion, privacy and terms page stubs",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": [
+        "packages/compliance",
+        "packages/orpc/src/routers/privacy.ts",
+        "apps/dashboard/components/privacy-panel.tsx",
+        "apps/web/app/privacy",
+        "apps/web/app/terms"
+      ],
+      "packages": ["@acme/compliance"]
+    },
     "impersonation": {
       "label": "Admin impersonation",
       "hint": "admins sign in as a user from the users page to reproduce a bug, with a banner and a stop button",

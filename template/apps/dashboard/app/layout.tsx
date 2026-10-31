@@ -1,4 +1,5 @@
 import "@acme/ui/globals.css"
+import { ConsentBanner } from "@acme/compliance/banner" // @findplate:compliance
 import { QueryProvider } from "@acme/orpc/react"
 import { Toaster } from "@acme/ui/components/sonner"
 import { TooltipProvider } from "@acme/ui/components/tooltip"
@@ -44,6 +45,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             {/* @end */}
           </QueryProvider>
           <Toaster position="top-center" />
+          {/* @findplate:compliance */}
+          <ConsentBanner />
+          {/* @end */}
         </ThemeProvider>
       </body>
     </html>

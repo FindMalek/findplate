@@ -1,0 +1,46 @@
+---
+title: Compliance
+description: Cookie consent that gates analytics, data export and account deletion, and privacy and terms page stubs.
+---
+
+The `compliance` module covers the parts of GDPR-style rules that are code, not lawyers. It is off by default and does not make you compliant on its own.
+
+```bash
+findplate create my-app --modules compliance,umami
+```
+
+## Cookie consent
+
+A banner in `web` and `dashboard` asks once and stores the answer in a `consent` cookie (`granted` or `denied`, a year). The analytics modules (`umami`, `databuddy`) read that cookie on the server and render their script only when it is `granted`, so nothing loads before a yes, and a refresh after the click starts it. Declining keeps them off.
+
+The cookie helpers are in `packages/compliance/src/consent.ts`. Gate your own scripts the same way:
+
+```tsx
+import { CONSENT_COOKIE } from "@acme/compliance"
+import { cookies } from "next/headers"
+
+if ((await cookies()).get(CONSENT_COOKIE)?.value !== "granted") return null
+```
+
+Reading cookies makes those pages dynamic instead of prerendered. Auth and session cookies need no consent and are not affected.
+
+## Your data
+
+In the dashboard settings, a user can download everything stored about them as json and delete their account:
+
+| Procedure | What it does |
+| --- | --- |
+| `privacy.export` | `{ exportedAt, data }` with the profile and the notes. Add your own tables to `routers/privacy.ts` |
+| `privacy.deleteAccount` | `{ email }`, must match the account. Deletes the user, and with it the rows that reference them (sessions, notes, subscription, keys) through the foreign keys |
+
+Add new tables with `references(() => user.id, { onDelete: "cascade" })` so deletion stays complete, and add them to `privacy.export`. With the `audit-log` module on both actions are recorded (the log keeps the row, the actor becomes empty).
+
+A user who owns an organization (`orgs` module) leaves it without an owner when they delete their account, transfer it first.
+
+## Legal pages
+
+`/privacy` and `/terms` in `web` are placeholders with links in the footer and the sitemap. They are not legal advice: replace the text before you launch.
+
+## Remove it
+
+Generate without the module.
