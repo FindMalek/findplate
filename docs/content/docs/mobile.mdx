@@ -1,0 +1,50 @@
+---
+title: Mobile app
+description: An Expo app that shares the typed api client and signs in with better-auth.
+---
+
+The `mobile` module adds `apps/mobile`, an [Expo](https://expo.dev) app with expo-router. It calls the same oRPC procedures as the web apps through the shared `AppRouterClient` type, signs in with better-auth and shows the notes example. It is off by default.
+
+```bash
+findplate create my-app --modules mobile
+```
+
+## Run it against the local api
+
+Start the database and the api, then the app:
+
+```bash
+pnpm db:up
+pnpm dev:dashboard        # starts the api (and the dashboard, to create a user)
+pnpm dev:mobile           # expo dev server
+```
+
+Open the app in Expo Go or a simulator and sign in with a user from the dashboard (the seeded admin works). A phone cannot reach `localhost`, so point the app at your computer's LAN address in `apps/mobile/.env`:
+
+```bash
+EXPO_PUBLIC_API_URL=http://192.168.1.20:3001
+```
+
+The simulator on the same machine can keep `http://localhost:3001` (Android emulator: `http://10.0.2.2:3001`).
+
+## How sign in works
+
+`apps/mobile/lib/auth.ts` uses the better-auth Expo client, which talks to the api's `/auth` routes and keeps the session cookie in the device's secure storage. `apps/mobile/lib/api.ts` sends that cookie with every oRPC call. On the server the module adds the `expo()` plugin in `packages/auth/src/index.ts` and trusts the `acme://` and `exp://` origins in `apps/api/src/index.ts`. Change the `scheme` in `app.json` and `lib/auth.ts` together if you rename the app.
+
+## What it adds
+
+Files and folders:
+
+- `apps/mobile`
+
+Packages:
+
+- `@better-auth/expo`, `expo`, `expo-router` and the other Expo modules, `react-native`
+
+Nothing in the other apps depends on it. The app has no `build` script, so `pnpm build` and `pnpm dev` skip it, and CI checks it with `pnpm check-types`. Building store binaries is up to [EAS](https://docs.expo.dev/build/introduction/).
+
+## Remove
+
+Run `findplate remove mobile` in the project, see [add and doctor](/docs/add-doctor#findplate-remove). It deletes the files the module owns, strips its code from shared files and drops its packages, only where you haven't edited them.
+
+If you'd rather do it by hand: for a new project leave `mobile` out of `--modules`. In a project that already exists, delete `apps/mobile`, drop its packages from the `package.json` files, remove the `expo()` plugin and the extra trusted origins, and fix what `pnpm check-types` reports.

@@ -40,6 +40,7 @@ Each module has a page with what it adds, its env keys, how to remove it and how
 | [`storage`](/docs/storage) | standard, everything | `packages/storage`. Uploads to any S3 API: Garage, R2, AWS, MinIO |
 | [`ai`](/docs/ai) | standard, everything | `packages/ai`. Vercel AI SDK with Groq, OpenAI or Anthropic |
 | [`rate-limit`](/docs/rate-limiting) | standard, everything | per route and ip limits on the api, in memory or on Upstash Redis |
+| [`mobile`](/docs/mobile) | everything | `apps/mobile`. Expo app with the typed api client, better-auth sign in and the notes example |
 | [`blog`](/docs/blog) | everything | `apps/web/app/blog`. MDX posts, rss feed, og images, sitemap entries and a `/changelog` page |
 | [`cache`](/docs/cache) | everything | `packages/cache`. Typed cache with ttl and tag invalidation, on Upstash Redis or in memory |
 | [`flags`](/docs/flags) | everything | `packages/flags`. Typed feature flags: code defaults, env overrides, rollouts edited in the dashboard |
@@ -48,6 +49,8 @@ Each module has a page with what it adds, its env keys, how to remove it and how
 | [`audit-log`](/docs/audit-log) | everything | Append-only record of who did what, an admin viewer and an `audit()` helper |
 | [`api-keys`](/docs/api-keys) | everything | Personal bearer keys for the REST api: hashed, read or write, expiry, revoke |
 | [`compliance`](/docs/compliance) | everything | Cookie consent that gates analytics, data export and account deletion, privacy and terms stubs |
+| [`inbox`](/docs/inbox) | everything | A bell with unread count and an inbox page in the dashboard, `notifyInbox()` from any procedure or job |
+| [`feedback`](/docs/feedback) | everything | A feedback button in web and dashboard that opens a GitHub issue in your repo |
 | [`jobs`](/docs/jobs) | everything | `packages/jobs`. Background jobs and cron on your Postgres with pg-boss, optional separate worker |
 | [`trigger`](/docs/jobs#run-on-triggerdev) | everything | needs `jobs`. Runs the same jobs on trigger.dev, cloud or self-hosted, instead of pg-boss |
 | [`e2e`](/docs/testing) | everything | playwright smoke test of web, dashboard and api, plus its workflow |

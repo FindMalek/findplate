@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "acme",
+    "slug": "acme",
+    "scheme": "acme",
+    "version": "0.0.1",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "plugins": ["expo-router", "expo-secure-store"],
+    "ios": { "bundleIdentifier": "com.acme.app" },
+    "android": { "package": "com.acme.app" }
+  }
+}

@@ -218,6 +218,28 @@
       ],
       "packages": []
     },
+    "mobile": {
+      "label": "Mobile app",
+      "hint": "an Expo app in apps/mobile with the typed api client, better-auth sign in and the notes example",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": ["apps/mobile"],
+      "packages": [
+        "@better-auth/expo",
+        "expo",
+        "expo-constants",
+        "expo-linking",
+        "expo-network",
+        "expo-router",
+        "expo-secure-store",
+        "expo-status-bar",
+        "expo-web-browser",
+        "react-native",
+        "react-native-safe-area-context",
+        "react-native-screens"
+      ],
+      "scripts": { "dev:mobile": "pnpm --filter mobile start" }
+    },
     "blog": {
       "label": "Blog and changelog",
       "hint": "mdx posts in the web app with an rss feed, og images, sitemap entries and a changelog page",
@@ -372,6 +394,37 @@
         "packages/orpc/src/routers/api-keys.ts",
         "apps/dashboard/components/api-keys-board.tsx",
         "apps/dashboard/app/(app)/api-keys"
+      ],
+      "packages": []
+    },
+    "inbox": {
+      "label": "In-app notifications",
+      "hint": "a bell with unread count and an inbox page in the dashboard, notifyInbox() from any procedure or job",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": [
+        "packages/db/src/schema/inbox.ts",
+        "packages/db/drizzle/0007_inbox.sql",
+        "packages/db/drizzle/meta/0007_snapshot.json",
+        "packages/orpc/src/lib/inbox.ts",
+        "packages/orpc/src/routers/inbox.ts",
+        "apps/dashboard/components/inbox-bell.tsx",
+        "apps/dashboard/components/inbox-list.tsx",
+        "apps/dashboard/app/(app)/inbox"
+      ],
+      "packages": []
+    },
+    "feedback": {
+      "label": "Feedback widget",
+      "hint": "a feedback button in web and dashboard that opens a GitHub issue in the project repo",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": [
+        "apps/web/components/feedback-button.tsx",
+        "apps/dashboard/components/feedback-button.tsx",
+        "packages/orpc/src/lib/feedback.ts",
+        "packages/orpc/src/lib/feedback.test.ts",
+        "packages/orpc/src/routers/feedback.ts"
       ],
       "packages": []
     },
