@@ -1,0 +1,180 @@
+# Self-host everything: docker compose up -d --build
+# Reads the secrets from .env. Urls default to localhost, set WEB_URL, DASHBOARD_URL and API_PUBLIC_URL for a real domain.
+# On Dokploy: create a Compose service from this repo, compose path ./docker-compose.yml, and set the env in its Environment tab.
+x-app: &app
+  restart: unless-stopped
+  environment: &app-env
+    API_URL: http://api:3001
+    API_PUBLIC_URL: ${API_PUBLIC_URL:-http://localhost:3001}
+    WEB_URL: ${WEB_URL:-http://localhost:3000}
+    DASHBOARD_URL: ${DASHBOARD_URL:-http://localhost:3002}
+    # @findplate:docs
+    DOCS_URL: ${DOCS_URL:-http://localhost:3003}
+    # @end
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: acme
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-acme}
+      POSTGRES_DB: acme
+    volumes:
+      - acme-pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U acme"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    <<: *app
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+      target: runner
+    environment:
+      <<: *app-env
+      DEPLOY_ENV: production
+      DATABASE_URL: postgres://acme:${POSTGRES_PASSWORD:-acme}@postgres:5432/acme
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET, openssl rand -base64 32}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      SEED: ${SEED:-none}
+      # @findplate:glitchtip
+      GLITCHTIP_DSN: ${GLITCHTIP_DSN:-}
+      # @end
+      # @findplate:openobserve
+      OPENOBSERVE_URL: ${OPENOBSERVE_URL:-http://openobserve:5080}
+      OPENOBSERVE_USER: ${OPENOBSERVE_USER:-admin@example.com}
+      OPENOBSERVE_PASSWORD: ${OPENOBSERVE_PASSWORD:-change-me}
+      # @end
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  web:
+    <<: *app
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  dashboard:
+    <<: *app
+    build:
+      context: .
+      dockerfile: apps/dashboard/Dockerfile
+    ports:
+      - "3002:3002"
+    depends_on:
+      api:
+        condition: service_healthy
+
+  # @findplate:docs
+  docs:
+    <<: *app
+    build:
+      context: .
+      dockerfile: apps/docs/Dockerfile
+    ports:
+      - "3003:3003"
+  # @end
+
+  # @findplate:umami
+  umami:
+    image: ghcr.io/umami-software/umami:postgresql-latest
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://umami:umami@umami-db:5432/umami
+      APP_SECRET: ${UMAMI_APP_SECRET:-change-me}
+    ports:
+      - "3100:3000"
+    depends_on:
+      - umami-db
+
+  umami-db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: umami
+      POSTGRES_PASSWORD: umami
+      POSTGRES_DB: umami
+    volumes:
+      - umami-db:/var/lib/postgresql/data
+  # @end
+
+  # @findplate:openobserve
+  openobserve:
+    image: public.ecr.aws/zinclabs/openobserve:latest
+    restart: unless-stopped
+    environment:
+      ZO_ROOT_USER_EMAIL: ${OPENOBSERVE_USER:-admin@example.com}
+      ZO_ROOT_USER_PASSWORD: ${OPENOBSERVE_PASSWORD:-change-me}
+      ZO_DATA_DIR: /data
+    ports:
+      - "5080:5080"
+    volumes:
+      - openobserve:/data
+  # @end
+
+  # @findplate:glitchtip
+  glitchtip-db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: glitchtip
+      POSTGRES_USER: glitchtip
+      POSTGRES_DB: glitchtip
+    volumes:
+      - glitchtip-db:/var/lib/postgresql/data
+
+  glitchtip-valkey:
+    image: valkey/valkey:8-alpine
+    restart: unless-stopped
+
+  glitchtip:
+    image: glitchtip/glitchtip
+    restart: unless-stopped
+    depends_on: [glitchtip-db, glitchtip-valkey]
+    environment: &glitchtip-env
+      DATABASE_URL: postgres://glitchtip:glitchtip@glitchtip-db:5432/glitchtip
+      SECRET_KEY: ${GLITCHTIP_SECRET_KEY:-change-me}
+      GLITCHTIP_DOMAIN: ${GLITCHTIP_DOMAIN:-http://localhost:8000}
+      VALKEY_URL: redis://glitchtip-valkey:6379
+    ports:
+      - "8000:8000"
+
+  glitchtip-worker:
+    image: glitchtip/glitchtip
+    restart: unless-stopped
+    command: ./bin/run-celery-with-beat.sh
+    depends_on: [glitchtip-db, glitchtip-valkey]
+    environment: *glitchtip-env
+
+  glitchtip-migrate:
+    image: glitchtip/glitchtip
+    restart: "no"
+    command: ./manage.py migrate
+    depends_on: [glitchtip-db]
+    environment: *glitchtip-env
+  # @end
+
+volumes:
+  acme-pg:
+  # @findplate:umami
+  umami-db:
+  # @end
+  # @findplate:openobserve
+  openobserve:
+  # @end
+  # @findplate:glitchtip
+  glitchtip-db:
+  # @end

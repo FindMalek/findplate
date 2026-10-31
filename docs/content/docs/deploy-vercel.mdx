@@ -1,0 +1,21 @@
+---
+title: Deploy on Vercel
+description: Run web and dashboard on Vercel, with the api elsewhere.
+---
+
+Dokploy is the main path, see [deploy](/docs/deploy). Vercel fits the two Next apps. The api needs bun or docker, so host it on [Dokploy](/docs/deploy#dokploy), [Fly](/docs/deploy-fly) or [Railway](/docs/deploy-railway).
+
+1. Import the repo as two Vercel projects. Set the root directory to `apps/web` for one and `apps/dashboard` for the other.
+2. Each app has a `vercel.json` that installs from the repo root and builds with `turbo build --filter=<app>`.
+3. Set these env keys on both projects:
+
+```bash
+API_URL=            # the deployed api url
+API_PUBLIC_URL=     # same url, the browser can reach it
+WEB_URL=
+DASHBOARD_URL=
+```
+
+4. Enable "Include files outside the root directory" in the project settings, the build reads the workspace packages.
+
+`BETTER_AUTH_SECRET` only goes on the api. The dashboard proxies `/api/auth/*` to it, so cookies stay first-party.
