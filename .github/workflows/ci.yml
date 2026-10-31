@@ -149,6 +149,32 @@ jobs:
             ${{ env.PROJECT }}/apps/e2e/test-results
           if-no-files-found: ignore
 
+  selfhost:
+    name: self-host compose
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PROJECT: /tmp/generated
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/generate
+        with:
+          modules: docs,umami,openobserve,glitchtip
+          dir: ${{ env.PROJECT }}
+      - name: Validate the compose file
+        working-directory: ${{ env.PROJECT }}
+        run: docker compose config -q
+      - name: Boot postgres and the api
+        working-directory: ${{ env.PROJECT }}
+        run: docker compose up -d --build --wait --wait-timeout 300 api
+      - name: Health check
+        working-directory: ${{ env.PROJECT }}
+        run: curl -fsS http://127.0.0.1:3001/health
+      - name: Logs
+        if: failure()
+        working-directory: ${{ env.PROJECT }}
+        run: docker compose logs --tail 100
+
   migrations:
     name: template migrations
     runs-on: ubuntu-latest
