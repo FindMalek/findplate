@@ -72,6 +72,19 @@ describe("generate", () => {
     return { target, result }
   }
 
+  test("self-host compose follows the module selection", () => {
+    const all = readFileSync(
+      join(make(["docs", "umami", "openobserve", "glitchtip"]).target, "docker-compose.yml"),
+      "utf8",
+    )
+    expect(all).not.toContain("@findplate")
+    for (const service of ["docs:", "umami:", "openobserve:", "glitchtip:"]) expect(all).toContain(`  ${service}`)
+    expect(all).toContain("POSTGRES_USER: demo_app")
+    const min = readFileSync(join(make([]).target, "docker-compose.yml"), "utf8")
+    for (const service of ["docs:", "umami:", "openobserve:", "glitchtip:"]) expect(min).not.toContain(`  ${service}`)
+    expect(min).toContain("  dashboard:")
+  })
+
   test("with every module: no template names or markers left, env filled", () => {
     const { target } = make([
       "storage",

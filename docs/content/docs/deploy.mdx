@@ -28,6 +28,20 @@ Deploy `web` and `dashboard` as two Vercel projects from the same repo.
 2. Add the env keys above to both.
 3. Host the `api` somewhere that runs bun or docker, see below, and point `API_URL` and `API_PUBLIC_URL` at it.
 
+## Docker compose
+
+Every generated project has a `docker-compose.yml` at the root that runs postgres, api, web, dashboard and the modules you kept: docs, umami, openobserve and glitchtip. It is cut to your module selection when you generate.
+
+On Dokploy, create a Compose service from your repo, set the compose path to `./docker-compose.yml`, paste your `.env` into its Environment tab and deploy. Set `WEB_URL`, `DASHBOARD_URL` and `API_PUBLIC_URL` to your domains, then attach them to the services in Dokploy.
+
+Anywhere else with docker:
+
+```bash
+docker compose up -d --build
+```
+
+`BETTER_AUTH_SECRET` is required, `create` already wrote one to `.env`. The api runs migrations on start. umami, openobserve and glitchtip start with placeholder passwords, change them in `.env` before exposing them. trigger.dev is not in the file, it needs its own stack, see the [trigger.dev self-hosting guide](https://trigger.dev/docs/self-hosting/docker).
+
 ## Self-host with docker
 
 Every app has a `Dockerfile` in `apps/<app>/`. The build context is the repo root, and turbo prunes the workspace to what the app needs:
