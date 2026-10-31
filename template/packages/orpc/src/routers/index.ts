@@ -9,6 +9,7 @@ import { inboxAdminRouter, inboxRouter } from "./inbox" // @findplate:inbox
 import { jobsRouter } from "./jobs" // @findplate:jobs
 import { notesRouter } from "./notes"
 import { notificationRouter } from "./notification" // @findplate:notification
+import { privacyRouter } from "./privacy" // @findplate:compliance
 import { publicRouter } from "./public"
 import { roadmapRouter } from "./roadmap" // @findplate:roadmap
 import { statusRouter } from "./status" // @findplate:status
@@ -27,6 +28,7 @@ export const appRouter = {
   feedback: feedbackRouter, // @findplate:feedback
   me: meRouter,
   notes: notesRouter,
+  privacy: privacyRouter, // @findplate:compliance
   admin,
   apiKeys: apiKeysRouter, // @findplate:api-keys
   billing: billingRouter, // @findplate:billing

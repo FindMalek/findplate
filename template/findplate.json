@@ -428,6 +428,20 @@
       ],
       "packages": []
     },
+    "compliance": {
+      "label": "Compliance",
+      "hint": "cookie consent that gates analytics, data export and account deletion, privacy and terms page stubs",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": [
+        "packages/compliance",
+        "packages/orpc/src/routers/privacy.ts",
+        "apps/dashboard/components/privacy-panel.tsx",
+        "apps/web/app/privacy",
+        "apps/web/app/terms"
+      ],
+      "packages": ["@acme/compliance"]
+    },
     "i18n": {
       "label": "Internationalization",
       "hint": "next-intl in web and dashboard, english and french, locale switcher, hreflang in the sitemap",

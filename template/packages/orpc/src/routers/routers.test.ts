@@ -136,3 +136,23 @@ test("feedback: a bot filling the honeypot is dropped quietly, and without GitHu
   })
 })
 // @end
+
+// @findplate:compliance
+test("privacy: export returns your data, deleting the account needs your email and removes you", async () => {
+  const { client, id } = await app.signUp("gdpr@acme.test")
+  await client.notes.create({ title: "mine" })
+
+  const { data } = await client.privacy.export()
+  expect(data).toMatchObject({
+    profile: { email: "gdpr@acme.test" },
+    notes: [expect.objectContaining({ title: "mine" })],
+  })
+
+  await expect(client.privacy.deleteAccount({ email: "other@acme.test" })).rejects.toMatchObject({
+    code: "BAD_REQUEST",
+  })
+  await client.privacy.deleteAccount({ email: "GDPR@acme.test" })
+  const left = await app.services.db.query.user.findFirst({ where: (u, { eq }) => eq(u.id, id) })
+  expect(left).toBeUndefined()
+})
+// @end

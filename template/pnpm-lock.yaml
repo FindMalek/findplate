@@ -350,6 +350,9 @@ importers:
       '@acme/common':
         specifier: workspace:*
         version: link:../../packages/common
+      '@acme/compliance':
+        specifier: workspace:*
+        version: link:../../packages/compliance
       '@acme/env':
         specifier: workspace:*
         version: link:../../packages/env
@@ -607,6 +610,9 @@ importers:
 
   apps/web:
     dependencies:
+      '@acme/compliance':
+        specifier: workspace:*
+        version: link:../../packages/compliance
       '@acme/env':
         specifier: workspace:*
         version: link:../../packages/env
@@ -792,6 +798,31 @@ importers:
       '@types/bun':
         specifier: 'catalog:'
         version: 1.4.3
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
+  packages/compliance:
+    dependencies:
+      '@acme/ui':
+        specifier: workspace:*
+        version: link:../ui
+      next:
+        specifier: 'catalog:'
+        version: 16.4.3(@opentelemetry/api@1.10.0)(@playwright/test@1.64.1)(@types/node@24.19.2)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      react:
+        specifier: 'catalog:'
+        version: 19.3.0
+    devDependencies:
+      '@acme/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/bun':
+        specifier: 'catalog:'
+        version: 1.4.3
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.3.0
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
