@@ -1,4 +1,5 @@
 import "@acme/ui/globals.css"
+import { ConsentBanner } from "@acme/compliance/banner" // @findplate:compliance
 import { QueryProvider } from "@acme/orpc/react"
 import { cn } from "@acme/ui/lib/utils"
 import type { Metadata } from "next"
@@ -39,6 +40,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             </div>
             {children}
           </QueryProvider>
+          {/* @findplate:compliance */}
+          <ConsentBanner />
+          {/* @end */}
         </ThemeProvider>
       </body>
     </html>

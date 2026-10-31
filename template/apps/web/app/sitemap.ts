@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic"
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const paths = ["/"]
   paths.push("/roadmap") // @findplate:roadmap
+  paths.push("/privacy", "/terms") // @findplate:compliance
   paths.push("/status") // @findplate:status
   // @findplate:blog
   paths.push("/blog", "/changelog")

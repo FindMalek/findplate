@@ -29,6 +29,14 @@ export async function SiteFooter() {
             Changelog
           </a>
           {/* @end */}
+          {/* @findplate:compliance */}
+          <a href="/privacy" className="text-muted-foreground hover:text-foreground">
+            Privacy
+          </a>
+          <a href="/terms" className="text-muted-foreground hover:text-foreground">
+            Terms
+          </a>
+          {/* @end */}
           {/* @findplate:roadmap */}
           <a href="/roadmap" className="text-muted-foreground hover:text-foreground">
             Roadmap
