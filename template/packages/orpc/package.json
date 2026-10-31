@@ -22,6 +22,7 @@
     "@acme/billing": "workspace:*",
     "@acme/common": "workspace:*",
     "@acme/db": "workspace:*",
+    "@acme/cache": "workspace:*",
     "@acme/flags": "workspace:*",
     "@orpc/client": "catalog:",
     "@orpc/server": "catalog:",

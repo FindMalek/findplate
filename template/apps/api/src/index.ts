@@ -1,6 +1,7 @@
 import { resolveModel } from "@acme/ai" // @findplate:ai
 import { createAuth } from "@acme/auth"
 import { createBilling } from "@acme/billing" // @findplate:billing
+import { createCache } from "@acme/cache" // @findplate:cache
 import { createDb } from "@acme/db"
 import { runMigrations } from "@acme/db/migrate"
 import { seedDemo } from "@acme/db/seed"
@@ -67,6 +68,9 @@ const fetch = createServer(
       upstashUrl: env.UPSTASH_REDIS_REST_URL,
       upstashToken: env.UPSTASH_REDIS_REST_TOKEN,
     }),
+    // @end
+    // @findplate:cache
+    cache: createCache({ upstashUrl: env.UPSTASH_REDIS_REST_URL, upstashToken: env.UPSTASH_REDIS_REST_TOKEN }),
     // @end
     // @findplate:storage
     storage: createStorage({
