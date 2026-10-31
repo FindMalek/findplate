@@ -34,6 +34,7 @@ export const session = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     impersonatedBy: text("impersonated_by"),
+    activeOrganizationId: text("active_organization_id"), // @findplate:orgs
   },
   (table) => [index("session_userId_idx").on(table.userId)],
 )

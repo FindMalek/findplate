@@ -32,6 +32,7 @@
     "i18n",
     "flags",
     "billing",
+    "orgs",
     "jobs",
     "logger",
     "---Design---",

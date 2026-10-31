@@ -1,5 +1,6 @@
 import { ORPCError, os } from "@orpc/server"
 import type { Context } from "./context"
+import { activeMembership } from "./lib/org" // @findplate:orgs
 import { enforceRateLimit, RATE_LIMITS } from "./lib/rate-limit" // @findplate:rate-limit
 
 export const o = os.$context<Context>()
@@ -38,3 +39,14 @@ const requireAdmin = o.middleware(async ({ context, next }) => {
 })
 
 export const adminProcedure = protectedProcedure.use(requireAdmin)
+
+// @findplate:orgs
+const requireOrg = o.middleware(async ({ context, next }) => {
+  const membership = await activeMembership(context)
+  if (!membership) throw new ORPCError("FORBIDDEN", { message: "Pick an organization first." })
+  return next({ context: { org: membership } })
+})
+
+/** Signed in, with an active organization the caller is a member of: `context.org` is `{ organizationId, role }`. */
+export const orgProcedure = protectedProcedure.use(requireOrg)
+// @end

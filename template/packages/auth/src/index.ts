@@ -3,6 +3,7 @@ import * as schema from "@acme/db/schema"
 import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { admin, magicLink } from "better-auth/plugins"
+import { organization } from "better-auth/plugins/organization" // @findplate:orgs
 
 export interface AuthConfig {
   db: Db
@@ -16,12 +17,17 @@ export interface AuthConfig {
   sendVerification?: (user: { email: string; name: string }, url: string) => Promise<unknown>
   sendResetPassword?: (user: { email: string; name: string }, url: string) => Promise<unknown>
   sendMagicLink?: (email: string, url: string) => Promise<unknown>
+  // @findplate:orgs
+  /** Called with the accept link of an organization invite; unset means the invite is only visible in the dashboard. */
+  sendInvitation?: (invite: { email: string; inviter: string; role: string; url: string }) => Promise<unknown>
+  // @end
 }
 
 const quiet = (task: Promise<unknown>) => task.catch((error) => console.error("[auth] email failed", error))
 
 export function createAuth(config: AuthConfig) {
   const { sendVerification, sendResetPassword, sendMagicLink } = config
+  const sendInvitation = config.sendInvitation // @findplate:orgs
   return betterAuth({
     baseURL: config.dashboardUrl,
     secret: config.secret,
@@ -40,6 +46,21 @@ export function createAuth(config: AuthConfig) {
     socialProviders: config.github ? { github: config.github } : undefined,
     plugins: [
       admin(),
+      // @findplate:orgs
+      organization({
+        sendInvitationEmail: sendInvitation
+          ? async ({ id, email, role, inviter }) =>
+              void quiet(
+                sendInvitation({
+                  email,
+                  role: String(role),
+                  inviter: inviter.user.name,
+                  url: `${config.dashboardUrl}/accept-invitation/${id}`,
+                }),
+              )
+          : undefined,
+      }),
+      // @end
       ...(sendMagicLink
         ? [magicLink({ sendMagicLink: async ({ email, url }) => void quiet(sendMagicLink(email, url)) })]
         : []),
