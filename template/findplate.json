@@ -282,6 +282,27 @@
         "trigger:deploy": "pnpm --filter @acme/jobs exec trigger deploy"
       }
     },
+    "billing": {
+      "label": "Billing",
+      "hint": "subscriptions with Stripe or Polar: checkout, customer portal, plan entitlements, webhooks",
+      "group": "product",
+      "profiles": ["everything"],
+      "requires": ["webhooks"],
+      "paths": [
+        "packages/billing",
+        "packages/db/src/schema/billing.ts",
+        "packages/db/drizzle/0003_billing.sql",
+        "packages/db/drizzle/meta/0003_snapshot.json",
+        "packages/orpc/src/routers/billing.ts",
+        "apps/dashboard/components/billing-actions.tsx",
+        "apps/dashboard/app/(app)/billing"
+      ],
+      "packages": ["@acme/billing"],
+      "keys": [
+        { "env": "STRIPE_SECRET_KEY", "label": "Stripe secret key", "url": "https://dashboard.stripe.com/apikeys" },
+        { "env": "POLAR_ACCESS_TOKEN", "label": "Polar access token", "url": "https://polar.sh/settings" }
+      ]
+    },
     "i18n": {
       "label": "Internationalization",
       "hint": "next-intl in web and dashboard, english and french, locale switcher, hreflang in the sitemap",

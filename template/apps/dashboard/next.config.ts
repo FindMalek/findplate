@@ -23,6 +23,7 @@ const securityHeaders = [
 
 const transpilePackages = ["@acme/ui", "@acme/orpc", "@acme/common"]
 transpilePackages.push("@acme/logger") // @findplate:logger
+transpilePackages.push("@acme/billing") // @findplate:billing
 
 const nextConfig: NextConfig = {
   output: "standalone",

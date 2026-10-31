@@ -12,6 +12,7 @@
   "dependencies": {
     "@acme/ai": "workspace:*",
     "@acme/auth": "workspace:*",
+    "@acme/billing": "workspace:*",
     "@acme/db": "workspace:*",
     "@acme/env": "workspace:*",
     "@acme/flags": "workspace:*",

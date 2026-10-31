@@ -217,6 +217,9 @@ importers:
       '@acme/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@acme/billing':
+        specifier: workspace:*
+        version: link:../../packages/billing
       '@acme/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -290,6 +293,9 @@ importers:
       '@acme/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@acme/billing':
+        specifier: workspace:*
+        version: link:../../packages/billing
       '@acme/common':
         specifier: workspace:*
         version: link:../../packages/common
@@ -601,6 +607,28 @@ importers:
         specifier: 'catalog:'
         version: 5.9.3
 
+  packages/billing:
+    dependencies:
+      '@acme/db':
+        specifier: workspace:*
+        version: link:../db
+      '@acme/webhooks':
+        specifier: workspace:*
+        version: link:../webhooks
+      drizzle-orm:
+        specifier: 'catalog:'
+        version: 0.45.4(@opentelemetry/api@1.10.0)(bun-types@1.4.3)(kysely@0.29.6)(pg@8.23.1)(postgres@3.4.9)
+    devDependencies:
+      '@acme/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/bun':
+        specifier: 'catalog:'
+        version: 1.4.3
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
   packages/common:
     dependencies:
       zod:
@@ -792,6 +820,9 @@ importers:
       '@acme/auth':
         specifier: workspace:*
         version: link:../auth
+      '@acme/billing':
+        specifier: workspace:*
+        version: link:../billing
       '@acme/common':
         specifier: workspace:*
         version: link:../common
