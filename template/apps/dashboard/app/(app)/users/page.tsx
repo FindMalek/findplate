@@ -2,6 +2,7 @@ import { Badge } from "@acme/ui/components/badge"
 import { Card, CardContent } from "@acme/ui/components/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@acme/ui/components/table"
 import type { Metadata } from "next"
+import { ImpersonateButton } from "@/components/impersonate-button" // @findplate:impersonation
 import { LocalDate } from "@/components/local-date"
 import { PageHeader } from "@/components/page-header"
 import { call } from "@/lib/api"
@@ -23,6 +24,9 @@ export default async function UsersPage() {
                   <TableHead>Email</TableHead>
                   <TableHead>Role</TableHead>
                   <TableHead className="text-right">Joined</TableHead>
+                  {/* @findplate:impersonation */}
+                  <TableHead />
+                  {/* @end */}
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -36,6 +40,11 @@ export default async function UsersPage() {
                     <TableCell className="text-right text-muted-foreground">
                       <LocalDate value={u.createdAt} />
                     </TableCell>
+                    {/* @findplate:impersonation */}
+                    <TableCell className="text-right">
+                      {u.role !== "admin" && <ImpersonateButton userId={u.id} />}
+                    </TableCell>
+                    {/* @end */}
                   </TableRow>
                 ))}
               </TableBody>

@@ -39,6 +39,7 @@
     "audit-log",
     "api-keys",
     "search",
+    "impersonation",
     "compliance",
     "inbox",
     "feedback",

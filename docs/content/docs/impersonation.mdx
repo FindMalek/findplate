@@ -1,0 +1,24 @@
+---
+title: Admin impersonation
+description: Sign in as a user from the admin users page to reproduce a bug.
+---
+
+The `impersonation` module adds an **Impersonate** button to the users page and a red banner with **Stop impersonating** while you are signed in as someone else. It is a thin UI on the better-auth admin plugin, which the template already includes, so there is no table and no env key. Off by default.
+
+```bash
+findplate create my-app --modules impersonation
+```
+
+## Good to know
+
+- only admins see the button, and the button is hidden for other admins (the plugin refuses to impersonate admins unless you change its config)
+- the impersonation session lasts one hour at most, Stop ends it earlier and puts you back in your own session
+- the banner reads `session.impersonatedBy`, so it also shows when you impersonate through the api directly (`POST /api/auth/admin/impersonate-user`)
+
+## With the audit log
+
+When the `audit-log` module is on, starting and stopping are recorded as `admin.impersonate` (actor: the admin, target: the user) and `admin.impersonate-stop`. The hooks live in `packages/auth/src/audit.ts` and record impersonation whether or not this module's buttons are used.
+
+## Remove it
+
+Generate without the module. The admin plugin keeps its endpoints, restrict them in `packages/auth/src/index.ts` if you don't want them.

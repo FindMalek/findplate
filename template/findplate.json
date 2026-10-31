@@ -375,6 +375,7 @@
         "packages/db/src/schema/audit.ts",
         "packages/db/drizzle/0005_audit.sql",
         "packages/db/drizzle/meta/0005_snapshot.json",
+        "packages/auth/src/audit.ts",
         "packages/orpc/src/lib/audit.ts",
         "packages/orpc/src/routers/audit.ts",
         "apps/dashboard/app/(app)/audit-log"
@@ -441,6 +442,17 @@
         "apps/web/app/terms"
       ],
       "packages": ["@acme/compliance"]
+    },
+    "impersonation": {
+      "label": "Admin impersonation",
+      "hint": "admins sign in as a user from the users page to reproduce a bug, with a banner and a stop button",
+      "group": "platform",
+      "profiles": ["everything"],
+      "paths": [
+        "apps/dashboard/components/impersonate-button.tsx",
+        "apps/dashboard/components/impersonation-banner.tsx"
+      ],
+      "packages": []
     },
     "search": {
       "label": "Search",

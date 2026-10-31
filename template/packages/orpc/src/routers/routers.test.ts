@@ -157,6 +157,30 @@ test("privacy: export returns your data, deleting the account needs your email a
 })
 // @end
 
+// @findplate:audit-log
+test("audit log: an admin signing in as a user, and stopping, is recorded", async () => {
+  const admin = await app.signUp("imp-admin@acme.test", { role: "admin" })
+  const target = await app.signUp("imp-target@acme.test")
+  const started = await app.services.auth.api.impersonateUser({
+    body: { userId: target.id },
+    headers: admin.headers,
+    returnHeaders: true,
+  })
+  // Like a browser: the admin's cookies, overwritten by the ones the call just set.
+  const jar = new Map<string, string>()
+  for (const part of (admin.headers.get("cookie") ?? "").split("; ")) jar.set(part.split("=")[0] ?? "", part)
+  for (const line of started.headers.getSetCookie()) {
+    const pair = line.split(";")[0] ?? ""
+    jar.set(pair.split("=")[0] ?? "", pair)
+  }
+  await app.services.auth.api.stopImpersonating({ headers: new Headers({ cookie: [...jar.values()].join("; ") }) })
+
+  const actions = (await admin.client.admin.audit.list({ action: "admin.impersonate" })).map((e) => e.action)
+  expect(actions).toContain("admin.impersonate")
+  expect(actions).toContain("admin.impersonate-stop")
+})
+// @end
+
 // @findplate:search
 test("search: ranked hits with a highlight, only in your own notes", async () => {
   const ada = await app.signUp("search-ada@acme.test")
