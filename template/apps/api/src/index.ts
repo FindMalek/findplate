@@ -31,11 +31,14 @@ const jobs = await startJobs(env, db, { worker: env.JOBS_WORKER }) // @findplate
 const notification = createNotifier(env, { appUrl: env.DASHBOARD_URL })
 // @end
 
+const trustedOrigins = [env.WEB_URL, env.DASHBOARD_URL]
+trustedOrigins.push("acme://", "exp://") // @findplate:mobile
+
 const auth = createAuth({
   db,
   secret: env.BETTER_AUTH_SECRET,
   dashboardUrl: env.DASHBOARD_URL,
-  trustedOrigins: [env.WEB_URL, env.DASHBOARD_URL],
+  trustedOrigins,
   github:
     env.GITHUB_CLIENT_ID && env.GITHUB_CLIENT_SECRET
       ? { clientId: env.GITHUB_CLIENT_ID, clientSecret: env.GITHUB_CLIENT_SECRET }

@@ -31,6 +31,7 @@
     "rate-limiting",
     "cache",
     "blog",
+    "mobile",
     "i18n",
     "flags",
     "billing",
