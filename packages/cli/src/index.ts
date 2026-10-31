@@ -5,6 +5,7 @@ import pkg from "../package.json"
 import { addCommand } from "./commands/add"
 import { configCommand } from "./commands/config"
 import { create } from "./commands/create"
+import { demoCommand } from "./commands/demo"
 import { diffCommand } from "./commands/diff"
 import { doctorCommand } from "./commands/doctor"
 import { github } from "./commands/github"
@@ -21,6 +22,7 @@ const HELP = `findplate: create a production-ready full-stack project
 
 Usage
   findplate create [dir] [options]   re-run in an unfinished project to resume it
+  findplate demo [dir]   generate a sample project in a temp dir and boot it locally
   findplate github [dir] [options]   create the repo, board, labels and rules on GitHub (idempotent)
   findplate update [dir] [options]   merge the newest template into an existing project
   findplate diff [dir] [--base-template <dir>]   show how the project differs from the template it was generated from
@@ -103,6 +105,7 @@ async function main() {
   if (values.version) return console.info(VERSION)
   const [command = "create", dir] = positionals
   if (values.help) return console.info(HELP)
+  if (command === "demo") return demoCommand({ dir })
   if (command === "diff") return diffCommand({ dir, baseTemplate: values["base-template"] })
   if (command === "update") {
     return update({
