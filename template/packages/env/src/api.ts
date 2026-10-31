@@ -31,8 +31,8 @@ const schema = z.object({
   LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
   // @end
 
-  // @findplate:rate-limit
-  /** Shared counters across api replicas; without them limits are kept in memory per process. */
+  // @findplate:cache|rate-limit
+  /** Shared by the cache and the rate limits; without them both are kept in memory per process. */
   UPSTASH_REDIS_REST_URL: z.url().optional(),
   UPSTASH_REDIS_REST_TOKEN: optional,
   // @end

@@ -40,6 +40,7 @@ Each module has a page with what it adds, its env keys, how to remove it and how
 | [`storage`](/docs/storage) | standard, everything | `packages/storage`. Uploads to any S3 API: Garage, R2, AWS, MinIO |
 | [`ai`](/docs/ai) | standard, everything | `packages/ai`. Vercel AI SDK with Groq, OpenAI or Anthropic |
 | [`rate-limit`](/docs/rate-limiting) | standard, everything | per route and ip limits on the api, in memory or on Upstash Redis |
+| [`cache`](/docs/cache) | everything | `packages/cache`. Typed cache with ttl and tag invalidation, on Upstash Redis or in memory |
 | [`flags`](/docs/flags) | everything | `packages/flags`. Typed feature flags: code defaults, env overrides, rollouts edited in the dashboard |
 | [`jobs`](/docs/jobs) | everything | `packages/jobs`. Background jobs and cron on your Postgres with pg-boss, optional separate worker |
 | [`trigger`](/docs/jobs#run-on-triggerdev) | everything | needs `jobs`. Runs the same jobs on trigger.dev, cloud or self-hosted, instead of pg-boss |

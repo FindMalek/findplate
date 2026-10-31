@@ -1,4 +1,5 @@
 import type { Auth, Session } from "@acme/auth"
+import type { Cache } from "@acme/cache" // @findplate:cache
 import type { Db } from "@acme/db"
 import type { Flags } from "@acme/flags/server" // @findplate:flags
 import type { Jobs } from "@acme/jobs" // @findplate:jobs
@@ -21,6 +22,7 @@ export interface Services {
     dashboardUrl: string // @findplate:status
   }
   rateLimiter: RateLimiter // @findplate:rate-limit
+  cache: Cache // @findplate:cache
   flags: Flags // @findplate:flags
   jobs: Jobs // @findplate:jobs
   // @findplate:storage

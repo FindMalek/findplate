@@ -67,7 +67,7 @@ import { mymodule } from "@acme/mymodule"
 // @end
 ```
 
-A trailing `// @findplate:mymodule` marks one line. Markers come in four comment styles: `//`, `#`, `{/* */}` and `<!-- -->`. They cannot nest. Add the env block to `template/.env.example` the same way and put a missing key's fallback in the code, so the app still starts without it.
+A trailing `// @findplate:mymodule` marks one line. Markers come in four comment styles: `//`, `#`, `{/* */}` and `<!-- -->`. They cannot nest. `// @findplate:a|b` keeps the code when either module is on, for code two modules share. Add the env block to `template/.env.example` the same way and put a missing key's fallback in the code, so the app still starts without it.
 
 ### 3. Tests
 

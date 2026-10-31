@@ -218,6 +218,14 @@
       ],
       "packages": []
     },
+    "cache": {
+      "label": "Cache",
+      "hint": "typed get, set, ttl and tag invalidation on Upstash Redis, in memory without it",
+      "group": "platform",
+      "profiles": ["everything"],
+      "paths": ["packages/cache"],
+      "packages": ["@acme/cache"]
+    },
     "flags": {
       "label": "Feature flags",
       "hint": "typed flags with code defaults, env overrides and dashboard rollouts per user",

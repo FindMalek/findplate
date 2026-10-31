@@ -217,6 +217,9 @@ importers:
       '@acme/auth':
         specifier: workspace:*
         version: link:../../packages/auth
+      '@acme/cache':
+        specifier: workspace:*
+        version: link:../../packages/cache
       '@acme/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -601,6 +604,18 @@ importers:
         specifier: 'catalog:'
         version: 5.9.3
 
+  packages/cache:
+    devDependencies:
+      '@acme/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/bun':
+        specifier: 'catalog:'
+        version: 1.4.3
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
   packages/common:
     dependencies:
       zod:
@@ -792,6 +807,9 @@ importers:
       '@acme/auth':
         specifier: workspace:*
         version: link:../auth
+      '@acme/cache':
+        specifier: workspace:*
+        version: link:../cache
       '@acme/common':
         specifier: workspace:*
         version: link:../common

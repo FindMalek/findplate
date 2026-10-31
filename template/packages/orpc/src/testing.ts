@@ -1,4 +1,5 @@
 import { createAuth } from "@acme/auth"
+import { createCache } from "@acme/cache" // @findplate:cache
 import { user } from "@acme/db"
 import { createTestDb, type TestDb } from "@acme/db/testing"
 import { createFlags } from "@acme/flags/server" // @findplate:flags
@@ -33,6 +34,7 @@ export async function createTestApp() {
       dashboardUrl: "http://localhost:3002", // @findplate:status
     },
     rateLimiter: createRateLimiter({}), // @findplate:rate-limit
+    cache: createCache({}), // @findplate:cache
     // @findplate:storage
     storage: null,
     // @end

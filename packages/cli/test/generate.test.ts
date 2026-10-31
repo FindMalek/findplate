@@ -28,6 +28,8 @@ test("module blocks stay when enabled and disappear when not, markers always go"
   expect(stripModules(source, new Set())).toBe("a\nd")
   expect(stripModules('import { a } from "a" // @findplate:ai\nb', new Set(["ai"]))).toBe('import { a } from "a"\nb')
   expect(stripModules('import { a } from "a" // @findplate:ai\nb', new Set())).toBe("b")
+  expect(stripModules("a\n// @findplate:ai|cache\nb\n// @end", new Set(["cache"]))).toBe("a\nb")
+  expect(stripModules("a\nb // @findplate:ai|cache", new Set(["jobs"]))).toBe("a")
   expect(() => stripModules("// @findplate:ai\nx", new Set())).toThrow("never closed")
 })
 
