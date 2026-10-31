@@ -1,0 +1,19 @@
+---
+title: Deploy on Fly.io
+description: Run the api on Fly with a Postgres database and a health check.
+---
+
+The generated `apps/api/fly.toml` runs the api image on port 3001 and checks `GET /health` every 30 seconds. The check fails with 503 when the database is down.
+
+From the repo root:
+
+```bash
+fly launch --no-deploy --copy-config --config apps/api/fly.toml
+fly postgres create && fly postgres attach <pg-app> -a <api-app>
+fly secrets set BETTER_AUTH_SECRET="$(openssl rand -base64 32)" \
+  WEB_URL=https://example.com DASHBOARD_URL=https://app.example.com \
+  API_PUBLIC_URL=https://api.example.com ADMIN_EMAIL=you@example.com ADMIN_PASSWORD=...
+fly deploy --config apps/api/fly.toml --dockerfile apps/api/Dockerfile .
+```
+
+`fly postgres attach` sets `DATABASE_URL`. The api runs migrations on start. Then point `API_URL` and `API_PUBLIC_URL` of web and dashboard at the Fly url.
