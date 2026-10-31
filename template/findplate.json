@@ -392,6 +392,20 @@
       ],
       "packages": []
     },
+    "search": {
+      "label": "Search",
+      "hint": "Postgres full-text search on the notes example: ranked results with highlights, no extra service",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": [
+        "packages/db/drizzle/0008_search.sql",
+        "packages/db/drizzle/meta/0008_snapshot.json",
+        "packages/db/src/schema/tsvector.ts",
+        "packages/orpc/src/routers/notes-search.ts",
+        "apps/dashboard/components/notes-search.tsx"
+      ],
+      "packages": []
+    },
     "i18n": {
       "label": "Internationalization",
       "hint": "next-intl in web and dashboard, english and french, locale switcher, hreflang in the sitemap",

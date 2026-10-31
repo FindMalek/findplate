@@ -37,6 +37,7 @@
     "orgs",
     "audit-log",
     "api-keys",
+    "search",
     "inbox",
     "jobs",
     "logger",

@@ -12,7 +12,7 @@ import { protectedProcedure } from "../procedures"
 type Caller = Pick<Context, "db" | "session"> & { user: { id: string } }
 
 /** The caller's notes, or the active organization's when the orgs module is on and one is selected. */
-async function scope(context: Caller): Promise<SQL | undefined> {
+export async function scope(context: Caller): Promise<SQL | undefined> {
   // @findplate:orgs
   const organizationId = await activeOrganizationId(context)
   if (organizationId) return eq(notes.organizationId, organizationId)

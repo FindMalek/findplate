@@ -7,11 +7,17 @@ import { flagsRouter } from "./flags" // @findplate:flags
 import { inboxAdminRouter, inboxRouter } from "./inbox" // @findplate:inbox
 import { jobsRouter } from "./jobs" // @findplate:jobs
 import { notesRouter } from "./notes"
+import { notesSearchRouter } from "./notes-search" // @findplate:search
 import { notificationRouter } from "./notification" // @findplate:notification
 import { publicRouter } from "./public"
 import { roadmapRouter } from "./roadmap" // @findplate:roadmap
 import { statusRouter } from "./status" // @findplate:status
 import { waitlistRouter } from "./waitlist" // @findplate:waitlist
+
+const notes = {
+  ...notesRouter,
+  ...notesSearchRouter, // @findplate:search
+}
 
 const admin = {
   ...adminRouter,
@@ -24,7 +30,7 @@ const admin = {
 export const appRouter = {
   public: publicRouter,
   me: meRouter,
-  notes: notesRouter,
+  notes,
   admin,
   apiKeys: apiKeysRouter, // @findplate:api-keys
   billing: billingRouter, // @findplate:billing

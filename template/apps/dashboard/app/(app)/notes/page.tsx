@@ -1,6 +1,7 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query"
 import type { Metadata } from "next"
 import { NotesBoard } from "@/components/notes-board"
+import { NotesSearch } from "@/components/notes-search" // @findplate:search
 import { PageHeader } from "@/components/page-header"
 import { getQueryClient, serverOrpc } from "@/lib/api"
 
@@ -13,6 +14,9 @@ export default async function NotesPage() {
   return (
     <>
       <PageHeader title="Notes" description="The example resource: db → orpc → dashboard. Replace it with yours." />
+      {/* @findplate:search */}
+      <NotesSearch />
+      {/* @end */}
       <HydrationBoundary state={dehydrate(queryClient)}>
         <NotesBoard />
       </HydrationBoundary>

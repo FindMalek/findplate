@@ -125,3 +125,18 @@ test("inbox: a message shows up unread for its user only, and reading clears it"
   expect((await ada.client.inbox.list()).unread).toBe(0)
 })
 // @end
+
+// @findplate:search
+test("search: ranked hits with a highlight, only in your own notes", async () => {
+  const ada = await app.signUp("search-ada@acme.test")
+  const bob = await app.signUp("search-bob@acme.test")
+  await ada.client.notes.create({ title: "Groceries", body: "buy oat milk and bananas" })
+  await ada.client.notes.create({ title: "Ideas", body: "write about banana bread" })
+  await bob.client.notes.create({ title: "Secret", body: "bananas for bob" })
+
+  const hits = await ada.client.notes.search({ q: "banana" })
+  expect(hits.map((hit) => hit.title).sort()).toEqual(["Groceries", "Ideas"])
+  expect(hits[0]?.headline).toContain("<mark>")
+  expect(await ada.client.notes.search({ q: "zebra" })).toEqual([])
+})
+// @end

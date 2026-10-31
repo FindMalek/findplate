@@ -1,0 +1,34 @@
+---
+title: Search
+description: Postgres full-text search on the notes example, with ranking and highlights.
+---
+
+The `search` module adds full-text search to the notes example with nothing but Postgres: a generated `tsvector` column, a GIN index, a typed `notes.search` procedure (`GET /v1/notes/search?q=`) and a search box on the notes page. No extra service. Off by default.
+
+```bash
+findplate create my-app --modules search
+```
+
+## How it works
+
+- a `search` column on `notes` is a column Postgres keeps in step with `title` and `body` (`generated always as`), so there is nothing to update from code
+- the query goes through `websearch_to_tsquery`, so users can type `"exact phrase"`, `-excluded` and `or` like in a search engine
+- results are ranked with `ts_rank` and carry a `headline` with the matches wrapped in `<mark>`, the dashboard splits those apart instead of rendering html, do the same in your own UI
+- results follow the same scope as the notes list, so with `orgs` on they are the active organization's notes and nobody sees another user's notes
+- the dictionary is `english`: change it in `packages/db/src/schema/app.ts` and the `notes.search` procedure for another language, and add a migration
+
+## Use it on your own table
+
+Copy the pattern from `notes`:
+
+```ts
+search: tsvector("search").generatedAlwaysAs(sql`to_tsvector('english', title || ' ' || body)`),
+// and in the table callback
+index("things_search_idx").using("gin", t.search),
+```
+
+then select with `ts_rank(search, query)` and filter with ``sql`search @@ query` ``.
+
+## Remove it
+
+Generate without the module. The migration `0008_search` adds the column and the index, drop them in a new drizzle migration if it already ran.
