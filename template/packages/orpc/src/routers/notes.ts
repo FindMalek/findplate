@@ -97,7 +97,10 @@ export const notesRouter = {
     .output(z.object({ summary: z.string() }))
     .handler(async ({ context, input }) => {
       if (!context.model) throw new ORPCError("SERVICE_UNAVAILABLE", { message: "No AI provider key is configured." })
-      const [note] = await context.db.select().from(notes).where(await mine(context, input.id))
+      const [note] = await context.db
+        .select()
+        .from(notes)
+        .where(await mine(context, input.id))
       if (!note) throw new ORPCError("NOT_FOUND", { message: "Note not found." })
       const { text } = await generateText({
         model: context.model,
