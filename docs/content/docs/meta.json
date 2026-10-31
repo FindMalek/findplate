@@ -38,6 +38,7 @@
     "audit-log",
     "api-keys",
     "impersonation",
+    "inbox",
     "jobs",
     "logger",
     "---Design---",

@@ -376,6 +376,23 @@
       ],
       "packages": []
     },
+    "inbox": {
+      "label": "In-app notifications",
+      "hint": "a bell with unread count and an inbox page in the dashboard, notifyInbox() from any procedure or job",
+      "group": "product",
+      "profiles": ["everything"],
+      "paths": [
+        "packages/db/src/schema/inbox.ts",
+        "packages/db/drizzle/0007_inbox.sql",
+        "packages/db/drizzle/meta/0007_snapshot.json",
+        "packages/orpc/src/lib/inbox.ts",
+        "packages/orpc/src/routers/inbox.ts",
+        "apps/dashboard/components/inbox-bell.tsx",
+        "apps/dashboard/components/inbox-list.tsx",
+        "apps/dashboard/app/(app)/inbox"
+      ],
+      "packages": []
+    },
     "impersonation": {
       "label": "Admin impersonation",
       "hint": "admins sign in as a user from the users page to reproduce a bug, with a banner and a stop button",

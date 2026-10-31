@@ -12,7 +12,7 @@ export function ImpersonationBanner() {
     window.location.assign("/users")
   }
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 flex items-center justify-center gap-3 bg-destructive px-4 py-2 text-destructive-foreground text-sm">
+    <div className="fixed inset-x-0 bottom-0 z-50 flex items-center justify-center gap-3 bg-destructive px-4 py-2 text-background text-sm">
       <span>You are signed in as {data.user.email}.</span>
       <Button size="sm" variant="secondary" onClick={stop}>
         Stop impersonating

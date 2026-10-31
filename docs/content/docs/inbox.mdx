@@ -1,0 +1,43 @@
+---
+title: In-app notifications
+description: A bell with an unread count and an inbox page in the dashboard.
+---
+
+The `inbox` module puts notifications inside the dashboard: a bell with the unread count on every page and an `/inbox` page with mark read and mark all read. It adds the `inbox_item` table and a helper you call from your code. Off by default.
+
+```bash
+findplate create my-app --modules inbox
+```
+
+## Send a notification
+
+From any procedure, or a job from the `jobs` module:
+
+```ts
+import { notifyInbox } from "../lib/inbox"
+
+await notifyInbox(context.db, userId, { title: "Your export is ready", href: "/exports" })
+```
+
+`href` is a dashboard path opened by the Open button. `body` is optional.
+
+Admins can also send one from the api: `admin.inbox.send` (`POST /v1/admin/inbox`) with `{ userId, title, body? }`.
+
+## Procedures
+
+| Procedure | What it does |
+| --- | --- |
+| `inbox.list` | the latest 30 and the unread count |
+| `inbox.markRead` | `{ id }` |
+| `inbox.markAllRead` | clears the count |
+
+The bell is rendered by the dashboard layout from `inbox.list`, so it refreshes on navigation. For live updates poll `inbox.list` from a client component or add a stream, nothing else has to change.
+
+## Pairs well with
+
+- `notification`: send the same event by email or chat as well, the notifier and the inbox are separate calls
+- `billing` and `orgs`: tell the user when a payment fails or they were invited
+
+## Remove it
+
+Generate without the module. The migration `0007_inbox` creates `inbox_item`, drop it in a new drizzle migration if it already ran.

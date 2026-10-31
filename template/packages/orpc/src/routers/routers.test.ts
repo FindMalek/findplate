@@ -111,6 +111,21 @@ test("orgs: notes follow the active organization and only members can switch to 
 })
 // @end
 
+// @findplate:inbox
+test("inbox: a message shows up unread for its user only, and reading clears it", async () => {
+  const ada = await app.signUp("inbox-ada@acme.test")
+  const bob = await app.signUp("inbox-bob@acme.test")
+  const admin = await app.signUp("inbox-admin@acme.test", { role: "admin" })
+
+  await admin.client.admin.inbox.send({ userId: ada.id, title: "Welcome", body: "hi" })
+  expect(await ada.client.inbox.list()).toMatchObject({ unread: 1, items: [{ title: "Welcome", readAt: null }] })
+  expect((await bob.client.inbox.list()).unread).toBe(0)
+
+  await ada.client.inbox.markAllRead()
+  expect((await ada.client.inbox.list()).unread).toBe(0)
+})
+// @end
+
 // @findplate:audit-log
 test("audit log: an admin signing in as a user, and stopping, is recorded", async () => {
   const admin = await app.signUp("imp-admin@acme.test", { role: "admin" })
