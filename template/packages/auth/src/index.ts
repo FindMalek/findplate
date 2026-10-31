@@ -4,6 +4,7 @@ import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { admin, magicLink } from "better-auth/plugins"
 import { organization } from "better-auth/plugins/organization" // @findplate:orgs
+import { auditHooks } from "./audit" // @findplate:audit-log
 
 export interface AuthConfig {
   db: Db
@@ -30,6 +31,7 @@ export function createAuth(config: AuthConfig) {
   const sendInvitation = config.sendInvitation // @findplate:orgs
   return betterAuth({
     baseURL: config.dashboardUrl,
+    ...auditHooks(config.db), // @findplate:audit-log
     secret: config.secret,
     trustedOrigins: config.trustedOrigins,
     database: drizzleAdapter(config.db, { provider: "pg", schema }),

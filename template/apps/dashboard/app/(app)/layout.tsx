@@ -1,6 +1,7 @@
 import { SidebarInset, SidebarProvider } from "@acme/ui/components/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { BetaBanner } from "@/components/beta-banner" // @findplate:flags
+import { ImpersonationBanner } from "@/components/impersonation-banner" // @findplate:impersonation
 import { call } from "@/lib/api"
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -8,6 +9,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <SidebarProvider>
       <AppSidebar me={me} />
+      {/* @findplate:impersonation */}
+      <ImpersonationBanner />
+      {/* @end */}
       {/* @findplate:flags */}
       <BetaBanner />
       {/* @end */}

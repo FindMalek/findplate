@@ -37,6 +37,7 @@
     "orgs",
     "audit-log",
     "api-keys",
+    "impersonation",
     "jobs",
     "logger",
     "---Design---",
