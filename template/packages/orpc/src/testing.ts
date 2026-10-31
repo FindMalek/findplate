@@ -1,6 +1,8 @@
 import { createAuth } from "@acme/auth"
 import { user } from "@acme/db"
 import { createTestDb, type TestDb } from "@acme/db/testing"
+import { createFlags } from "@acme/flags/server" // @findplate:flags
+import { createNotifier } from "@acme/notification" // @findplate:notification
 import { createRouterClient } from "@orpc/server"
 import { eq } from "drizzle-orm"
 import { createContext, type Services } from "./context"
@@ -34,14 +36,10 @@ export async function createTestApp() {
     // @findplate:storage
     storage: null,
     // @end
-    // @findplate:whatsapp
-    whatsapp: null,
-    // @end
-    // @findplate:telegram
-    telegram: null,
-    // @end
-    // @findplate:email
-    mailer: null,
+    flags: createFlags({ db: testDb.db }), // @findplate:flags
+    jobs: { enqueue: async () => ({ ok: true, id: null }), list: async () => [] }, // @findplate:jobs
+    // @findplate:notification
+    notification: createNotifier({}),
     // @end
     // @findplate:ai
     model: null,
