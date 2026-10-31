@@ -14,10 +14,11 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@acme/ui/components/sidebar"
-import { LayoutDashboardIcon, LogOutIcon, NotebookPenIcon, SettingsIcon, UsersIcon } from "lucide-react"
-import type { Route } from "next"
+import { LogOutIcon } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { CommandPalette } from "@/components/command-palette"
+import { visibleNav } from "@/lib/nav"
 
 interface Me {
   name: string
@@ -25,17 +26,6 @@ interface Me {
   image: string | null
   role: string | null
 }
-
-const NAV: { href: Route; label: string; icon: typeof LayoutDashboardIcon; admin?: boolean }[] = [
-  { href: "/", label: "Overview", icon: LayoutDashboardIcon },
-  { href: "/notes", label: "Notes", icon: NotebookPenIcon },
-  { href: "/billing", label: "Billing", icon: SettingsIcon }, // @findplate:billing
-  { href: "/team", label: "Team", icon: UsersIcon }, // @findplate:orgs
-  { href: "/users", label: "Users", icon: UsersIcon, admin: true },
-  { href: "/waitlist", label: "Waitlist", icon: UsersIcon, admin: true }, // @findplate:waitlist
-  { href: "/flags", label: "Flags", icon: SettingsIcon, admin: true }, // @findplate:flags
-  { href: "/settings", label: "Settings", icon: SettingsIcon },
-]
 
 export function AppSidebar({ me }: { me: Me }) {
   const pathname = usePathname()
@@ -59,7 +49,8 @@ export function AppSidebar({ me }: { me: Me }) {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {NAV.filter((item) => !item.admin || me.role === "admin").map((item) => (
+              <CommandPalette role={me.role} />
+              {visibleNav(me.role).map((item) => (
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton
                     tooltip={item.label}
