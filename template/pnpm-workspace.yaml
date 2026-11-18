@@ -73,7 +73,7 @@ catalog:
   next-themes: 0.4.6
   oxlint: 1.88.0
   pg-boss: 12.38.0
-  postgres: 3.4.9
+  postgres: 4.0.0
   react: 19.3.0
   react-native: 0.88.1
   react-native-safe-area-context: 5.11.0
